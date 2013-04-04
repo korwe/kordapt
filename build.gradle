@@ -1,0 +1,6 @@
+apply plugin: 'java'
+fileTree(dir: 'scripts/gradle', include: '*.gradle').each { File file ->
+    apply from: file.absolutePath
+}
+
+
