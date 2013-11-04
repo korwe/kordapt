@@ -1,0 +1,19 @@
+
+dependencies{
+
+    compile 'com.google.guava:guava:14.0.1'
+
+    //Korwe
+    compile 'com.korwe:thecore-service-api:1.1.6'
+    compile 'com.korwe:thecore-common-api:1.1.6'
+
+    //Spring
+    compile 'org.springframework:spring-core:3.2.3.RELEASE'
+    compile 'org.springframework:spring-beans:3.2.3.RELEASE'
+    compile 'org.springframework:spring-context:3.2.3.RELEASE'
+    compile 'org.springframework:spring-context-support:3.2.3.RELEASE'
+
+    //Logging
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'log4j:log4j:1.2.17'
+}
