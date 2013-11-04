@@ -1,13 +1,17 @@
-apply plugin: 'java'
+allprojects{
+    apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+}
+
 fileTree(dir: 'scripts/gradle', include: '*.gradle').each { File file ->
     apply from: file.absolutePath
 }
 
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
 
 dependencies{
 
