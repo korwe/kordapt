@@ -2,18 +2,17 @@
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 
-allprojects{
-    apply plugin: 'java'
+buildscript{
 
     repositories {
         mavenLocal()
         mavenCentral()
     }
 
+    dependencies{
+        classpath project(':gradle-plugin')
+    }
 }
 
-fileTree(dir: 'scripts/gradle', include: '*.gradle').each { File file ->
-    apply from: file.absolutePath
-}
-
+apply plugin: 'kordapt'
 
