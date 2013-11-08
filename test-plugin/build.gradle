@@ -16,3 +16,7 @@ buildscript{
 
 apply plugin: 'kordapt'
 
+kordapt{
+    defaultPackage = "com.korwe.test"
+}
+

@@ -9,25 +9,37 @@ import org.gradle.api.tasks.TaskAction
  * */
 class InitTask extends DefaultTask{
 
-    String companyName
+    String packageName
+    String apiPath
 
     @TaskAction
     def init(){
-        if(companyName == null || companyName.isEmpty()){
-            println("You are required to set companyName of this task")
+        if(packageName == null || packageName.isEmpty()){
+            println("You are required to set packageName of this task")
             throw new StopExecutionException()
         }
 
-        def companyDirective = companyName.replace('.', File.separator)
+        if(apiPath == null || apiPath.isEmpty()){
+            println("You are required to set apiPath of this task")
+            throw new StopExecutionException()
+        }
+
+        def packageDirective = packageName.replace('.', File.separator)
+
+        initSrc(packageDirective)
+        initApi(packageDirective)
+    }
+
+    def initSrc(String packageDirective){
 
         //Create src directory structure
-        def companyMainDir = new File(project.projectDir.absolutePath + File.separator + 'src' + File.separator + 'main' + File.separator + 'java' + File.separator + companyDirective)
+        def companyMainDir = new File(project.projectDir.absolutePath + File.separator + 'src' + File.separator + 'main' + File.separator + 'java' + File.separator + packageDirective)
 
         if(!companyMainDir.exists()){
             companyMainDir.mkdirs()
         }
 
-        def mainServiceDir = new File(companyMainDir.absolutePath + File.separator + 'services')
+        def mainServiceDir = new File(companyMainDir.absolutePath + File.separator + 'service')
 
         if(!mainServiceDir.exists()){
             mainServiceDir.mkdir()
@@ -49,13 +61,13 @@ class InitTask extends DefaultTask{
         }
 
         //Create test directory structure
-        def companyTestDir = new File(project.projectDir.absolutePath + File.separator + 'src' + File.separator + 'test' + File.separator + 'java' + File.separator + companyDirective)
+        def companyTestDir = new File(project.projectDir.absolutePath + File.separator + 'src' + File.separator + 'test' + File.separator + 'java' + File.separator + packageDirective)
 
         if(!companyTestDir.exists()){
             companyTestDir.mkdirs()
         }
 
-        def testServiceDir = new File(companyTestDir.absolutePath + File.separator + 'services')
+        def testServiceDir = new File(companyTestDir.absolutePath + File.separator + 'service')
 
         if(!testServiceDir.exists()){
             testServiceDir.mkdir()
@@ -75,6 +87,24 @@ class InitTask extends DefaultTask{
         if(!testDtoDir.exists()){
             testDtoDir.mkdir()
         }
+    }
+
+    def initApi(String packageDirective){
+        //Create service directory structure
+
+        def serviceDir = new File(apiPath + File.separator + 'services' + File.separator + packageDirective + File.separator + 'service')
+
+        if(!serviceDir.exists()){
+            serviceDir.mkdirs()
+        }
+
+        //Create types directory structure
+        def typesDir = new File(apiPath + File.separator + 'types' + File.separator + packageDirective + File.separator + 'dto')
+
+        if(!typesDir.exists()){
+            typesDir.mkdirs()
+        }
+
     }
 
 }
