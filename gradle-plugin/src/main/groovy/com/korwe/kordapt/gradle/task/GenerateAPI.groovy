@@ -75,8 +75,20 @@ class GenerateAPI extends DefaultTask {
         File serviceImplFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/impl/${service.name}Impl.java")
         serviceImplFile.write(serviceImplTemplate.render())
 
+        //CREATE SERVICE ADAPTER
+        def serviceAdapterTemplate = serviceTemplateGroup.getInstanceOf('service_adapter')
+        serviceAdapterTemplate.add('service', service)
+        serviceAdapterTemplate.add('packageName', packageName+".service.adapter")
+
+        def serviceAdapterImports = [packageName+".service."+service.name]
+        serviceAdapterTemplate.add('imports', serviceAdapterImports)
+
+        File serviceAdapterFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/adapter/Core${service.name}.java")
+        serviceAdapterFile.write(serviceAdapterTemplate.render())
+
 
     }
+
 
     def imports(Service service){
         def imports = []
