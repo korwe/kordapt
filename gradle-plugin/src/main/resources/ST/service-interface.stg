@@ -1,0 +1,26 @@
+
+
+service_interface(imports, packageName, service) ::= <<
+package <packageName>;
+
+import com.korwe.thecore.annotation.ParamNames;
+import com.korwe.thecore.service.PingService;
+<imports:{import | import <import>;
+}>
+
+/**
+ * This file was generated using Kordapt
+ */
+
+public interface <service.name> extends PingService{
+    <service.functions:service_function()>
+}
+>>
+
+service_function(function) ::= <<
+
+<if(function.parameters)>
+@ParamNames(<function.paramNamesString>)
+<endif>
+public <function.returnType> <function.name>(<function.parametersString>);
+>>

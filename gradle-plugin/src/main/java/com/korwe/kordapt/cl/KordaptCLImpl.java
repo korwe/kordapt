@@ -20,7 +20,8 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     @Override
     public void exitService(@NotNull KordaptCLParser.ServiceContext ctx){
         service = new Service();
-        service.setName(ctx.qualifiedName().getText());
+        String name = ctx.qualifiedName().getText();
+        service.setName(name.substring(0,1).toUpperCase()+name.substring(1));
         List<ServiceFunction> functions = new ArrayList<>();
         while(!functionStack.empty()){
             functions.add(functionStack.pop());

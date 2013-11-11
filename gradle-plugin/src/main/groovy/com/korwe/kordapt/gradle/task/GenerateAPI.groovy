@@ -1,5 +1,6 @@
 package com.korwe.kordapt.gradle.task
 
+import com.korwe.kordapt.Service
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser
@@ -18,11 +19,13 @@ class GenerateAPI extends DefaultTask {
 
     String packageName
     String apiPath
+    String mainPath = "${project.projectDir.absolutePath}/src/main"
+    String mainJavaPath = "${mainPath}/java"
+    String testPath = "${project.projectDir.absolutePath}/src/test"
+    String testJavaPath = "${testPath}/java"
     String stringInput = "myService Integer:myFunction(Hello world, String param) Boolean:secondFunction() void:thirdFunction()"
     @TaskAction
     def generateApi(){
-        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service-api-definition.stg')
-        def serviceTemplate = serviceTemplateGroup.getInstanceOf('service')
 
         ANTLRInputStream stream = new ANTLRInputStream(new StringInputStream(stringInput));
 
@@ -33,11 +36,57 @@ class GenerateAPI extends DefaultTask {
         ParseTreeWalker walker = new ParseTreeWalker();
         KordaptCLImpl impl = new KordaptCLImpl();
         walker.walk(impl, parser.service());
-        def service = impl.service
-        serviceTemplate.add('service', service)
+        generateService(impl.service)
 
-        File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}")
-        serviceApiFile.write(serviceTemplate.render())
 
     }
+
+    def generateService(Service service){
+
+        //CREATE API DEFINITION
+        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service-api-definition.stg')
+        def serviceTemplate = serviceTemplateGroup.getInstanceOf('service')
+        serviceTemplate.add('service', service)
+
+        File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}.yaml")
+        serviceApiFile.write(serviceTemplate.render())
+
+
+        //CREATE SERVICE INTERFACE
+        STGroupFile serviceInterfaceTemplateGroup = new STGroupFile('ST/service-interface.stg')
+        def serviceInterfaceTemplate = serviceInterfaceTemplateGroup.getInstanceOf('service_interface')
+        serviceInterfaceTemplate.add('service', service)
+        serviceInterfaceTemplate.add('packageName', packageName+".service")
+
+        serviceInterfaceTemplate.add('imports', imports(service))
+
+        File serviceInterfaceFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/${service.name}.java")
+        serviceInterfaceFile.write(serviceInterfaceTemplate.render())
+
+    }
+
+    def imports(Service service){
+        imports = []
+        service.functions.each { f ->
+            if(f.returnType){
+                if(!isBasicType(f.returnType)){
+                    imports << f.returnType
+                }
+            }
+
+            f.parameters.each { p ->
+                if(!isBasicType(p.type)){
+                    imports << p.type
+                }
+            }
+        }
+        imports
+    }
+
+    def isBasicType(typeName){
+        ['String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
+            name.equals(typeName)
+        }
+    }
+
 }
