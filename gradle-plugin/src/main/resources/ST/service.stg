@@ -49,7 +49,7 @@ public class <service.name>Impl extends PingServiceImpl implements <service.name
 service_impl_function(function) ::= <<
 
 
-    @override
+    @Override
     public <if(function.returnType)><function.returnType><else>void<endif> <function.name>(<function.parametersString>){
         //TODO: Implement function <function.name>
         <if(function.returnType)>return <function.returnType>;<endif>
