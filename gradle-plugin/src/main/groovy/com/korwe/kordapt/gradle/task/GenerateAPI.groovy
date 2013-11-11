@@ -63,7 +63,7 @@ class GenerateAPI extends DefaultTask {
         serviceInterfaceTemplate.add('service', service)
         serviceInterfaceTemplate.add('packageName', packageName+".service")
 
-        serviceInterfaceTemplate.add('imports', imports(service))
+        serviceInterfaceTemplate.add('imports', serviceImports(service))
 
         File serviceInterfaceFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
@@ -73,7 +73,7 @@ class GenerateAPI extends DefaultTask {
         serviceImplTemplate.add('service', service)
         serviceImplTemplate.add('packageName', packageName+".service.impl")
 
-        def serviceImplImports = imports(service)
+        def serviceImplImports = serviceImports(service)
         serviceImplImports << packageName+".service."+service.name
         serviceImplTemplate.add('imports', serviceImplImports)
 
@@ -99,12 +99,12 @@ class GenerateAPI extends DefaultTask {
 
         type.packageName = type.packageName ? type.packageName : "${packageName}.dto"
         type.attributes.each { attr ->
-            if(!isBasicType(attr.type.name) && !attr.type.packageName){
+            if(!isBasicType(attr.type)){
                 attr.type.packageName = type.packageName
             }
         }
 
-        if(!isBasicType(type.inheritsFrom.name) && !type.inheritsFrom.packageName){
+        if(!isBasicType(type.inheritsFrom)){
             type.inheritsFrom.packageName = type.packageName
         }
 
@@ -126,10 +126,41 @@ class GenerateAPI extends DefaultTask {
         File typeApiFile = new File("${apiDir.absolutePath}/${type.name}.yaml")
         typeApiFile.write(typeApiTemplate.render())
 
+        //CREATE JAVA BEAN
+
+        def beanTemplate = typeTemplateGroup.getInstanceOf('bean')
+        //Make sure package directory exists
+        def beanDir = new File("${mainJavaPath}/${type.packageName.replace('.','/')}")
+
+        if(!beanDir.exists()){
+            println("Creating folder '${beanDir.absolutePath}'")
+            beanDir.mkdirs()
+        }
+
+        beanTemplate.add('type', type)
+        beanTemplate.add('imports', typeImports(type))
+
+        File beanFile = new File("${beanDir.absolutePath}/${type.name}.java")
+        beanFile.write(beanTemplate.render())
+
     }
 
+    def typeImports(Type type){
+        def imports = []
+        type.attributes.each { a ->
+            if(!isBasicType(a.type) && !type.packageName.equals(a.type.packageName)){
+                imports << "${a.type.packageName}.${a.type.name}"
+            }
+        }
 
-    def imports(Service service){
+        if(!isBasicType(type.inheritsFrom) && !type.packageName.equals(type.inheritsFrom.packageName)){
+            imports << "${type.inheritsFrom.packageName}.${type.inheritsFrom.name}"
+        }
+
+        imports
+    }
+
+    def serviceImports(Service service){
         def imports = []
         service.functions.each { f ->
             if(f.returnType){
@@ -147,10 +178,10 @@ class GenerateAPI extends DefaultTask {
         imports
     }
 
-    def isBasicType(typeName){
+    def isBasicType(type){
         ['String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
-            name.equals(typeName)
-        }
+            name.equals(type.name)
+        } && !type.packageName
     }
 
 }

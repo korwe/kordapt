@@ -15,3 +15,40 @@ type_attribute(attribute) ::= <<
 type_name(type) ::= <<
 <if(type.packageName)><type.packageName>.<endif><type.name>
 >>
+
+bean(type, imports) ::= <<
+package <type.packageName>;
+
+<imports:import_template()>
+
+/**
+ * This file was generated using Kordapt
+ */
+public class <type.name>{
+<type.attributes:bean_attribute_definition()>
+
+<type.attributes:bean_getter_setter()>
+}
+>>
+
+bean_attribute_definition(attribute) ::= <<
+
+    private <attribute.type.name> <attribute.name>;
+>>
+
+bean_getter_setter(attribute) ::= <<
+
+    public <attribute.type.name> get<attribute.capitalizedName>(){
+        return <attribute.name>;
+    }
+
+    public void set<attribute.capitalizedName>(<attribute.type.name> <attribute.name>){
+        this.<attribute.name> = <attribute.name>;
+    }
+>>
+
+
+import_template(im) ::= <<
+import <im>;
+
+>>

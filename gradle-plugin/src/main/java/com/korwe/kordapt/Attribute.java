@@ -31,4 +31,8 @@ public class Attribute {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getCapitalizedName(){
+        return name.substring(0,1).toUpperCase()+name.substring(1);
+    }
 }
