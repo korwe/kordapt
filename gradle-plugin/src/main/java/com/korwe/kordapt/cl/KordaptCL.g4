@@ -7,6 +7,9 @@ package com.korwe.kordapt.cl;
 import Java;
 
 
+kordaptCl
+    : service | kordaptType
+;
 
 service
     : qualifiedName function*

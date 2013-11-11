@@ -1,8 +1,7 @@
 package com.korwe.kordapt.cl;
 
-import com.korwe.kordapt.Service;
-import com.korwe.kordapt.ServiceFunction;
-import com.korwe.kordapt.ServiceFunctionParameter;
+import com.google.common.collect.Lists;
+import com.korwe.kordapt.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
@@ -15,19 +14,18 @@ import java.util.Stack;
 public class KordaptCLImpl extends KordaptCLBaseListener{
     private Stack<ServiceFunctionParameter> parameterStack = new Stack<>();
     private Stack<ServiceFunction> functionStack = new Stack<>();
+    private Stack<Attribute> attributeStack = new Stack<>();
     private Service service;
+    private Type type;
 
     @Override
     public void exitService(@NotNull KordaptCLParser.ServiceContext ctx){
         service = new Service();
         String name = ctx.qualifiedName().getText();
-        service.setName(name.substring(0,1).toUpperCase()+name.substring(1));
-        List<ServiceFunction> functions = new ArrayList<>();
-        while(!functionStack.empty()){
-            functions.add(functionStack.pop());
-        }
+        service.setName(name.substring(0, 1).toUpperCase() + name.substring(1));
+        service.setFunctions(Lists.newArrayList(functionStack));
+        functionStack.clear();
 
-        service.setFunctions(functions);
     }
 
     @Override
@@ -41,13 +39,9 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
             function.setReturnType(returnType);
         }
 
-        List<ServiceFunctionParameter> functionParameters =  new ArrayList<>();
 
-        while (!parameterStack.empty()){
-            functionParameters.add(parameterStack.pop());
-        }
-
-        function.setParameters(functionParameters);
+        function.setParameters(Lists.newArrayList(parameterStack));
+        parameterStack.clear();
 
         functionStack.push(function);
 
@@ -64,11 +58,54 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
 
+    @Override
+    public void exitKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx){
+        Type t = typeFromQualifiedName(ctx.qualifiedName().getText());
+        if(ctx.type()!= null){
+            t.setInheritsFrom(typeFromQualifiedName(ctx.type().getText()));
+        }
+        t.setAttributes(Lists.newArrayList(attributeStack));
+        attributeStack.clear();
+
+        type = t;
+
+    }
+
+    @Override
+    public void exitKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx){
+        Attribute a = new Attribute();
+        a.setName(ctx.Identifier().getText());
+        a.setType(typeFromQualifiedName(ctx.type().getText()));
+        attributeStack.push(a);
+    }
+
+    public Type typeFromQualifiedName(String qualifiedName){
+        Type type = new Type();
+        Integer nameSeparatorIndex = qualifiedName.lastIndexOf('.');
+        if(nameSeparatorIndex == -1){
+            type.setName(qualifiedName);
+        }
+        else{
+            type.setName(qualifiedName.substring(nameSeparatorIndex+1));
+            type.setPackageName(qualifiedName.substring(0,nameSeparatorIndex));
+        }
+
+        return type;
+    }
+
     public Service getService() {
         return service;
     }
 
     public void setService(Service service) {
         this.service = service;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }

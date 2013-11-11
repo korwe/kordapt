@@ -143,6 +143,17 @@ public interface KordaptCLListener extends ParseTreeListener {
 	void exitVariableDeclarators(@NotNull KordaptCLParser.VariableDeclaratorsContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link KordaptCLParser#kordaptType}.
+	 * @param ctx the parse tree
+	 */
+	void enterKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KordaptCLParser#kordaptType}.
+	 * @param ctx the parse tree
+	 */
+	void exitKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link KordaptCLParser#elementValuePairs}.
 	 * @param ctx the parse tree
 	 */
@@ -427,6 +438,17 @@ public interface KordaptCLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAnnotationConstantRest(@NotNull KordaptCLParser.AnnotationConstantRestContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link KordaptCLParser#kordaptCl}.
+	 * @param ctx the parse tree
+	 */
+	void enterKordaptCl(@NotNull KordaptCLParser.KordaptClContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KordaptCLParser#kordaptCl}.
+	 * @param ctx the parse tree
+	 */
+	void exitKordaptCl(@NotNull KordaptCLParser.KordaptClContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link KordaptCLParser#typeName}.
@@ -946,15 +968,15 @@ public interface KordaptCLListener extends ParseTreeListener {
 	void exitAnnotationTypeBody(@NotNull KordaptCLParser.AnnotationTypeBodyContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link KordaptCLParser#qualifiedNameList}.
+	 * Enter a parse tree produced by {@link KordaptCLParser#kordaptTypeAttribute}.
 	 * @param ctx the parse tree
 	 */
-	void enterQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx);
+	void enterKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KordaptCLParser#qualifiedNameList}.
+	 * Exit a parse tree produced by {@link KordaptCLParser#kordaptTypeAttribute}.
 	 * @param ctx the parse tree
 	 */
-	void exitQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx);
+	void exitKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link KordaptCLParser#creator}.
@@ -966,6 +988,17 @@ public interface KordaptCLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCreator(@NotNull KordaptCLParser.CreatorContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link KordaptCLParser#qualifiedNameList}.
+	 * @param ctx the parse tree
+	 */
+	void enterQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KordaptCLParser#qualifiedNameList}.
+	 * @param ctx the parse tree
+	 */
+	void exitQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link KordaptCLParser#memberDeclaration}.

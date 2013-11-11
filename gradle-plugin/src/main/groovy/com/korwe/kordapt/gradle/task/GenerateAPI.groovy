@@ -1,6 +1,7 @@
 package com.korwe.kordapt.gradle.task
 
 import com.korwe.kordapt.Service
+import com.korwe.kordapt.Type
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser
@@ -35,8 +36,13 @@ class GenerateAPI extends DefaultTask {
         KordaptCLParser parser = new KordaptCLParser(tokens);
         ParseTreeWalker walker = new ParseTreeWalker();
         KordaptCLImpl impl = new KordaptCLImpl();
-        walker.walk(impl, parser.service());
-        generateService(impl.service)
+        walker.walk(impl, parser.kordaptCl());
+        if(impl.service !=null){
+            generateService(impl.service)
+        }
+        else{
+            generateType(impl.type)
+        }
 
 
     }
@@ -85,6 +91,40 @@ class GenerateAPI extends DefaultTask {
         File serviceAdapterFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/adapter/Core${service.name}.java")
         serviceAdapterFile.write(serviceAdapterTemplate.render())
 
+
+    }
+
+    def generateType(Type type){
+
+
+        type.packageName = type.packageName ? type.packageName : "${packageName}.dto"
+        type.attributes.each { attr ->
+            if(!isBasicType(attr.type.name) && !attr.type.packageName){
+                attr.type.packageName = type.packageName
+            }
+        }
+
+        if(!isBasicType(type.inheritsFrom.name) && !type.inheritsFrom.packageName){
+            type.inheritsFrom.packageName = type.packageName
+        }
+
+
+        //CREATE API DEFINITION
+        STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
+        def typeApiTemplate = typeTemplateGroup.getInstanceOf('type_api')
+        typeApiTemplate.add('type', type)
+
+
+        //Make sure package directory exists
+        def apiDir = new File("${apiPath}/types/${type.packageName.replace('.','/')}")
+
+        if(!apiDir.exists()){
+            println("Creating folder '${apiDir.absolutePath}'")
+            apiDir.mkdirs()
+        }
+
+        File typeApiFile = new File("${apiDir.absolutePath}/${type.name}.yaml")
+        typeApiFile.write(typeApiTemplate.render())
 
     }
 

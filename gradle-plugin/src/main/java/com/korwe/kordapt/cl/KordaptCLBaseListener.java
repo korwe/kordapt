@@ -175,6 +175,19 @@ public class KordaptCLBaseListener implements KordaptCLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterElementValuePairs(@NotNull KordaptCLParser.ElementValuePairsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -507,6 +520,19 @@ public class KordaptCLBaseListener implements KordaptCLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitAnnotationConstantRest(@NotNull KordaptCLParser.AnnotationConstantRestContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterKordaptCl(@NotNull KordaptCLParser.KordaptClContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitKordaptCl(@NotNull KordaptCLParser.KordaptClContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -1124,13 +1150,13 @@ public class KordaptCLBaseListener implements KordaptCLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx) { }
+	@Override public void enterKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx) { }
+	@Override public void exitKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -1144,6 +1170,19 @@ public class KordaptCLBaseListener implements KordaptCLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitCreator(@NotNull KordaptCLParser.CreatorContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitQualifiedNameList(@NotNull KordaptCLParser.QualifiedNameListContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -1,0 +1,17 @@
+type_api(type) ::= <<
+name: <type:type_name()>
+<if(type.inheritsFrom)>inherits_from: <type.inheritsFrom:type_name()><endif>
+attributes:
+<type.attributes:type_attribute()>
+>>
+
+type_attribute(attribute) ::= <<
+
+- name: <attribute.name>
+  type: <attribute.type:type_name()>
+  description: <attribute.description>
+>>
+
+type_name(type) ::= <<
+<if(type.packageName)><type.packageName>.<endif><type.name>
+>>
