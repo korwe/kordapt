@@ -44,16 +44,15 @@ class GenerateAPI extends DefaultTask {
     def generateService(Service service){
 
         //CREATE API DEFINITION
-        STGroupFile serviceApiTemplateGroup = new STGroupFile('ST/service-api-definition.stg')
-        def serviceTemplate = serviceApiTemplateGroup.getInstanceOf('service')
-        serviceTemplate.add('service', service)
+        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
+        def serviceApiTemplate = serviceTemplateGroup.getInstanceOf('service_api')
+        serviceApiTemplate.add('service', service)
 
         File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}.yaml")
-        serviceApiFile.write(serviceTemplate.render())
+        serviceApiFile.write(serviceApiTemplate.render())
 
 
         //CREATE SERVICE INTERFACE
-        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service-interface.stg')
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
         serviceInterfaceTemplate.add('service', service)
         serviceInterfaceTemplate.add('packageName', packageName+".service")

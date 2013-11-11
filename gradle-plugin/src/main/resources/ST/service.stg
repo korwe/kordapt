@@ -77,3 +77,27 @@ public class Core<service.name> extends GenericCoreService\<<service.name>\>{
 }
 
 >>
+
+service_api(service) ::= <<
+name: <service.name>
+functions:
+<service.functions:service_api_function()>
+>>
+
+service_api_function(function) ::= <<
+
+- name: <function.name>
+  description: <function.description>
+  <if(function.parameters)>parameters:
+<function.parameters:service_api_function_parameter()>
+  <endif>
+  <if(function.returnType)>return_type: <function.returnType>
+  <endif>
+>>
+
+service_api_function_parameter(parameter) ::= <<
+
+- name: <parameter.name>
+  type: <parameter.type>
+  description: Description required
+>>
