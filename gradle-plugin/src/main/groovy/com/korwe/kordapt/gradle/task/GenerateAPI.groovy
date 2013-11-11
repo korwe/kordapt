@@ -44,8 +44,8 @@ class GenerateAPI extends DefaultTask {
     def generateService(Service service){
 
         //CREATE API DEFINITION
-        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service-api-definition.stg')
-        def serviceTemplate = serviceTemplateGroup.getInstanceOf('service')
+        STGroupFile serviceApiTemplateGroup = new STGroupFile('ST/service-api-definition.stg')
+        def serviceTemplate = serviceApiTemplateGroup.getInstanceOf('service')
         serviceTemplate.add('service', service)
 
         File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}.yaml")
@@ -53,8 +53,8 @@ class GenerateAPI extends DefaultTask {
 
 
         //CREATE SERVICE INTERFACE
-        STGroupFile serviceInterfaceTemplateGroup = new STGroupFile('ST/service-interface.stg')
-        def serviceInterfaceTemplate = serviceInterfaceTemplateGroup.getInstanceOf('service_interface')
+        STGroupFile serviceTemplateGroup = new STGroupFile('ST/service-interface.stg')
+        def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
         serviceInterfaceTemplate.add('service', service)
         serviceInterfaceTemplate.add('packageName', packageName+".service")
 
@@ -63,10 +63,23 @@ class GenerateAPI extends DefaultTask {
         File serviceInterfaceFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
 
+        //CREATE SERVICE IMPL
+        def serviceImplTemplate = serviceTemplateGroup.getInstanceOf('service_impl')
+        serviceImplTemplate.add('service', service)
+        serviceImplTemplate.add('packageName', packageName+".service.impl")
+
+        def serviceImplImports = imports(service)
+        serviceImplImports << packageName+".service."+service.name
+        serviceImplTemplate.add('imports', serviceImplImports)
+
+        File serviceImplFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/impl/${service.name}Impl.java")
+        serviceImplFile.write(serviceImplTemplate.render())
+
+
     }
 
     def imports(Service service){
-        imports = []
+        def imports = []
         service.functions.each { f ->
             if(f.returnType){
                 if(!isBasicType(f.returnType)){

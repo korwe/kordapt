@@ -1,26 +1,58 @@
 
+import_template(im) ::= <<
+import <im>;
+
+>>
 
 service_interface(imports, packageName, service) ::= <<
 package <packageName>;
 
 import com.korwe.thecore.annotation.ParamNames;
 import com.korwe.thecore.service.PingService;
-<imports:{import | import <import>;
-}>
+<imports:import_template()>
 
 /**
  * This file was generated using Kordapt
  */
 
 public interface <service.name> extends PingService{
-    <service.functions:service_function()>
+    <service.functions:service_interface_function()>
 }
 >>
 
-service_function(function) ::= <<
+service_interface_function(function) ::= <<
 
 <if(function.parameters)>
 @ParamNames(<function.paramNamesString>)
 <endif>
-public <function.returnType> <function.name>(<function.parametersString>);
+public <if(function.returnType)><function.returnType><else>void<endif> <function.name>(<function.parametersString>);
 >>
+
+
+service_impl(imports, packageName, service) ::= <<
+package <packageName>;
+
+import com.korwe.thecore.service.ping.PingServiceImpl;
+<imports:import_template()>
+
+
+/**
+ * This file was generated using Kordapt
+ */
+
+public class <service.name>Impl extends PingServiceImpl implements <service.name>{
+    <service.functions:service_impl_function()>
+}
+>>
+
+service_impl_function(function) ::= <<
+
+
+    @override
+    public <if(function.returnType)><function.returnType><else>void<endif> <function.name>(<function.parametersString>){
+        //TODO: Implement function <function.name>
+        <if(function.returnType)>return <function.returnType>;<endif>
+    }
+>>
+
+
