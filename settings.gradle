@@ -2,4 +2,4 @@
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 
-include 'api', 'gradle-plugin', 'test-plugin'
+include 'api', 'gradle-plugin', 'test-plugin', 'hibernate'

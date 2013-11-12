@@ -1,0 +1,126 @@
+spring_header(namespaces, xsis) ::= <<
+\<?xml version="1.0" encoding="UTF-8"?>
+\<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       <namespaces:{ns |
+
+       "<ns>"}>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd <xsis>"\>
+
+>>
+
+service_beans() ::= <<
+<spring_header(namespaces=[], xsis=[])>
+
+    \<bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="file://${TREE_SERVICES_ETC_PATH}/coreconfig.xml"/>
+
+    \<bean id="abstractCoreService" depends-on="coreCofigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
+          init-method="startUp"
+          destroy-method="shutDown" />
+
+
+\</beans>
+>>
+
+service_bean_definition ::= <<
+
+>>
+
+dao_beans() ::= <<
+<spring_header(namespaces=[], xsis=[])>
+
+   \<bean id="genericDAO" abstract="true" class="com.korwe.kordapt.hibernate.AbstractGenericDAO"
+              p:sessionFactory-ref="sessionFactory" />
+
+\</beans>
+>>
+
+
+dao_bean_definition ::= <<
+
+>>
+
+
+datasource(jdbcDriver, jdbcUrl) ::= <<
+<spring_header(namespaces=[], xsis=[])>
+    \<!-- BoneCP configuration -->
+    \<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close"
+        p:driverClass="<jdbcDriver>"
+        p:jdbcUrl="<jdbcUrl>"
+        p:username="${db.username}"
+        p:password="${db.password}"
+        p:idleConnectionTestPeriodInSeconds="60"
+        p:idleMaxAgeInSeconds="240"
+        p:maxConnectionsPerPartition="11"
+        p:minConnectionsPerPartition="1"
+        p:partitionCount="2"
+        p:acquireIncrement="10"
+        p:statementsCacheSize="50"
+        p:releaseHelperThreads="3"/>
+
+
+    \<!-- Only create connections when necessary -->
+    \<bean id="lazyDataSource"
+          class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy"
+          p:targetDataSource-ref="dataSource" />
+\</beans>
+>>
+
+orm(orm_settings) ::= <<
+<spring_header(namespaces=[], xsis="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd")>
+
+    <if(orm_settings.isHibernate)>
+    <orm_settings:hibernate_orm()>
+    <endif>
+    \<tx:annotation-driven transaction-manager="transactionManager"/>
+\</beans>
+>>
+
+hibernate_orm(hibernate_settings) ::= <<
+
+    \<!-- Hibernate configuration -->
+
+    \<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        \<property name="dataSource" ref="lazyDataSource"/>
+        \<property name="packagesToScan">
+            \<list>
+                \<value><hibernate_settings.domainPackage>\</value>
+            \</list>
+        \</property>
+        \<property name="hibernateProperties">
+            \<props>
+                \<prop key="hibernate.dialect"><hibernate_settings.dialect>\</prop>
+                \<prop key="hibernate.show_sql">true\</prop>
+                \<prop key="hibernate.format_sql">true\</prop>
+                \<prop key="hibernate.use_sql_comments">true\</prop>
+                \<prop key="hbm2ddl.auto">create\</prop>
+            \</props>
+        \</property>
+    \</bean>
+
+    \<bean id="transactionManager" class="<hibernate_settings.transactionManager>"
+          p:sessionFactory-ref="sessionFactory"/>
+
+>>
+
+kordapt(packageName, datasource, orm, dao) ::= <<
+<spring_header(namespaces=[], xsis="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd")>
+
+   <if(datasource)>
+   \<import resource="datasource.xml" />
+   <endif>
+   <if(orm)>
+   \<import resource="orm.xml" /\>
+   <endif>
+   <if(dao)>
+   \<import resource="dao-beans.xml"/>
+   <endif>
+   \<import resource="service-beans.xml" />
+
+   \<context:component-scan base-package="<packageName>" />
+
+\</beans>
+>>

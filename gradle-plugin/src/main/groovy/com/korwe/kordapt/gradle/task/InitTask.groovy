@@ -1,8 +1,15 @@
 package com.korwe.kordapt.gradle.task
 
+import com.korwe.kordapt.gradle.orm.HibernateSettings
+import com.korwe.kordapt.gradle.util.DaoUtil
+import com.korwe.kordapt.gradle.util.HibernateUtil
+import com.korwe.kordapt.gradle.util.JdbcDriver
+import com.korwe.kordapt.gradle.util.JdbcUtil
+import com.korwe.kordapt.gradle.util.OrmUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
+import org.stringtemplate.v4.STGroupFile
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
@@ -26,8 +33,9 @@ class InitTask extends DefaultTask{
 
         def packageDirective = packageName.replace('.', File.separator)
 
-        initSrc(packageDirective)
         initApi(packageDirective)
+        initSrc(packageDirective)
+        initResource()
     }
 
     def initSrc(String packageDirective){
@@ -87,6 +95,76 @@ class InitTask extends DefaultTask{
         if(!testDtoDir.exists()){
             testDtoDir.mkdir()
         }
+
+
+
+    }
+
+    def initResource(){
+
+        def resourceDir = new File(project.projectDir.absolutePath + File.separator + 'src' + File.separator + 'main' + File.separator + 'resources')
+
+        if(!resourceDir.exists()){
+            resourceDir.mkdir()
+        }
+
+        STGroupFile springTemplates = new STGroupFile('ST/spring.stg')
+
+        def springDir = new File(resourceDir.absolutePath + File.separator + 'spring')
+
+        if(!springDir.exists()){
+            springDir.mkdir()
+        }
+
+        def kordaptTemplate = springTemplates.getInstanceOf('kordapt')
+        kordaptTemplate.add('packageName', packageName)
+
+        JdbcDriver jdbcDriver = JdbcUtil.jdbcDriverClassName(project)
+
+        if(jdbcDriver){
+            File datasourceFile = new File(springDir.absolutePath + File.separator + 'datasource.xml')
+
+            def datasourceTemplate = springTemplates.getInstanceOf('datasource')
+            datasourceTemplate.add('jdbcDriver', jdbcDriver.driverClass)
+            datasourceTemplate.add('jdbcUrl', JdbcUtil.jdbcUrl(jdbcDriver))
+            datasourceFile.write(datasourceTemplate.render())
+            kordaptTemplate.add('datasource', true)
+
+            def ormName = OrmUtil.getOrmName(project)
+
+            if(ormName){
+                kordaptTemplate.add('orm', true)
+                def ormSettings = OrmUtil.getOrmSettings(ormName)
+                ormSettings.dialect = HibernateUtil.getDialect(jdbcDriver)
+                ormSettings.domainPackage = packageName+'.domain'
+                def ormTemplate = springTemplates.getInstanceOf('orm')
+                ormTemplate.add('orm_settings', ormSettings)
+
+                File ormFile = new File(springDir.absolutePath + File.separator + 'orm.xml')
+                ormFile.write(ormTemplate.render())
+
+                def daoName = DaoUtil.getDaoName(project)
+
+                if(daoName){
+                    kordaptTemplate.add('dao', true)
+                    File daoFile = new File(springDir.absolutePath + File.separator + 'dao-beans.xml')
+
+                    def daoBeansTemplate = springTemplates.getInstanceOf('dao_beans')
+                    daoFile.write(daoBeansTemplate.render())
+                }
+
+            }
+
+        }
+
+
+
+        File kordaptFile = new File(springDir.absolutePath + File.separator + 'kordapt.xml')
+        kordaptFile.write(kordaptTemplate.render())
+
+        File servicesFile = new File(springDir.absolutePath + File.separator + 'service-beans.xml')
+        def serviceBeansTemplate = springTemplates.getInstanceOf('service_beans')
+        servicesFile.write(serviceBeansTemplate.render())
     }
 
     def initApi(String packageDirective){

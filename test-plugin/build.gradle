@@ -16,6 +16,12 @@ buildscript{
 
 apply plugin: 'kordapt'
 
+dependencies{
+    compile project(':api')
+    compile project(':hibernate')
+    compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
+}
+
 kordapt{
     defaultPackage = "com.korwe.test"
 }
