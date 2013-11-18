@@ -16,7 +16,7 @@ public class Kordapt
         Kordapt.LOG.info("Running Kordapt 1.0");
         AbstractApplicationContext ctx = null;
         try {
-            ctx = (AbstractApplicationContext)new ClassPathXmlApplicationContext("/spring/kordapt-context.xml");
+            ctx = (AbstractApplicationContext)new ClassPathXmlApplicationContext("/spring/kordapt.xml");
             ctx.registerShutdownHook();
             Kordapt.LOG.info("Configured beans: {}", Arrays.toString(ctx.getBeanDefinitionNames()));
             Thread.currentThread().join();
