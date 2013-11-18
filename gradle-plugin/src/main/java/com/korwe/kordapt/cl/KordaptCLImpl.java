@@ -33,7 +33,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
         ServiceFunction function = new ServiceFunction();
         function.setName(ctx.Identifier().getText());
 
-        String returnType = ctx.returnType().getText();
+        Type returnType = typeFromQualifiedName(ctx.returnType().getText());
 
         if(!"void".equals(returnType)) {
             function.setReturnType(returnType);
@@ -52,7 +52,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
 
         ServiceFunctionParameter sfp = new ServiceFunctionParameter();
         sfp.setName(ctx.variableDeclaratorId().getText());
-        sfp.setType(ctx.type().getText());
+        sfp.setType(typeFromQualifiedName(ctx.type().getText()));
 
         parameterStack.push(sfp);
     }

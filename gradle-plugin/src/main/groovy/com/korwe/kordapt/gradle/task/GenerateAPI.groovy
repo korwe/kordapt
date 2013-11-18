@@ -5,6 +5,7 @@ import com.korwe.kordapt.Type
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser
+import com.korwe.kordapt.gradle.util.SpringBeanUtil
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -91,6 +92,11 @@ class GenerateAPI extends DefaultTask {
         File serviceAdapterFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/adapter/Core${service.name}.java")
         serviceAdapterFile.write(serviceAdapterTemplate.render())
 
+        //ADD SERVICE BEAN DEFINITION
+        SpringBeanUtil.addServiceToBeans("${mainPath}/resources/spring/service-beans.xml",packageName, service)
+
+
+
 
     }
 
@@ -149,12 +155,12 @@ class GenerateAPI extends DefaultTask {
         def imports = []
         type.attributes.each { a ->
             if(!isBasicType(a.type) && !type.packageName.equals(a.type.packageName)){
-                imports << "${a.type.packageName}.${a.type.name}"
+                imports << type.fullQualifiedName
             }
         }
 
         if(!isBasicType(type.inheritsFrom) && !type.packageName.equals(type.inheritsFrom.packageName)){
-            imports << "${type.inheritsFrom.packageName}.${type.inheritsFrom.name}"
+            imports << type.fullQualifiedName
         }
 
         imports
@@ -165,13 +171,13 @@ class GenerateAPI extends DefaultTask {
         service.functions.each { f ->
             if(f.returnType){
                 if(!isBasicType(f.returnType)){
-                    imports << f.returnType
+                    imports << f.returnType.fullQualifiedName
                 }
             }
 
             f.parameters.each { p ->
                 if(!isBasicType(p.type)){
-                    imports << p.type
+                    imports << p.type.fullQualifiedName
                 }
             }
         }

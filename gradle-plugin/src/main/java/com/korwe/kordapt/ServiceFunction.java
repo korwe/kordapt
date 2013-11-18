@@ -12,7 +12,7 @@ public class ServiceFunction {
     private String name;
     private String description;
     private List<ServiceFunctionParameter> parameters;
-    private String returnType;
+    private Type returnType;
 
     public String getName() {
         return name;
@@ -38,11 +38,11 @@ public class ServiceFunction {
         this.parameters = parameters;
     }
 
-    public String getReturnType() {
+    public Type getReturnType() {
         return returnType;
     }
 
-    public void setReturnType(String returnType) {
+    public void setReturnType(Type returnType) {
         this.returnType = returnType;
     }
 

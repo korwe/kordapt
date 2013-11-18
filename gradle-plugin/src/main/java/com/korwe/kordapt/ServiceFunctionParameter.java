@@ -5,7 +5,7 @@ package com.korwe.kordapt;
  * */
 public class ServiceFunctionParameter {
     private String name;
-    private String type;
+    private Type type;
     private String description;
 
     public String getName() {
@@ -16,11 +16,11 @@ public class ServiceFunctionParameter {
         this.name = name;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

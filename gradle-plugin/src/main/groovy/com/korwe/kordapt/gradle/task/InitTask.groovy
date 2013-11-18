@@ -1,6 +1,5 @@
 package com.korwe.kordapt.gradle.task
 
-import com.korwe.kordapt.gradle.orm.HibernateSettings
 import com.korwe.kordapt.gradle.util.DaoUtil
 import com.korwe.kordapt.gradle.util.HibernateUtil
 import com.korwe.kordapt.gradle.util.JdbcDriver

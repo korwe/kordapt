@@ -12,37 +12,51 @@ spring_header(namespaces, xsis) ::= <<
 
 >>
 
-service_beans() ::= <<
+service_beans(beans) ::= <<
 <spring_header(namespaces=[], xsis=[])>
-
+    <if(!beans)>
     \<bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="file://${TREE_SERVICES_ETC_PATH}/coreconfig.xml"/>
 
     \<bean id="abstractCoreService" depends-on="coreCofigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
           init-method="startUp"
           destroy-method="shutDown" />
-
+    <else>
+    <beans:bean_definition()>
+    <endif>
 
 \</beans>
->>
-
-service_bean_definition ::= <<
-
 >>
 
 dao_beans() ::= <<
 <spring_header(namespaces=[], xsis=[])>
 
    \<bean id="genericDAO" abstract="true" class="com.korwe.kordapt.hibernate.AbstractGenericDAO"
-              p:sessionFactory-ref="sessionFactory" />
+              p:sessionFactory-ref="sessionFactory"  />
 
 \</beans>
 >>
 
 
-dao_bean_definition ::= <<
+bean_definition(idBeanPair) ::= <<
+
+
+    \<bean id="<idBeanPair.id>" <if(idBeanPair.beanDef.abstract)>abstract="true" <endif>class="<idBeanPair.beanDef.beanClassName>" scope="<idBeanPair.beanDef.scope>"
+           <if(idBeanPair.beanDef.initMethodName)>init-method="<idBeanPair.beanDef.initMethodName>"<endif>
+           <if(idBeanPair.beanDef.destroyMethodName)>destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><\\>
+           <idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><\\>
+           <idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
 
 >>
 
+bean_property(property) ::= <<
+
+<if(property.value.beanName)>p:<property.name>-ref="<property.value.beanName>"<else>p:<property.name>="<property.value>"<endif>
+>>
+
+bean_constructor_arg(arg) ::= <<
+
+<if(arg.value.beanName)>c:<arg.name>-ref="<arg.value.beanName>"<else>c:<arg.name>="<arg.value>"<endif>
+>>
 
 datasource(jdbcDriver, jdbcUrl) ::= <<
 <spring_header(namespaces=[], xsis=[])>

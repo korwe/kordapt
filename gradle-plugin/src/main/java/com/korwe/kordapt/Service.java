@@ -9,6 +9,7 @@ public class Service {
     private String name;
     private List<ServiceFunction> functions;
 
+
     public String getName() {
         return name;
     }
@@ -23,5 +24,9 @@ public class Service {
 
     public void setFunctions(List<ServiceFunction> functions) {
         this.functions = functions;
+    }
+
+    public String getIdentifierName(){
+        return this.name.substring(0,1).toLowerCase()+this.name.substring(1);
     }
 }

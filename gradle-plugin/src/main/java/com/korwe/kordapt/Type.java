@@ -43,4 +43,8 @@ public class Type {
     public String getPackageName() {
         return packageName;
     }
+
+    public String getFullQualifiedName(){
+        return this.packageName == null ? this.name : this.packageName + '.' + this.name;
+    }
 }

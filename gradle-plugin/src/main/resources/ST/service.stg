@@ -26,7 +26,7 @@ service_interface_function(function) ::= <<
 <if(function.parameters)>
 @ParamNames(<function.paramNamesString>)
 <endif>
-public <if(function.returnType)><function.returnType><else>void<endif> <function.name>(<function.parametersString>);
+public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parametersString>);
 >>
 
 
@@ -50,9 +50,9 @@ service_impl_function(function) ::= <<
 
 
     @Override
-    public <if(function.returnType)><function.returnType><else>void<endif> <function.name>(<function.parametersString>){
+    public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parametersString>){
         //TODO: Implement function <function.name>
-        <if(function.returnType)>return <function.returnType>;<endif>
+        <if(function.returnType)>return <function.returnType.name>;<endif>
     }
 >>
 
@@ -91,7 +91,7 @@ service_api_function(function) ::= <<
   <if(function.parameters)>parameters:
 <function.parameters:service_api_function_parameter()>
   <endif>
-  <if(function.returnType)>return_type: <function.returnType>
+  <if(function.returnType)>return_type: <function.returnType.name>
   <endif>
 >>
 

@@ -15,6 +15,8 @@ public class KordaptPlugin implements Plugin<Project> {
 
     void apply(Project project){
 
+        KordaptInit.setup()
+
         project.extensions.create('kordapt', KordaptPluginExtension)
 
         project.task('init', type: InitTask)
