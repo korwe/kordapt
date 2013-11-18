@@ -5,6 +5,19 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
+
+jar {
+    baseName = 'kordapt-gradle-plugin'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.artifactId = jar.baseName
+        }
+    }
+}
+
 dependencies {
     compile gradleApi()
     compile 'org.antlr:stringtemplate:4.0.2'

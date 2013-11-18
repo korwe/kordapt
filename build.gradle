@@ -5,6 +5,9 @@
 allprojects{
     apply plugin: 'java'
 
+    group = 'com.korwe'
+    version = '1.0.0'
+
     repositories {
         mavenLocal()
         mavenCentral()

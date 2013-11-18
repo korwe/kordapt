@@ -1,6 +1,8 @@
 /**
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
+apply plugin: 'maven'
+
 
 dependencies{
 
@@ -19,4 +21,17 @@ dependencies{
     //Logging
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'log4j:log4j:1.2.17'
+}
+
+
+jar {
+    baseName = 'kordapt'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.artifactId = jar.baseName
+        }
+    }
 }
