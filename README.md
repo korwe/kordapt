@@ -38,6 +38,7 @@ apply plugin: 'kordapt'
 
 Add the kordapt dependency to your project:
 ```gradle
+apply plugin: 'java'
 
 repositories {
     mavenLocal()
