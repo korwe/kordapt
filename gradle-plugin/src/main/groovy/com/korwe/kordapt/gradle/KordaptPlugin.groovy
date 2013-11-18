@@ -17,6 +17,15 @@ public class KordaptPlugin implements Plugin<Project> {
 
         KordaptInit.setup()
 
+        project.apply {
+            plugin 'java'
+            plugin 'application'
+        }
+
+        project.dependencies {
+            compile 'com.korwe:kordapt-core:1.0.0'
+        }
+
         project.extensions.create('kordapt', KordaptPluginExtension)
 
         project.task('init', type: InitTask)
@@ -49,6 +58,8 @@ public class KordaptPlugin implements Plugin<Project> {
 
 
         }
+
+        project.mainClassName = 'com.korwe.kordapt.Kordapt'
 
 
 

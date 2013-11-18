@@ -19,35 +19,25 @@ Quick Start
 The following is all done via build.gradle
 ### Add dependencies
 
-Add the kordapt gradle plugin and apply it
+Add maven repositories and the kordapt gradle plugin dependency, then apply it
 ```gradle
 buildscript{
-
     repositories {
         mavenLocal()
         mavenCentral()
     }
 
-    dependencies{
+    dependencies {
         classpath 'com.korwe:kordapt-gradle-plugin:1.0.0'
     }
 }
-
-apply plugin: 'kordapt'
-```
-
-Add the kordapt dependency to your project:
-```gradle
-apply plugin: 'java'
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
-dependencies{
-    compile 'com.korwe:kordapt-core:1.0.0'
-}
+apply plugin: 'kordapt'
 ```
 
 ### Configure
