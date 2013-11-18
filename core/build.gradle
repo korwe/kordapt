@@ -25,7 +25,7 @@ dependencies{
 
 
 jar {
-    baseName = 'kordapt'
+    baseName = 'kordapt-core'
 }
 
 uploadArchives {

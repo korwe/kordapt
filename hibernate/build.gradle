@@ -13,3 +13,15 @@ dependencies {
 
 }
 
+
+jar {
+    baseName = 'kordapt-hibernate'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.artifactId = jar.baseName
+        }
+    }
+}

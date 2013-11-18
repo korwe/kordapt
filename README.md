@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies{
-    compile 'com.korwe:kordapt:1.0.0'
+    compile 'com.korwe:kordapt-core:1.0.0'
 }
 ```
 
