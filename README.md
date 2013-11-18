@@ -48,8 +48,9 @@ kordapt{
 ```
 
 ### Initialize project
+On the command-line, now run
 ```
-gradle init
+gradle kinit
 ```
 
 You will now have a kordapt project with the standard [Structure](https://github.com/korwe/kordapt/wiki/Project-Structure "Standard kordapt project structure")
@@ -62,11 +63,11 @@ Usage
 #### Generate Service
 Generate the full plumbing for a service:
 ```bash
-gradle generateApi -Pinput="<ServiceName> <ReturnType>:<functionName>(<params>)"
+gradle kgenerate -Pinput="<ServiceName> <ReturnType>:<functionName>(<params>)"
 ```
 Example:
 ```bash
-gradle generateApi -Pinput="HelloWorldService ArbitraryType:firstFunction() void:secondFunction(Integer inputNumber)"
+gradle kgenerate -Pinput="HelloWorldService ArbitraryType:firstFunction() void:secondFunction(Integer inputNumber)"
 
 ```
 
@@ -75,11 +76,11 @@ gradle generateApi -Pinput="HelloWorldService ArbitraryType:firstFunction() void
 #### Generate Model
 Generate the full plumbing for a model:
 ```bash
-gradle generateApi -Pinput="<ModelName> <AttributeType>:<attributeName>"
+gradle kgenerate -Pinput="<ModelName> <AttributeType>:<attributeName>"
 ```
 Example:
 ```bash
-gradle generateApi -Pinput="MyModel ArbitraryType:firstAttribute String:secondAttribute"
+gradle kgenerate -Pinput="MyModel ArbitraryType:firstAttribute String:secondAttribute"
 
 ```
 

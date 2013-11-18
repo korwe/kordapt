@@ -1,6 +1,6 @@
 package com.korwe.kordapt.gradle
 
-import com.korwe.kordapt.gradle.task.GenerateAPI
+import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -28,9 +28,9 @@ public class KordaptPlugin implements Plugin<Project> {
 
         project.extensions.create('kordapt', KordaptPluginExtension)
 
-        project.task('init', type: InitTask)
+        project.task('kinit', type: InitTask)
 
-        project.init.doFirst {
+        project.kinit.doFirst {
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){
                 throw new GradleException("You are required to supply a non-empty string for 'defaultPackage'")
             }
@@ -39,9 +39,9 @@ public class KordaptPlugin implements Plugin<Project> {
             apiPath = "${project.projectDir.absolutePath}/api-definition"
         }
 
-        project.task('generateApi', type: GenerateAPI)
+        project.task('kgenerate', type: GenerateAll)
 
-        project.generateApi.doFirst{
+        project.kgenerate.doFirst{
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){
                 throw new GradleException("You are required to supply a non-empty string for 'defaultPackage'")
             }

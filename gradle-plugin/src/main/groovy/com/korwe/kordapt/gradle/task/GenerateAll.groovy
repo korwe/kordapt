@@ -17,7 +17,7 @@ import org.stringtemplate.v4.STGroupFile
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * */
-class GenerateAPI extends DefaultTask {
+class GenerateAll extends DefaultTask {
 
     String packageName
     String apiPath
