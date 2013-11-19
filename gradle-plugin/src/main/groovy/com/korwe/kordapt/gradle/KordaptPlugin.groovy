@@ -39,7 +39,7 @@ public class KordaptPlugin implements Plugin<Project> {
             apiPath = "${project.projectDir.absolutePath}/api-definition"
         }
 
-        project.task('kgenerate', type: GenerateAll)
+        project.task('kgenerate', type: GenerateAll, dependsOn: 'compileJava')
 
         project.kgenerate.doFirst{
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){

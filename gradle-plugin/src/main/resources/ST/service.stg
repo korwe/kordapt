@@ -52,7 +52,7 @@ service_impl_function(function) ::= <<
     @Override
     public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parametersString>){
         //TODO: Implement function <function.name>
-        <if(function.returnType)>return <function.returnType.name>;<endif>
+        <if(function.returnType)>return null;<endif>
     }
 >>
 
@@ -67,11 +67,11 @@ import com.thoughtworks.xstream.XStream;
  * This file was generated using Kordapt
  */
 public class Core<service.name> extends GenericCoreService\<<service.name>\>{
-    public CoreDataWidgetConfigService(<service.name> delegate, String serviceName, int maxThreads) {
+    public Core<service.name>(<service.name> delegate, String serviceName, int maxThreads) {
         super(delegate, serviceName, maxThreads);
     }
 
-    public CoreDataWidgetConfigService(<service.name> delegate, String serviceName, int maxThreads, XStream xStream) {
+    public Core<service.name>(<service.name> delegate, String serviceName, int maxThreads, XStream xStream) {
         super(delegate, serviceName, maxThreads, xStream);
     }
 }

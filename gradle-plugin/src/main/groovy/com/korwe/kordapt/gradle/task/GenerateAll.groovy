@@ -5,6 +5,7 @@ import com.korwe.kordapt.Type
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser
+import com.korwe.kordapt.gradle.util.ClasspathUtil
 import com.korwe.kordapt.gradle.util.SpringBeanUtil
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
@@ -64,7 +65,17 @@ class GenerateAll extends DefaultTask {
         serviceInterfaceTemplate.add('service', service)
         serviceInterfaceTemplate.add('packageName', packageName+".service")
 
-        serviceInterfaceTemplate.add('imports', serviceImports(service))
+        def serviceInterfaceImports = serviceImports("${packageName}.dto", service)
+
+        serviceInterfaceImports.each {
+            if(!ClasspathUtil.checkRuntimeForClass(project, it)){
+                print("Please provide attributes for class ${it}: ")
+                def attributes = System.in
+
+            }
+        }
+
+        serviceInterfaceTemplate.add('imports', serviceInterfaceImports)
 
         File serviceInterfaceFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
@@ -74,7 +85,7 @@ class GenerateAll extends DefaultTask {
         serviceImplTemplate.add('service', service)
         serviceImplTemplate.add('packageName', packageName+".service.impl")
 
-        def serviceImplImports = serviceImports(service)
+        def serviceImplImports = serviceImports("${packageName}.dto", service)
         serviceImplImports << packageName+".service."+service.name
         serviceImplTemplate.add('imports', serviceImplImports)
 
@@ -110,7 +121,7 @@ class GenerateAll extends DefaultTask {
             }
         }
 
-        if(!isBasicType(type.inheritsFrom)){
+        if(type.inheritsFrom && !isBasicType(type.inheritsFrom)){
             type.inheritsFrom.packageName = type.packageName
         }
 
@@ -159,24 +170,26 @@ class GenerateAll extends DefaultTask {
             }
         }
 
-        if(!isBasicType(type.inheritsFrom) && !type.packageName.equals(type.inheritsFrom.packageName)){
+        if(type.inheritsFrom && !isBasicType(type.inheritsFrom) && !type.packageName.equals(type.inheritsFrom.packageName)){
             imports << type.fullQualifiedName
         }
 
         imports
     }
 
-    def serviceImports(Service service){
+    def serviceImports(String defaultPackage, Service service){
         def imports = []
         service.functions.each { f ->
             if(f.returnType){
                 if(!isBasicType(f.returnType)){
+                    f.returnType.packageName = f.returnType.packageName ? f.returnType.packageName : defaultPackage
                     imports << f.returnType.fullQualifiedName
                 }
             }
 
             f.parameters.each { p ->
                 if(!isBasicType(p.type)){
+                    p.type.packageName = p.type.packageName ? p.type.packageName : defaultPackage
                     imports << p.type.fullQualifiedName
                 }
             }
