@@ -164,6 +164,10 @@ class InitTask extends DefaultTask{
         File servicesFile = new File(springDir.absolutePath + File.separator + 'service-beans.xml')
         def serviceBeansTemplate = springTemplates.getInstanceOf('service_beans')
         servicesFile.write(serviceBeansTemplate.render())
+
+
+        def configFile = new File(resourceDir.absolutePath+File.separator + 'coreconfig.xml')
+        configFile.write((new STGroupFile('ST/service.stg')).getInstanceOf('core_config').render())
     }
 
     def initApi(String packageDirective){

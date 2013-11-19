@@ -15,7 +15,7 @@ spring_header(namespaces, xsis) ::= <<
 service_beans(beans) ::= <<
 <spring_header(namespaces=[], xsis=[])>
     <if(!beans)>
-    \<bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="file://${TREE_SERVICES_ETC_PATH}/coreconfig.xml"/>
+    \<bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="coreconfig.xml"/>
 
     \<bean id="abstractCoreService" depends-on="coreCofigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
           init-method="startUp"
@@ -40,7 +40,7 @@ dao_beans() ::= <<
 bean_definition(idBeanPair) ::= <<
 
 
-    \<bean id="<idBeanPair.id>" <if(idBeanPair.beanDef.abstract)>abstract="true" <endif>class="<idBeanPair.beanDef.beanClassName>" scope="<idBeanPair.beanDef.scope>" <if(idBeanPair.beanDef.initMethodName)>
+    \<bean id="<idBeanPair.id>" <if(idBeanPair.beanDef.abstract)>abstract="true" <endif>class="<idBeanPair.beanDef.beanClassName>"<if(idBeanPair.beanDef.parentName)> parent="<idBeanPair.beanDef.parentName>"<endif> scope="<idBeanPair.beanDef.scope>" <if(idBeanPair.beanDef.initMethodName)>
           init-method="<idBeanPair.beanDef.initMethodName>"<endif><if(idBeanPair.beanDef.destroyMethodName)>
           destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
 
