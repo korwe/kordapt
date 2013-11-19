@@ -108,6 +108,7 @@ class InitTask extends DefaultTask{
         }
 
         STGroupFile springTemplates = new STGroupFile('ST/spring.stg')
+        STGroupFile resourceTemplates = new STGroupFile('ST/resource.stg')
 
         def springDir = new File(resourceDir.absolutePath + File.separator + 'spring')
 
@@ -167,7 +168,14 @@ class InitTask extends DefaultTask{
 
 
         def configFile = new File(resourceDir.absolutePath+File.separator + 'coreconfig.xml')
-        configFile.write((new STGroupFile('ST/service.stg')).getInstanceOf('core_config').render())
+        configFile.write(resourceTemplates.getInstanceOf('core_config').render())
+
+        def logDir = new File(project.projectDir.absolutePath+File.separator+'log')
+        logDir.mkdirs()
+        def log4jConfigFile = new File(resourceDir.absolutePath+File.separator + 'log4j.properties')
+        def log4jTemplate = resourceTemplates.getInstanceOf('log4j')
+        log4jTemplate.add('logFilePath', logDir.absolutePath+File.separator+'kordapt.log')
+        log4jConfigFile.write(log4jTemplate.render())
     }
 
     def initApi(String packageDirective){
