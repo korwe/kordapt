@@ -1,0 +1,5 @@
+name: com.korwe.kordapt.domain.Service
+attributes:
+- name: id
+  type: String
+  description: 

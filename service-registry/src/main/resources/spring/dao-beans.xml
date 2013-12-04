@@ -10,4 +10,8 @@
    <bean id="genericDAO" abstract="true" class="com.korwe.kordapt.hibernate.AbstractGenericDAO"
               p:sessionFactory-ref="sessionFactory"  />
 
+    <bean id="serviceDAO" parent="genericDAO" class="com.korwe.kordapt.dao.ServiceDAO"/>
+
+    <bean id="serviceInstanceDAO" parent="genericDAO" class="com.korwe.kordapt.dao.ServiceInstanceDAO"/>
+
 </beans>
