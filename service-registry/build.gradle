@@ -1,0 +1,28 @@
+/**
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
+ */
+
+buildscript{
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies{
+        classpath project(':gradle-plugin')
+    }
+}
+
+apply plugin: 'kordapt'
+
+dependencies{
+    compile project(':core')
+    compile project(':hibernate')
+    compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
+}
+
+kordapt{
+    defaultPackage = "com.korwe.kordapt"
+}
+
