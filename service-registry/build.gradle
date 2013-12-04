@@ -26,3 +26,10 @@ kordapt{
     defaultPackage = "com.korwe.kordapt"
 }
 
+task configureQueues(type: Exec){
+    Properties properties = new Properties()
+    properties.loadFromXML(new FileInputStream('src/main/resources/coreconfig.xml'))
+    commandLine file('qpid-queue-config'), properties.getProperty('amqp_host', 'localhost'), Integer.parseInt(properties.getProperty('amqp_port', '5672'))
+}
+
+
