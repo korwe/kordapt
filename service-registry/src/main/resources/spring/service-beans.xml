@@ -6,9 +6,23 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
 
-    <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="coreconfig.xml"/>
 
-    <bean id="abstractCoreService" depends-on="coreCofigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
-          init-method="startUp"
-          destroy-method="shutDown" />
+
+    <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" scope=""
+              c:coreConfigPath="coreconfig.xml"/>
+
+    <bean id="abstractCoreService" abstract="true" class="com.korwe.thecore.service.AbstractCoreService" scope=""
+              init-method="startUp"
+              destroy-method="shutDown"/>
+
+    <bean id="serviceRegistry" class="com.korwe.kordapt.service.impl.ServiceRegistryImpl" scope=""
+            c:serviceDAO-ref="serviceDAO"
+            c:serviceInstanceDAO-ref="serviceInstanceDAO" />
+
+    <bean id="coreServiceRegistry" class="com.korwe.kordapt.service.adapter.CoreServiceRegistry" parent="abstractCoreService" scope=""
+              c:serviceName="ServiceRegistry"
+              c:delegate-ref="serviceRegistry"
+              c:maxThreads="10"/>
+
+
 </beans>
