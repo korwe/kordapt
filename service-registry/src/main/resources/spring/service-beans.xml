@@ -8,18 +8,18 @@
 
 
 
-    <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" scope=""
-              c:coreConfigPath="coreconfig.xml"/>
+    <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter"
+              c:coreConfigPath="/coreconfig.xml"/>
 
-    <bean id="abstractCoreService" abstract="true" class="com.korwe.thecore.service.AbstractCoreService" scope=""
+    <bean id="abstractCoreService" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
               init-method="startUp"
               destroy-method="shutDown"/>
 
-    <bean id="serviceRegistry" class="com.korwe.kordapt.service.impl.ServiceRegistryImpl" scope=""
+    <bean id="serviceRegistry" class="com.korwe.kordapt.service.impl.ServiceRegistryImpl"
             c:serviceDAO-ref="serviceDAO"
             c:serviceInstanceDAO-ref="serviceInstanceDAO" />
 
-    <bean id="coreServiceRegistry" class="com.korwe.kordapt.service.adapter.CoreServiceRegistry" parent="abstractCoreService" scope=""
+    <bean id="coreServiceRegistry" class="com.korwe.kordapt.service.adapter.CoreServiceRegistry" parent="abstractCoreService"
               c:serviceName="ServiceRegistry"
               c:delegate-ref="serviceRegistry"
               c:maxThreads="10"/>

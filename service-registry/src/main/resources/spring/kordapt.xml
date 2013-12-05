@@ -18,6 +18,7 @@
         <property name="locations">
             <list>
                 <value>file://${KORDAPT_SERVICE_REGISTRY_ETC_PATH}/database.properties</value>
+                <value>file://${KORDAPT_SERVICE_REGISTRY_ETC_PATH}/kordapt.properties</value>
             </list>
         </property>
     </bean>
