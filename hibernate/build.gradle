@@ -5,12 +5,13 @@
 apply plugin: 'maven'
 
 dependencies {
-
     //Hibernate
     compile 'org.hibernate:hibernate-core:4.2.0.Final'
     compile 'org.jadira.usertype:usertype.core:3.1.0.CR2'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final'
 
+    //Spring
+    compile 'org.springframework:spring-orm:3.2.4.RELEASE'
 }
 
 
