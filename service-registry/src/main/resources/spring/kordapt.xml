@@ -12,6 +12,16 @@
    <import resource="dao-beans.xml"/>
    <import resource="service-beans.xml" />
 
-   <context:component-scan base-package="com.korwe.kordapt" />
+
+    <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:searchSystemEnvironment="true">
+        <property name="locations">
+            <list>
+                <value>file://${KORDAPT_SERVICE_REGISTRY_ETC_PATH}/database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:component-scan base-package="com.korwe.kordapt" />
 
 </beans>

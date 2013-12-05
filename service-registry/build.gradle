@@ -10,7 +10,7 @@ buildscript{
     }
 
     dependencies{
-        classpath project(':gradle-plugin')
+        classpath 'com.korwe:kordapt-gradle-plugin:1.0.0'
         classpath 'org.postgresql:postgresql:9.2-1002-jdbc4'
         classpath 'com.googlecode.flyway:flyway-gradle-plugin:2.2'
     }
@@ -35,14 +35,18 @@ kordapt{
     defaultPackage = "com.korwe.kordapt"
 }
 
+startScripts{
+    optsEnvironmentVar='KORDAPT_SERVICE_REGISTRY_OPTS'
+}
+
 task configureQueues(type: Exec){
     Properties properties = new Properties()
-    properties.loadFromXML(new FileInputStream('src/main/resources/coreconfig.xml'))
+    properties.loadFromXML(new FileInputStream("${projectDir.absolutePath}/src/main/resources/coreconfig.xml"))
     commandLine file('qpid-queue-config'), properties.getProperty('amqp_host', 'localhost'), Integer.parseInt(properties.getProperty('amqp_port', '5672'))
 }
 
 flyway{
-    url = 'jdbc:postgresql://localhost/kordapt_registry?characterEncoding=utf8'
+    url = 'jdbc:postgresql://localhost:kordapt_registry?characterEncoding=utf8'
     password = 'kordapt'
     user = 'kordapt'
 }
