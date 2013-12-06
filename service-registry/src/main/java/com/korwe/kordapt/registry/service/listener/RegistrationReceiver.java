@@ -1,4 +1,4 @@
-package com.korwe.kordapt.service.listener;
+package com.korwe.kordapt.registry.service.listener;
 
 import com.korwe.thecore.api.CoreReceiver;
 import com.korwe.thecore.api.MessageQueue;

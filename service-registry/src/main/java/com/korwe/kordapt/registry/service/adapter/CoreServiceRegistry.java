@@ -1,8 +1,8 @@
-package com.korwe.kordapt.service.adapter;
+package com.korwe.kordapt.registry.service.adapter;
 
+import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.service.GenericCoreService;
 import com.thoughtworks.xstream.XStream;
-import com.korwe.kordapt.service.ServiceRegistry;
 
 
 /**

@@ -1,7 +1,7 @@
 package com.korwe.kordapt.service.impl;
 
-import com.korwe.kordapt.domain.Service;
-import com.korwe.kordapt.domain.ServiceInstance;
+import com.korwe.kordapt.registry.domain.Service;
+import com.korwe.kordapt.registry.domain.ServiceInstance;
 import org.junit.Test;
 
 import java.util.List;

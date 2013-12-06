@@ -32,7 +32,7 @@ dependencies{
 }
 
 kordapt{
-    defaultPackage = "com.korwe.kordapt"
+    defaultPackage = "com.korwe.kordapt.registry"
 }
 
 startScripts{

@@ -1,6 +1,6 @@
-package com.korwe.kordapt.service.listener;
+package com.korwe.kordapt.registry.service.listener;
 
-import com.korwe.kordapt.service.adapter.CoreServiceRegistry;
+import com.korwe.kordapt.registry.service.adapter.CoreServiceRegistry;
 import com.korwe.thecore.api.CoreReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 

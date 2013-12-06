@@ -1,9 +1,9 @@
-package com.korwe.kordapt.service;
+package com.korwe.kordapt.registry.service;
 
+import com.korwe.kordapt.registry.domain.Service;
+import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.thecore.annotation.ParamNames;
 import com.korwe.thecore.service.PingService;
-import com.korwe.kordapt.domain.ServiceInstance;
-import com.korwe.kordapt.domain.Service;
 
 import java.util.List;
 

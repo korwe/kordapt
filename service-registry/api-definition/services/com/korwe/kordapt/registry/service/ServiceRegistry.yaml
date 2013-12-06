@@ -4,26 +4,26 @@ functions:
   description: 
   parameters:
   - name: serviceInstance
-    type: com.korwe.kordapt.Type@206a6883
+    type: com.korwe.kordapt.registry.ServiceInstance
     description: Description required
   return_type: void
 - name: getServiceInstance
   description: 
   parameters:
   - name: id
-    type: com.korwe.kordapt.Type@29f38115
+    type: com.korwe.kordapt.registry.ServiceInstance
     description: Description required
   return_type: ServiceInstance
 - name: getServiceInstanceList
   description: 
-  return_type: List
+  return_type: List<com.korwe.kordapt.registry.ServiceInstance>
 - name: getService
   description: 
   parameters:
   - name: id
-    type: com.korwe.kordapt.Type@319f9f37
+    type: String
     description: Description required
   return_type: Service
 - name: getServiceList
   description: 
-  return_type: List
+  return_type: List<com.korwe.kordapt.registry.Service>

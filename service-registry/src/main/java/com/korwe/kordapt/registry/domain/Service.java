@@ -1,4 +1,4 @@
-package com.korwe.kordapt.domain;
+package com.korwe.kordapt.registry.domain;
 
 
 import javax.persistence.Column;

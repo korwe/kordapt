@@ -1,4 +1,4 @@
-name: com.korwe.kordapt.domain.Service
+name: com.korwe.kordapt.registry.domain.Service
 attributes:
 - name: id
   type: String

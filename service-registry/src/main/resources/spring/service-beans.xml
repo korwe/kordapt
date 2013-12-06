@@ -15,11 +15,11 @@
               init-method="startUp"
               destroy-method="shutDown"/>
 
-    <bean id="serviceRegistry" class="com.korwe.kordapt.service.impl.ServiceRegistryImpl"
+    <bean id="serviceRegistry" class="com.korwe.kordapt.registry.service.impl.ServiceRegistryImpl"
             c:serviceDAO-ref="serviceDAO"
             c:serviceInstanceDAO-ref="serviceInstanceDAO" />
 
-    <bean id="coreServiceRegistry" class="com.korwe.kordapt.service.adapter.CoreServiceRegistry" parent="abstractCoreService"
+    <bean id="coreServiceRegistry" class="com.korwe.kordapt.registry.service.adapter.CoreServiceRegistry" parent="abstractCoreService"
               c:serviceName="ServiceRegistry"
               c:delegate-ref="serviceRegistry"
               c:maxThreads="10"/>

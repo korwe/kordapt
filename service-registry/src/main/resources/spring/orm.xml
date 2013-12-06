@@ -14,7 +14,7 @@
             <property name="dataSource" ref="lazyDataSource"/>
             <property name="packagesToScan">
                 <list>
-                    <value>com.korwe.kordapt.domain</value>
+                    <value>com.korwe.kordapt.registry.domain</value>
                 </list>
             </property>
             <property name="hibernateProperties">

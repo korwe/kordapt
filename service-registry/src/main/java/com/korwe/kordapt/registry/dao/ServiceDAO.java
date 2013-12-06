@@ -1,6 +1,6 @@
-package com.korwe.kordapt.dao;
+package com.korwe.kordapt.registry.dao;
 
-import com.korwe.kordapt.domain.Service;
+import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.hibernate.AbstractGenericDAO;
 
 /**

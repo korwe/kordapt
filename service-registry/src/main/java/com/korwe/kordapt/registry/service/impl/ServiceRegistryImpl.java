@@ -1,11 +1,11 @@
-package com.korwe.kordapt.service.impl;
+package com.korwe.kordapt.registry.service.impl;
 
-import com.korwe.kordapt.dao.ServiceDAO;
-import com.korwe.kordapt.dao.ServiceInstanceDAO;
+import com.korwe.kordapt.registry.dao.ServiceDAO;
+import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
+import com.korwe.kordapt.registry.domain.Service;
+import com.korwe.kordapt.registry.domain.ServiceInstance;
+import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.service.ping.PingServiceImpl;
-import com.korwe.kordapt.domain.ServiceInstance;
-import com.korwe.kordapt.domain.Service;
-import com.korwe.kordapt.service.ServiceRegistry;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * This file was generated using Kordapt
  */
 
-public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegistry{
+public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegistry {
 
     private ServiceDAO serviceDAO;
     private ServiceInstanceDAO serviceInstanceDAO;
