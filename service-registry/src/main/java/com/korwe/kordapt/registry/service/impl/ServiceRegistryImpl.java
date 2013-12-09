@@ -6,6 +6,8 @@ import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.service.ping.PingServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
     private ServiceDAO serviceDAO;
     private ServiceInstanceDAO serviceInstanceDAO;
+    private Logger LOG = LoggerFactory.getLogger(ServiceRegistryImpl.class);
 
     public ServiceRegistryImpl(ServiceDAO serviceDAO, ServiceInstanceDAO serviceInstanceDAO){
         this.serviceDAO = serviceDAO;
@@ -25,32 +28,46 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
     }
 
     @Override
-    public void registerServiceInstance(ServiceInstance serviceInstance){
-        //TODO: Implement function registerServiceInstance
+    public String registerServiceInstance(ServiceInstance serviceInstance){
+        serviceDAO.saveOrUpdate(serviceInstance.getService());
+        serviceInstanceDAO.saveOrUpdate(serviceInstance);
+
+        return serviceInstance.getId();
     }
 
     @Override
     public ServiceInstance getServiceInstance(String id){
-        //TODO: Implement function getServiceInstance
-        return null;
+        
+        ServiceInstance serviceInstance = serviceInstanceDAO.findById(id);
+        
+        if(serviceInstance == null){
+            LOG.info("ServiceInstance for provided id{} does not exist", id);
+            return null;
+        }
+
+        return serviceInstance;
     }
 
     @Override
     public List getServiceInstanceList(){
-        //TODO: Implement function getServiceInstanceList
-        return null;
+        return serviceInstanceDAO.findAll();
     }
 
     @Override
     public Service getService(String id){
-        //TODO: Implement function getService
-        return null;
+        Service service = serviceDAO.findById(id);
+
+        if(service == null){
+            LOG.info("Service for provided id{} does not exist", id);
+            return null;
+        }
+
+        return service;
     }
 
     @Override
-    public List getServiceList(){
-        //TODO: Implement function getServiceList
-        return null;
+    public List<Service> getServiceList(){
+        return serviceDAO.findAll();
     }
 
     public ServiceDAO getServiceDAO() {

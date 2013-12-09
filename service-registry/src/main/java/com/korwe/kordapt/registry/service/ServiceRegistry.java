@@ -4,6 +4,7 @@ import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.thecore.annotation.ParamNames;
 import com.korwe.thecore.service.PingService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,16 +15,17 @@ import java.util.List;
 
 public interface ServiceRegistry extends PingService{
 
+    @Transactional
     @ParamNames("serviceInstance")
-    public void registerServiceInstance(ServiceInstance serviceInstance);
+    public String registerServiceInstance(ServiceInstance serviceInstance);
 
     @ParamNames("id")
     public ServiceInstance getServiceInstance(String id);
 
-    public List getServiceInstanceList();
+    public List<ServiceInstance> getServiceInstanceList();
 
     @ParamNames("id")
     public Service getService(String id);
 
-    public List getServiceList();
+    public List<Service> getServiceList();
 }
