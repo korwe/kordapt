@@ -59,14 +59,14 @@ service_impl_function(function) ::= <<
 service_adapter(packageName, imports, service) ::= <<
 package <packageName>;
 
-import com.korwe.thecore.service.GenericCoreService;
+import com.korwe.kordapt.registry.KordaptCoreService;
 import com.thoughtworks.xstream.XStream;
 <imports:import_template()>
 
 /**
  * This file was generated using Kordapt
  */
-public class Core<service.name> extends GenericCoreService\<<service.name>\>{
+public class Core<service.name> extends KordaptCoreService\<<service.name>\>{
     public Core<service.name>(<service.name> delegate, String serviceName, int maxThreads) {
         super(delegate, serviceName, maxThreads);
     }
