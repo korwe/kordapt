@@ -3,10 +3,11 @@
 --
 
 CREATE TABLE service_instance(
-    id VARCHAR(255) NOT NULL,
+    id BIGINT NOT NULL,
     version integer DEFAULT 0 NOT NULL,
-    name character varying(100),
-    description character varying(100),
+    name varchar(100),
+    queue_name VARCHAR(100),
+    description VARCHAR(100),
     service_id VARCHAR(255) NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL

@@ -20,7 +20,7 @@ public interface ServiceRegistry extends PingService{
     public String registerServiceInstance(ServiceInstance serviceInstance);
 
     @ParamNames("id")
-    public ServiceInstance getServiceInstance(String id);
+    public ServiceInstance getServiceInstance(Long id);
 
     public List<ServiceInstance> getServiceInstanceList();
 

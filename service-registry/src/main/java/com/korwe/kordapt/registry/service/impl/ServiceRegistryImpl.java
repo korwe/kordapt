@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -29,14 +30,15 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
     @Override
     public String registerServiceInstance(ServiceInstance serviceInstance){
+        serviceInstance.setQueueName(UUID.randomUUID().toString());
         serviceDAO.saveOrUpdate(serviceInstance.getService());
         serviceInstanceDAO.saveOrUpdate(serviceInstance);
 
-        return serviceInstance.getId();
+        return serviceInstance.getQueueName();
     }
 
     @Override
-    public ServiceInstance getServiceInstance(String id){
+    public ServiceInstance getServiceInstance(Long id){
         
         ServiceInstance serviceInstance = serviceInstanceDAO.findById(id);
         

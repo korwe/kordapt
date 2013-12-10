@@ -49,7 +49,7 @@ task configureQueues(type: Exec){
 }
 
 flyway{
-    url = 'jdbc:postgresql://localhost:kordapt_registry?characterEncoding=utf8'
+    url = 'jdbc:postgresql://localhost/kordapt_registry?characterEncoding=utf8'
     password = 'kordapt'
     user = 'kordapt'
 }

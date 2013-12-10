@@ -40,16 +40,16 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
     @Rollback
     public void registerServiceInstance() {
         Service service = createTestService("my.service");
-        ServiceInstance serviceInstance = createTestServiceInstance("MyServiceInstance");
+        ServiceInstance serviceInstance = createTestServiceInstance();
         serviceInstance.setService(service);
 
-        String serviceInstanceId = serviceRegistry.registerServiceInstance(serviceInstance);
+        String serviceInstanceQueue = serviceRegistry.registerServiceInstance(serviceInstance);
 
-        assertThat(serviceInstance.getId(), equalTo(serviceInstanceId));
+        assertThat(serviceInstance.getQueueName(), equalTo(serviceInstanceQueue));
         String persistedService = service.getId();
         assertNotNull(serviceDAO.findById(persistedService));
 
-        ServiceInstance persistedServiceInstance = serviceInstanceDAO.findById(serviceInstanceId);
+        ServiceInstance persistedServiceInstance = serviceInstanceDAO.findById(serviceInstance.getId());
         assertNotNull(persistedServiceInstance);
 
         assertThat(persistedServiceInstance.getDescription(), equalTo(serviceInstance.getDescription()));
@@ -62,7 +62,7 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
     @Rollback
     public void getServiceInstance() {
         Service service = createTestService("my.service");
-        ServiceInstance serviceInstance = createTestServiceInstance("MyServiceInstance");
+        ServiceInstance serviceInstance = createTestServiceInstance();
         serviceInstance.setService(service);
 
         serviceDAO.save(service);
@@ -84,11 +84,11 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
         Service service = createTestService("my.service");
         serviceDAO.save(service);
 
-        ServiceInstance serviceInstance1 = createTestServiceInstance("MyServiceInstance");
+        ServiceInstance serviceInstance1 = createTestServiceInstance();
         serviceInstance1.setService(service);
         serviceInstanceDAO.save(serviceInstance1);
 
-        ServiceInstance serviceInstance2 = createTestServiceInstance("MyServiceInstance2");
+        ServiceInstance serviceInstance2 = createTestServiceInstance();
         serviceInstance2.setService(service);
         serviceInstanceDAO.save(serviceInstance2);
 
@@ -131,9 +131,8 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
     }
 
 
-    private ServiceInstance createTestServiceInstance(String id) {
+    private ServiceInstance createTestServiceInstance() {
         ServiceInstance serviceInstance = new ServiceInstance();
-        serviceInstance.setId(id);
         serviceInstance.setDescription("Some test ServiceInstance");
         return serviceInstance;
     }

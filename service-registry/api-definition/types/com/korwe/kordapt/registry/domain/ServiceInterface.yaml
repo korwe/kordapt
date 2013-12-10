@@ -2,7 +2,10 @@ name: com.korwe.kordapt.registry.domain.ServiceInstance
 attributes:
 - name: id
   type: String
-  description: 
+  description:
+- name: queueName
+  type: String
+  description:
 - name: service
   type: com.korwe.kordapt.domain.Service
   description: 

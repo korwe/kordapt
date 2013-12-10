@@ -5,7 +5,7 @@
 CREATE TABLE service(
     id VARCHAR(255) NOT NULL,
     version integer DEFAULT 0 NOT NULL,
-    name character varying(100),
+    name varchar(100),
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
