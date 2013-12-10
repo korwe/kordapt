@@ -7,7 +7,7 @@ spring_header(namespaces, xsis) ::= <<
        xmlns:p="http://www.springframework.org/schema/p"
        <namespaces:{ns |
 
-       "<ns>"}>
+<ns>}>
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd <xsis>"\>
 
 >>
@@ -82,7 +82,7 @@ datasource(jdbcDriver, jdbcUrl) ::= <<
 >>
 
 orm(orm_settings) ::= <<
-<spring_header(namespaces=[], xsis="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd")>
+<spring_header(namespaces=["xmlns:tx=\"http://www.springframework.org/schema/tx\""], xsis="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd")>
 
     <if(orm_settings.isHibernate)>
     <orm_settings:hibernate_orm()>
