@@ -1,11 +1,9 @@
 package com.korwe.kordapt.cl;
 
 import com.google.common.collect.Lists;
-import com.korwe.kordapt.*;
+import com.korwe.kordapt.api.bean.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 /**

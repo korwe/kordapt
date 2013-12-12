@@ -1,7 +1,7 @@
 package com.korwe.kordapt.gradle.task
 
-import com.korwe.kordapt.Service
-import com.korwe.kordapt.Type
+import com.korwe.kordapt.api.bean.Service
+import com.korwe.kordapt.api.bean.Type
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser

@@ -2,4 +2,4 @@
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 
-include 'core', 'gradle-plugin', 'test-plugin', 'hibernate', 'service-registry', 'service-registry-common'
+include 'api-definition', 'core', 'gradle-plugin', 'test-plugin', 'hibernate', 'service-registry', 'service-registry-common'

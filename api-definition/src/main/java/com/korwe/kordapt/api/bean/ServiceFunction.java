@@ -1,4 +1,4 @@
-package com.korwe.kordapt;
+package com.korwe.kordapt.api.bean;
 
 import com.google.common.base.Joiner;
 

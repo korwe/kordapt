@@ -1,12 +1,12 @@
-package com.korwe.kordapt;
+package com.korwe.kordapt.api.bean;
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
- */
-public class Attribute {
-    String name;
-    Type type;
-    String description;
+ * */
+public class ServiceFunctionParameter {
+    private String name;
+    private Type type;
+    private String description;
 
     public String getName() {
         return name;
@@ -30,9 +30,5 @@ public class Attribute {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getCapitalizedName(){
-        return name.substring(0,1).toUpperCase()+name.substring(1);
     }
 }

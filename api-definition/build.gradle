@@ -1,0 +1,18 @@
+apply plugin: 'maven'
+
+dependencies {
+    compile 'com.google.guava:guava:14.0.1'
+}
+
+
+jar {
+    baseName = 'kordapt-api-definition'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.artifactId = jar.baseName
+        }
+    }
+}

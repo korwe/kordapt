@@ -21,6 +21,8 @@ uploadArchives {
 dependencies {
     compile gradleApi()
 
+    compile project(':api-definition')
+
     compile 'com.google.guava:guava:14.0.1'
 
     compile 'org.antlr:stringtemplate:4.0.2'
