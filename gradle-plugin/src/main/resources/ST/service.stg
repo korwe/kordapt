@@ -24,9 +24,9 @@ service_interface_function(function) ::= <<
 
 
 <if(function.parameters)>
-@ParamNames(<function.paramNamesString>)
+@ParamNames(<if(function.multiParam)>{<function.parameters:{p | "<p.name>"}; separator=", ">}<else><function.parameters:{p | "<p.name>"}; separator=", "><endif>)
 <endif>
-public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parametersString>);
+public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">);
 >>
 
 
@@ -50,7 +50,7 @@ service_impl_function(function) ::= <<
 
 
     @Override
-    public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parametersString>){
+    public <if(function.returnType)><function.returnType.name><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
         //TODO: Implement function <function.name>
         <if(function.returnType)>return null;<endif>
     }
@@ -78,6 +78,10 @@ public class Core<service.name> extends KordaptCoreService\<<service.name>\>{
 
 >>
 
+service_function_parameter(parameter) ::= <<
+<parameter.type.name> <parameter.name>
+>>
+
 service_api(service) ::= <<
 name: <service.name>
 functions:
@@ -98,6 +102,6 @@ service_api_function(function) ::= <<
 service_api_function_parameter(parameter) ::= <<
 
 - name: <parameter.name>
-  type: <parameter.type>
+  type: <parameter.type.name>
   description: Description required
 >>

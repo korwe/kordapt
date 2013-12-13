@@ -49,25 +49,4 @@ public class ServiceFunction {
     public Boolean getMultiParam(){
         return this.parameters != null && this.parameters.size() > 1;
     }
-
-    public String getParamNamesString(){
-        List<String> names = new ArrayList();
-        for(ServiceFunctionParameter p : this.parameters){
-            names.add('"'+p.getName()+'"');
-        }
-
-        if(getMultiParam()){
-            return "{"+Joiner.on(',').join(names)+"}";
-        }
-        return Joiner.on(',').join(names);
-    }
-
-    public String getParametersString(){
-        List<String> names = new ArrayList();
-        for(ServiceFunctionParameter p : this.parameters){
-            names.add(p.getType()+" "+p.getName());
-        }
-
-        return Joiner.on(", ").join(names);
-    }
 }
