@@ -27,6 +27,7 @@ kordaptType
     : (type ':')? qualifiedName kordaptTypeAttribute*
 ;
 
+
 kordaptTypeAttribute
     : type ':' Identifier
 ;

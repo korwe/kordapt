@@ -5,10 +5,10 @@ import org.gradle.api.Project
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * */
-class JdbcUtil extends ClasspathUtil{
-    static String jdbcDriverClassName(Project project){
+class JdbcUtil{
+    static JdbcDriver jdbcDriverClassName(Project project){
         JdbcDriver.values().find {
-            checkRuntimeForClass(project, it.driverClass)
+            ClasspathUtil.checkRuntimeForClass(project, it.driverClass)
         }
     }
 

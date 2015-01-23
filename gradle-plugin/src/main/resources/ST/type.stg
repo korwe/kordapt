@@ -13,7 +13,7 @@ type_attribute(attribute) ::= <<
 >>
 
 type_name(type) ::= <<
-<if(type.packageName)><type.packageName>.<endif><type.name>
+<type.definitionString>
 >>
 
 bean(type, imports) ::= <<
@@ -24,7 +24,7 @@ package <type.packageName>;
 /**
  * This file was generated using Kordapt
  */
-public class <type.name>{
+public class <type.name><if(type.inheritsFrom)> extends <type.inheritsFrom.name><endif> {
 <type.attributes:bean_attribute_definition()>
 
 <type.attributes:bean_getter_setter()>
@@ -33,12 +33,12 @@ public class <type.name>{
 
 bean_attribute_definition(attribute) ::= <<
 
-    private <attribute.type.name> <attribute.name>;
+    private <attribute.type.declarationString> <attribute.name>;
 >>
 
 bean_getter_setter(attribute) ::= <<
 
-    public <attribute.type.name> get<attribute.capitalizedName>(){
+    public <attribute.type.declarationString> get<attribute.capitalizedName>(){
         return <attribute.name>;
     }
 

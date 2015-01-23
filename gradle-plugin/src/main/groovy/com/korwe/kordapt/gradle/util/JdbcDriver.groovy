@@ -10,6 +10,6 @@ public enum JdbcDriver {
         this.driverClass = driverClass
     }
 
-    def driverClass;
+    String driverClass;
 
 }

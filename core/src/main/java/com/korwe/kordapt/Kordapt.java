@@ -10,10 +10,11 @@ import org.slf4j.*;
  */
 public class Kordapt
 {
+    public static final String version = "1.0.1";
     private static final Logger LOG = LoggerFactory.getLogger((Class)Kordapt.class);
 
     public static void main(final String[] args) {
-        Kordapt.LOG.info("Running Kordapt 1.0");
+        Kordapt.LOG.info("Running Kordapt {}", version);
         AbstractApplicationContext ctx = null;
         try {
             ctx = (AbstractApplicationContext)new ClassPathXmlApplicationContext("/spring/kordapt.xml");

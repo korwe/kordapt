@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 
+
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  */
@@ -23,7 +24,7 @@ public class KordaptPlugin implements Plugin<Project> {
         }
 
         project.dependencies {
-            compile 'com.korwe:kordapt-core:1.0.0'
+            compile 'com.korwe:kordapt-core:1.0.1'
         }
 
         project.extensions.create('kordapt', KordaptPluginExtension)

@@ -49,6 +49,14 @@ class GenerateAll extends DefaultTask {
 
     }
 
+    def noTypeFile(Type type, Closure c){
+        String typeFileName = mainJavaPath + File.separator + type.fullQualifiedName.replace('.', File.separator) + ".java";
+        if (type.packageName.contains(packageName) && !(new File(typeFileName)).exists()) {
+            c.call()
+        }
+
+    }
+
     def generateService(Service service){
 
         //CREATE API DEFINITION
@@ -59,6 +67,18 @@ class GenerateAll extends DefaultTask {
         File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}.yaml")
         serviceApiFile.write(serviceApiTemplate.render())
 
+        //Check functions for missing types
+        service.functions.each { f ->
+            noTypeFile f.returnType, { ->
+                generateType(f.returnType)
+            }
+
+            f.parameters.each { p ->
+                noTypeFile p.type, {
+                    generateType(p.type)
+                }
+            }
+        }
 
         //CREATE SERVICE INTERFACE
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
@@ -117,12 +137,17 @@ class GenerateAll extends DefaultTask {
         type.packageName = type.packageName ? type.packageName : "${packageName}.dto"
         type.attributes.each { attr ->
             if(!isBasicType(attr.type)){
-                attr.type.packageName = type.packageName
+                attr.type.packageName = attr.type.packageName ? attr.type.packageName : "${packageName}.dto"
+                noTypeFile attr.type, {
+                    generateType(attr.type)
+                }
+
+                generateTypeArguments(attr.type)
             }
         }
 
         if(type.inheritsFrom && !isBasicType(type.inheritsFrom)){
-            type.inheritsFrom.packageName = type.packageName
+            type.inheritsFrom.packageName = type.inheritsFrom.packageName ? type.inheritsFrom.packageName : "${packageName}.dto"
         }
 
 
@@ -144,8 +169,8 @@ class GenerateAll extends DefaultTask {
         typeApiFile.write(typeApiTemplate.render())
 
         //CREATE JAVA BEAN
-
         def beanTemplate = typeTemplateGroup.getInstanceOf('bean')
+
         //Make sure package directory exists
         def beanDir = new File("${mainJavaPath}/${type.packageName.replace('.','/')}")
 
@@ -162,18 +187,48 @@ class GenerateAll extends DefaultTask {
 
     }
 
+    def generateTypeArguments(Type type){
+        if (type.typeArguments) {
+            type.typeArguments.each { ta ->
+               if(!isBasicType(ta)) {
+                   noTypeFile ta, {
+                       generateType(ta);
+                   }
+                }
+            }
+        }
+    }
+
+
     def typeImports(Type type){
         def imports = []
         type.attributes.each { a ->
-            if(!isBasicType(a.type) && !type.packageName.equals(a.type.packageName)){
-                imports << type.fullQualifiedName
+            //Not basic type and not same package
+            if(!(isBasicType(a.type) || type.packageName.equals(a.type.packageName))){
+                imports << a.type.fullQualifiedName
+                imports.addAll(typeArgumentImports(type.packageName, a.type))
             }
         }
 
-        if(type.inheritsFrom && !isBasicType(type.inheritsFrom) && !type.packageName.equals(type.inheritsFrom.packageName)){
-            imports << type.fullQualifiedName
+        if(type.inheritsFrom && !(isBasicType(type.inheritsFrom) || type.packageName.equals(type.inheritsFrom.packageName))){
+            imports << type.inheritsFrom.fullQualifiedName
         }
 
+        //Handle typeArguments
+        imports.addAll(typeArgumentImports(type.packageName, type))
+
+        imports
+    }
+
+    //Separate typeArguments method for recursive strategy
+    def typeArgumentImports(String basePackage, Type type){
+        def imports = []
+        if(type.typeArguments && !type.typeArguments.empty){
+            type.typeArguments.each { t ->
+                if(!basePackage.equals(t.packageName)) imports << t.fullQualifiedName //Add this typeArgument
+                imports.addAll(typeArgumentImports(basePackage, t)) //Add further type arguments
+            }
+        }
         imports
     }
 

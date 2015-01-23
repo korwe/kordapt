@@ -10,7 +10,7 @@ buildscript{
     }
 
     dependencies{
-        classpath 'com.korwe:kordapt-gradle-plugin:1.0.0'
+        classpath 'com.korwe:kordapt-gradle-plugin:1.0.1'
         classpath 'org.postgresql:postgresql:9.2-1002-jdbc4'
         classpath 'com.googlecode.flyway:flyway-gradle-plugin:2.2'
     }

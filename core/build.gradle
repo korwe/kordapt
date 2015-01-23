@@ -10,8 +10,8 @@ dependencies{
     compile 'org.apache.commons:commons-compress:1.6'
 
     //Korwe
-    compile 'com.korwe:thecore-service-api:1.1.6'
-    compile 'com.korwe:thecore-common-api:1.1.6'
+    compile 'com.korwe:thecore-service-api:2.0.0'
+    compile 'com.korwe:thecore-common-api:2.0.0'
     compile project(':service-registry-common')
 
     //Spring

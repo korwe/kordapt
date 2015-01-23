@@ -13,7 +13,7 @@ public class TestParse {
 
 
     public static void main(String[] args) throws IOException {
-        ANTLRInputStream stream = new ANTLRInputStream(new StringInputStream("myService Integer:myFunction(Hello world, String param) Boolean:secondFunction() void:thirdFunction()"));
+        ANTLRInputStream stream = new ANTLRInputStream(new StringInputStream("myService Integer:myFunction(Hello world, String param) Boolean:secondFunction() void:thirdFunction() java.util.List<my.local.List<my.local.String>>:genericFunction()"));
 
         KordaptCLLexer lexer = new KordaptCLLexer(stream);
 

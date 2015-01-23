@@ -13,6 +13,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     private Stack<ServiceFunctionParameter> parameterStack = new Stack<>();
     private Stack<ServiceFunction> functionStack = new Stack<>();
     private Stack<Attribute> attributeStack = new Stack<>();
+    private Stack<Type> typeArgumentStack = new Stack<>();
     private Service service;
     private Type type;
 
@@ -33,7 +34,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
 
         Type returnType = typeFromQualifiedName(ctx.returnType().getText());
 
-        if(!"void".equals(returnType)) {
+        if(!"void".equals(returnType.getName())) {
             function.setReturnType(returnType);
         }
 
@@ -77,8 +78,23 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
         attributeStack.push(a);
     }
 
+    @Override
+    public void exitTypeArguments(@NotNull KordaptCLParser.TypeArgumentsContext ctx){
+        for(KordaptCLParser.TypeArgumentContext typeArgumentsContext : ctx.typeArgument()){
+            Type t = typeFromQualifiedName(typeArgumentsContext.getText());
+            typeArgumentStack.push(t);
+        }
+    }
+
     public Type typeFromQualifiedName(String qualifiedName){
         Type type = new Type();
+        //Handle generic type
+        Integer genericOpeningDeclarationIndex = qualifiedName.indexOf('<');
+        if(genericOpeningDeclarationIndex != -1){//Has generic opening declarator
+            qualifiedName = qualifiedName.substring(0,genericOpeningDeclarationIndex);
+        }
+
+
         Integer nameSeparatorIndex = qualifiedName.lastIndexOf('.');
         if(nameSeparatorIndex == -1){
             type.setName(qualifiedName);
@@ -86,6 +102,11 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
         else{
             type.setName(qualifiedName.substring(nameSeparatorIndex+1));
             type.setPackageName(qualifiedName.substring(0,nameSeparatorIndex));
+        }
+
+        if(!typeArgumentStack.empty()){
+            type.setTypeArguments(Lists.newArrayList(typeArgumentStack));
+            typeArgumentStack.clear();
         }
 
         return type;
