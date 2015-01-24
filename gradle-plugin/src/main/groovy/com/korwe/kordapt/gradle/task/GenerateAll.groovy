@@ -50,14 +50,40 @@ class GenerateAll extends DefaultTask {
     }
 
     def noTypeFile(Type type, Closure c){
-        String typeFileName = mainJavaPath + File.separator + type.fullQualifiedName.replace('.', File.separator) + ".java";
-        if (type.packageName.contains(packageName) && !(new File(typeFileName)).exists()) {
-            c.call()
+        if(type && !isBasicType(type)) {
+            String typeFileName = mainJavaPath + File.separator + type.fullQualifiedName.replace('.', File.separator) + ".java";
+            if (type.packageName.contains(packageName) && !(new File(typeFileName)).exists()) {
+                c.call()
+            }
         }
+    }
 
+    def correctPackageName(Type type){
+        if(type && !isBasicType(type)){
+            if(!type.packageName){
+                type.packageName = "${packageName}.dto"
+            }
+        }
     }
 
     def generateService(Service service){
+
+
+        //Check functions for missing types
+        service.functions.each { f ->
+            correctPackageName(f.returnType)
+            noTypeFile f.returnType, { ->
+
+                generateType(f.returnType)
+            }
+
+            f.parameters.each { p ->
+                correctPackageName(p.type)
+                noTypeFile p.type, {
+                    generateType(p.type)
+                }
+            }
+        }
 
         //CREATE API DEFINITION
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
@@ -67,18 +93,6 @@ class GenerateAll extends DefaultTask {
         File serviceApiFile = new File("${apiPath}/services/${packageName.replace('.','/')}/service/${service.name}.yaml")
         serviceApiFile.write(serviceApiTemplate.render())
 
-        //Check functions for missing types
-        service.functions.each { f ->
-            noTypeFile f.returnType, { ->
-                generateType(f.returnType)
-            }
-
-            f.parameters.each { p ->
-                noTypeFile p.type, {
-                    generateType(p.type)
-                }
-            }
-        }
 
         //CREATE SERVICE INTERFACE
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
@@ -95,7 +109,7 @@ class GenerateAll extends DefaultTask {
             }
         }
 
-        serviceInterfaceTemplate.add('imports', serviceInterfaceImports)
+        serviceInterfaceTemplate.add('imports', serviceInterfaceImports.unique())
 
         File serviceInterfaceFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
@@ -107,7 +121,7 @@ class GenerateAll extends DefaultTask {
 
         def serviceImplImports = serviceImports("${packageName}.dto", service)
         serviceImplImports << packageName+".service."+service.name
-        serviceImplTemplate.add('imports', serviceImplImports)
+        serviceImplTemplate.add('imports', serviceImplImports.unique())
 
         File serviceImplFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/impl/${service.name}Impl.java")
         serviceImplFile.write(serviceImplTemplate.render())
@@ -118,7 +132,7 @@ class GenerateAll extends DefaultTask {
         serviceAdapterTemplate.add('packageName', packageName+".service.adapter")
 
         def serviceAdapterImports = [packageName+".service."+service.name]
-        serviceAdapterTemplate.add('imports', serviceAdapterImports)
+        serviceAdapterTemplate.add('imports', serviceAdapterImports.unique())
 
         File serviceAdapterFile = new File("${mainJavaPath}/${packageName.replace('.','/')}/service/adapter/Core${service.name}.java")
         serviceAdapterFile.write(serviceAdapterTemplate.render())
@@ -134,20 +148,20 @@ class GenerateAll extends DefaultTask {
     def generateType(Type type){
 
 
-        type.packageName = type.packageName ? type.packageName : "${packageName}.dto"
+        correctPackageName(type)
         type.attributes.each { attr ->
-            if(!isBasicType(attr.type)){
-                attr.type.packageName = attr.type.packageName ? attr.type.packageName : "${packageName}.dto"
-                noTypeFile attr.type, {
-                    generateType(attr.type)
-                }
+            correctPackageName(attr.type)
 
-                generateTypeArguments(attr.type)
+            noTypeFile attr.type, {
+                generateType(attr.type)
             }
+
+            generateTypeArguments(attr.type)
+
         }
 
-        if(type.inheritsFrom && !isBasicType(type.inheritsFrom)){
-            type.inheritsFrom.packageName = type.inheritsFrom.packageName ? type.inheritsFrom.packageName : "${packageName}.dto"
+        if(type.inheritsFrom){
+            correctPackageName(type.inheritsFrom)
         }
 
 
@@ -180,7 +194,7 @@ class GenerateAll extends DefaultTask {
         }
 
         beanTemplate.add('type', type)
-        beanTemplate.add('imports', typeImports(type))
+        beanTemplate.add('imports', typeImports(type).unique())
 
         File beanFile = new File("${beanDir.absolutePath}/${type.name}.java")
         beanFile.write(beanTemplate.render())
@@ -190,11 +204,10 @@ class GenerateAll extends DefaultTask {
     def generateTypeArguments(Type type){
         if (type.typeArguments) {
             type.typeArguments.each { ta ->
-               if(!isBasicType(ta)) {
-                   noTypeFile ta, {
-                       generateType(ta);
-                   }
-                }
+               correctPackageName(ta)
+               noTypeFile ta, {
+                   generateType(ta);
+               }
             }
         }
     }

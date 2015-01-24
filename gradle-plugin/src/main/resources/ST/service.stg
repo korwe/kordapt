@@ -95,13 +95,13 @@ service_api_function(function) ::= <<
   <if(function.parameters)>parameters:
 <function.parameters:service_api_function_parameter()>
   <endif>
-  <if(function.returnType)>return_type: <function.returnType.declarationString>
+  <if(function.returnType)>return_type: <function.returnType.definitionString>
   <endif>
 >>
 
 service_api_function_parameter(parameter) ::= <<
 
 - name: <parameter.name>
-  type: <parameter.type.declarationString>
+  type: <parameter.type.definitionString>
   description: Description required
 >>

@@ -75,7 +75,7 @@ public class Type {
     }
 
     public String getDefinitionString(){
-        String qualifiedName = packageName + "." +name;
+        String qualifiedName = packageName == null ? name : packageName + "." +name;
         qualifiedName += getTypeArgumentsString(
             new Function<Type, String>(){
                 @Override
