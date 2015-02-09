@@ -49,41 +49,44 @@ public class KordaptCoreService<S> extends GenericCoreService<S>{
      */
     @Override
     protected void startUp() throws Exception {
-        CoreClient coreClient = new CoreClient(UUID.randomUUID().toString(), new XStreamSerializationStrategy(new XStream()));
-        //First get the registered name
-        ClientServiceRequest registrationRequest = new ClientServiceRequest("ServiceRegistry", "registerServiceInstance");
+        if(isRegistered){
+            CoreClient coreClient = new CoreClient(UUID.randomUUID().toString(), new XStreamSerializationStrategy(new XStream()));
+            //First get the registered name
+            ClientServiceRequest registrationRequest = new ClientServiceRequest("ServiceRegistry", "registerServiceInstance");
 
-        ServiceInstance serviceInstance = new ServiceInstance();
-        Service service = new Service();
-        service.setId(getServiceClass().getName());
-        serviceInstance.setService(service);
-        registrationRequest.setParameter("serviceInstance", serviceInstance);
+            ServiceInstance serviceInstance = new ServiceInstance();
+            Service service = new Service();
+            service.setId(getServiceClass().getName());
+            serviceInstance.setService(service);
+            registrationRequest.setParameter("serviceInstance", serviceInstance);
 
-        List<ClientServiceRequest> requests = new ArrayList<>();
-        requests.add(registrationRequest);
+            List<ClientServiceRequest> requests = new ArrayList<>();
+            requests.add(registrationRequest);
 
-        int maxRegistrationRetries = 3;
-        for(int i = 1 ; i <= maxRegistrationRetries; i++){
-            Map<String,ServiceResult> responseMap = coreClient.makeRequests(100000L, requests);
+            int maxRegistrationRetries = 3;
+            for(int i = 1 ; i <= maxRegistrationRetries; i++){
+                Map<String,ServiceResult> responseMap = coreClient.makeRequests(100000L, requests);
 
-            ServiceResult registrationResult = responseMap.get(registrationRequest.getGuid());
+                ServiceResult registrationResult = responseMap.get(registrationRequest.getGuid());
 
-            if(registrationResult.getData() != null){
-                this.queueName = (String)registrationResult.getData();
-                LOG.info("Registered {} successfully on queue {}", getServiceClass().getSimpleName(), this.queueName);
-                break;
-            }
-            else{
-                LOG.info("Failed to register service");
-                if(i == maxRegistrationRetries){
-                    LOG.info("Trying again...");
+                if(registrationResult.getData() != null){
+                    this.queueName = (String)registrationResult.getData();
+                    LOG.info("Registered {} successfully on queue {}", getServiceClass().getSimpleName(), this.queueName);
+                    break;
                 }
                 else{
-                    LOG.info("Using queue {}", getServiceName());
-                }
+                    LOG.info("Failed to register service");
+                    if(i == maxRegistrationRetries){
+                        LOG.info("Trying again...");
+                    }
+                    else{
+                        LOG.info("Using queue {}", getServiceName());
+                    }
 
+                }
             }
         }
+
 
         //Then continue as per normal
         super.startUp();
