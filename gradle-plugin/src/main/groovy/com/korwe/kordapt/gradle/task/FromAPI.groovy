@@ -5,18 +5,13 @@ import com.korwe.kordapt.api.bean.Service
 import com.korwe.kordapt.api.bean.ServiceFunction
 import com.korwe.kordapt.api.bean.ServiceFunctionParameter
 import com.korwe.kordapt.api.bean.Type
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
  * */
-class FromAPI{
-
-    public static void main(String[] args) {
-        FromAPI fromAPI = new FromAPI()
-        fromAPI.serviceFromApi()
-        fromAPI.typeFromApi()
-    }
+class FromAPI extends DefaultTask{
 
     @TaskAction
     def serviceFromApi(){
