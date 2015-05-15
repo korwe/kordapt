@@ -8,7 +8,24 @@ import java.util.List;
 public class Service {
     private String name;
     private List<ServiceFunction> functions;
+    private String packageName;
+    private String description;
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getName() {
         return name;
