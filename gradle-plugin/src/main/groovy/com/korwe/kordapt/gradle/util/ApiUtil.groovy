@@ -1,6 +1,7 @@
 package com.korwe.kordapt.gradle.util
 import com.esotericsoftware.yamlbeans.YamlReader
 import com.korwe.kordapt.api.bean.*
+import org.stringtemplate.v4.STGroup
 import org.stringtemplate.v4.STGroupFile
 
 /**
@@ -9,8 +10,8 @@ import org.stringtemplate.v4.STGroupFile
  */
 class ApiUtil {
 
-    static def serviceFromApi(){
-        def reader = new YamlReader(new FileReader("/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/kordapt/service-registry/api-definition/services/com/korwe/kordapt/registry/service/ServiceRegistry.yaml"))
+    static def populateServiceFromApi(String filePath){
+        def reader = new YamlReader(new FileReader(filePath))
         def serviceYaml = reader.read()
 
         //Populate service definition object
@@ -19,9 +20,10 @@ class ApiUtil {
 
         //Populate service function definition objects
         serviceDefinition.functions = functionDefinitions(serviceYaml.functions)
+        serviceDefinition
     }
 
-    static def typeFromApi() {
+    static def populateTypeFromApi() {
         def reader = new YamlReader(new FileReader("/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/tree-services/services/api-definition/types/com/korwe/tree/domain/User.yaml"))
         def typeYaml = reader.read()
 
@@ -30,7 +32,8 @@ class ApiUtil {
         typeDefObject.inheritsFrom = typeDefinitionFromTypeName(typeYaml.inherits_from)
         typeDefObject.attributes = attributeDefinitions(typeYaml.attributes)
 
-        println""
+        typeDefObject
+
     }
 
     static def attributeDefinitions(attributeDefYaml) {
@@ -116,7 +119,6 @@ class ApiUtil {
 
     static def generateService(Service service, KordaptConfig kordaptConfig){
 
-
         //Check functions for missing types
         service.functions.each { f ->
             correctPackageName(f.returnType, kordaptConfig)
@@ -133,17 +135,50 @@ class ApiUtil {
             }
         }
 
-        //CREATE API DEFINITION
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
-        def serviceApiTemplate = serviceTemplateGroup.getInstanceOf('service_api')
-        serviceApiTemplate.add('service', service)
 
-        File serviceApiFile = 
-                new File("${kordaptConfig.apiServicesPath}/${kordaptConfig.servicePackagePath}/${service.name}.yaml")
-        serviceApiFile.write(serviceApiTemplate.render())
+        generateServiceAPIDefinition(serviceTemplateGroup, service, kordaptConfig)
 
+        generateServiceInterface(serviceTemplateGroup, service, kordaptConfig)
 
-        //CREATE SERVICE INTERFACE
+        generateServiceImplementation(serviceTemplateGroup, service, kordaptConfig)
+
+        generateServiceAdapter(serviceTemplateGroup, service, kordaptConfig)
+
+    }
+
+    public static generateServiceAdapter(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    //CREATE SERVICE ADAPTER
+        def serviceAdapterTemplate = serviceTemplateGroup.getInstanceOf('service_adapter')
+        serviceAdapterTemplate.add('service', service)
+        serviceAdapterTemplate.add('packageName', kordaptConfig.serviceAdapterPackagePath.replace(File.separator, '.'))
+
+        def serviceAdapterImports = [kordaptConfig.servicePackagePath.replace(File.separator, '.') + "." + service.name]
+        serviceAdapterTemplate.add('imports', serviceAdapterImports.unique())
+
+        File serviceAdapterFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceAdapterPackagePath}/Core${service.name}.java")
+        serviceAdapterFile.write(serviceAdapterTemplate.render())
+
+        //ADD SERVICE BEAN DEFINITION
+        SpringBeanUtil.addServiceToBeans("${kordaptConfig.mainPath}/resources/spring/service-beans.xml", kordaptConfig.servicePackagePath.replace(File.separator, '.'), service)
+    }
+
+    public static generateServiceImplementation(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    //CREATE SERVICE IMPL
+        def serviceImplTemplate = serviceTemplateGroup.getInstanceOf('service_impl')
+        serviceImplTemplate.add('service', service)
+        serviceImplTemplate.add('packageName', kordaptConfig.serviceImplPackagePath.replace(File.separator, '.'))
+
+        def serviceImplImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), service)
+        serviceImplImports << service.packageName + "." + service.name
+        serviceImplTemplate.add('imports', serviceImplImports.unique())
+
+        File serviceImplFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceImplPackagePath}/${service.name}Impl.java")
+        serviceImplFile.write(serviceImplTemplate.render())
+    }
+
+    public static generateServiceInterface(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    //CREATE SERVICE INTERFACE
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
         serviceInterfaceTemplate.add('service', service)
         serviceInterfaceTemplate.add('packageName', service.packageName)
@@ -162,33 +197,17 @@ class ApiUtil {
 
         File serviceInterfaceFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.servicePackagePath}/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
+    }
 
-        //CREATE SERVICE IMPL
-        def serviceImplTemplate = serviceTemplateGroup.getInstanceOf('service_impl')
-        serviceImplTemplate.add('service', service)
-        serviceImplTemplate.add('packageName', kordaptConfig.serviceImplPackagePath.replace(File.separator, '.'))
+    public static generateServiceAPIDefinition(STGroup serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    //CREATE API DEFINITION
 
-        def serviceImplImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), service)
-        serviceImplImports << service.packageName +"."+service.name
-        serviceImplTemplate.add('imports', serviceImplImports.unique())
+        def serviceApiTemplate = serviceTemplateGroup.getInstanceOf('service_api')
+        serviceApiTemplate.add('service', service)
 
-        File serviceImplFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceImplPackagePath}/${service.name}Impl.java")
-        serviceImplFile.write(serviceImplTemplate.render())
-
-        //CREATE SERVICE ADAPTER
-        def serviceAdapterTemplate = serviceTemplateGroup.getInstanceOf('service_adapter')
-        serviceAdapterTemplate.add('service', service)
-        serviceAdapterTemplate.add('packageName', kordaptConfig.serviceAdapterPackagePath.replace(File.separator, '.'))
-
-        def serviceAdapterImports = [kordaptConfig.servicePackagePath.replace(File.separator, '.')+"."+service.name]
-        serviceAdapterTemplate.add('imports', serviceAdapterImports.unique())
-
-        File serviceAdapterFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceAdapterPackagePath}/Core${service.name}.java")
-        serviceAdapterFile.write(serviceAdapterTemplate.render())
-
-        //ADD SERVICE BEAN DEFINITION
-        SpringBeanUtil.addServiceToBeans("${kordaptConfig.mainPath}/resources/spring/service-beans.xml",kordaptConfig.servicePackagePath.replace(File.separator, '.'), service)
-
+        File serviceApiFile =
+                new File("${kordaptConfig.apiServicesPath}/${kordaptConfig.servicePackagePath}/${service.name}.yaml")
+        serviceApiFile.write(serviceApiTemplate.render())
     }
 
     static def generateType(Type type, KordaptConfig kordaptConfig){
