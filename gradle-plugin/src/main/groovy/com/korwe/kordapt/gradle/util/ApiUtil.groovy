@@ -10,8 +10,8 @@ import org.stringtemplate.v4.STGroupFile
  */
 class ApiUtil {
 
-    static def populateServiceFromApi(String filePath){
-        def reader = new YamlReader(new FileReader(filePath))
+    static def populateServiceFromApi(File file){
+        def reader = new YamlReader(new FileReader(file))
         def serviceYaml = reader.read()
 
         //Populate service definition object
@@ -23,8 +23,8 @@ class ApiUtil {
         serviceDefinition
     }
 
-    static def populateTypeFromApi() {
-        def reader = new YamlReader(new FileReader("/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/tree-services/services/api-definition/types/com/korwe/tree/domain/User.yaml"))
+    static def populateTypeFromApi(File file) {
+        def reader = new YamlReader(new FileReader(file))
         def typeYaml = reader.read()
 
         //Populate type def object
@@ -117,14 +117,14 @@ class ApiUtil {
         }
     }
 
-    static def generateService(Service service, KordaptConfig kordaptConfig){
+    public static def generateService(Service service, KordaptConfig kordaptConfig){
 
-        //Check functions for missing types
+        //Check functions for missing types (to stop compilation failures after generation)
         service.functions.each { f ->
             correctPackageName(f.returnType, kordaptConfig)
             noTypeFile kordaptConfig, f.returnType, { ->
 
-                generateType(f.returnType, kordaptConfig)
+                generateType(f.returnType,  kordaptConfig)
             }
 
             f.parameters.each { p ->
@@ -137,17 +137,17 @@ class ApiUtil {
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
 
-        generateServiceAPIDefinition(serviceTemplateGroup, service, kordaptConfig)
+        generateServiceAPIDefinition(service, serviceTemplateGroup, kordaptConfig)
 
-        generateServiceInterface(serviceTemplateGroup, service, kordaptConfig)
+        generateServiceInterface(service, serviceTemplateGroup, kordaptConfig)
 
-        generateServiceImplementation(serviceTemplateGroup, service, kordaptConfig)
+        generateServiceImplementation(service, serviceTemplateGroup, kordaptConfig)
 
-        generateServiceAdapter(serviceTemplateGroup, service, kordaptConfig)
+        generateServiceAdapter(service, serviceTemplateGroup, kordaptConfig)
 
     }
 
-    public static generateServiceAdapter(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    public static generateServiceAdapter(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE ADAPTER
         def serviceAdapterTemplate = serviceTemplateGroup.getInstanceOf('service_adapter')
         serviceAdapterTemplate.add('service', service)
@@ -163,7 +163,7 @@ class ApiUtil {
         SpringBeanUtil.addServiceToBeans("${kordaptConfig.mainPath}/resources/spring/service-beans.xml", kordaptConfig.servicePackagePath.replace(File.separator, '.'), service)
     }
 
-    public static generateServiceImplementation(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    public static generateServiceImplementation(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE IMPL
         def serviceImplTemplate = serviceTemplateGroup.getInstanceOf('service_impl')
         serviceImplTemplate.add('service', service)
@@ -177,7 +177,7 @@ class ApiUtil {
         serviceImplFile.write(serviceImplTemplate.render())
     }
 
-    public static generateServiceInterface(STGroupFile serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    public static generateServiceInterface(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE INTERFACE
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
         serviceInterfaceTemplate.add('service', service)
@@ -199,7 +199,7 @@ class ApiUtil {
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
     }
 
-    public static generateServiceAPIDefinition(STGroup serviceTemplateGroup, Service service, KordaptConfig kordaptConfig) {
+    public static generateServiceAPIDefinition(Service service, STGroup serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE API DEFINITION
 
         def serviceApiTemplate = serviceTemplateGroup.getInstanceOf('service_api')
@@ -212,13 +212,12 @@ class ApiUtil {
 
     static def generateType(Type type, KordaptConfig kordaptConfig){
 
-
         correctPackageName(type, kordaptConfig)
         type.attributes.each { attr ->
             correctPackageName(attr.type, kordaptConfig)
 
             noTypeFile kordaptConfig, attr.type, {
-                generateType(attr.type, kordaptConfig)
+                generateType(attr.type, typeTemplateGroup, kordaptConfig)
             }
 
             generateTypeArguments(attr.type, kordaptConfig)
@@ -229,31 +228,24 @@ class ApiUtil {
             correctPackageName(type.inheritsFrom, kordaptConfig)
         }
 
-
-        //CREATE API DEFINITION
         STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
-        def typeApiTemplate = typeTemplateGroup.getInstanceOf('type_api')
-        typeApiTemplate.add('type', type)
 
 
-        //Make sure package directory exists
-        def apiDir = new File("${kordaptConfig.apiTypesPath}/${type.packageName.replace('.','/')}")
+        generateTypeApi(type, typeTemplateGroup, kordaptConfig)
 
-        if(!apiDir.exists()){
-            println("Creating folder '${apiDir.absolutePath}'")
-            apiDir.mkdirs()
-        }
 
-        File typeApiFile = new File("${apiDir.absolutePath}/${type.name}.yaml")
-        typeApiFile.write(typeApiTemplate.render())
+        generateTypeBean(type, typeTemplateGroup, kordaptConfig)
 
+    }
+
+    public static generateTypeBean(Type type, STGroupFile typeTemplateGroup, KordaptConfig kordaptConfig) {
         //CREATE JAVA BEAN
         def beanTemplate = typeTemplateGroup.getInstanceOf('bean')
 
         //Make sure package directory exists
-        def beanDir = new File("${kordaptConfig.mainJavaPath}/${type.packageName.replace('.','/')}")
+        def beanDir = new File("${kordaptConfig.mainJavaPath}/${type.packageName.replace('.', '/')}")
 
-        if(!beanDir.exists()){
+        if (!beanDir.exists()) {
             println("Creating folder '${beanDir.absolutePath}'")
             beanDir.mkdirs()
         }
@@ -263,7 +255,23 @@ class ApiUtil {
 
         File beanFile = new File("${beanDir.absolutePath}/${type.name}.java")
         beanFile.write(beanTemplate.render())
+    }
 
+    public static generateTypeApi(Type type, STGroupFile typeTemplateGroup, KordaptConfig kordaptConfig) {
+        //CREATE API DEFINITION
+        def typeApiTemplate = typeTemplateGroup.getInstanceOf('type_api')
+        typeApiTemplate.add('type', type)
+
+        //Make sure package directory exists within api types folder
+        def apiDir = new File("${kordaptConfig.apiTypesPath}/${type.packageName.replace('.', '/')}")
+
+        if (!apiDir.exists()) {
+            println("Creating folder '${apiDir.absolutePath}'")
+            apiDir.mkdirs()
+        }
+
+        File typeApiFile = new File("${apiDir.absolutePath}/${type.name}.yaml")
+        typeApiFile.write(typeApiTemplate.render())
     }
 
     static def generateTypeArguments(Type type, KordaptConfig kordaptConfig){

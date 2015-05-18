@@ -1,8 +1,11 @@
 package com.korwe.kordapt.gradle.task
 
 import com.korwe.kordapt.api.bean.KordaptConfig
+import com.korwe.kordapt.api.bean.Service
+import com.korwe.kordapt.api.bean.Type
 import com.korwe.kordapt.gradle.util.ApiUtil
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.TaskAction
 import org.stringtemplate.v4.STGroupFile
 
@@ -23,22 +26,38 @@ class SharedJarFromAPI extends DefaultTask{
 
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
+        STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
 
         //from api dir
 
+        File  apiFile = file(pathToAPI)
+        if (apiFile.isDirectory()){
+            apiFile.list().each { File dir ->
+                if (dir.isDirectory()) {
+                    if ('types'.equals(dir.name)) {
+                        FileTree fileTree = fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
+                        fileTree.files.each { File typeFile ->
+                            Type typeDefinition = ApiUtil.populateTypeFromApi(typeFile)
+                            ApiUtil.generateTypeBean(typeDefinition, typeTemplateGroup, kordaptConfig)
+                        }
+                    }
+                    else if('services'.equals(dir.name)){
+                        FileTree fileTree = fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
+                        fileTree.files.each { File serviceFile ->
+                            Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile)
+                            ApiUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
+                        }
+                    }
+                }
+            }
+        }
 
-        //Generate service interfaces
-        def serviceDef =
-                ApiUtil.populateServiceFromApi("/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/kordapt/service-registry/api-definition/services/com/korwe/kordapt/registry/service/ServiceRegistry.yaml")
-
-        ApiUtil.generateServiceInterface(serviceTemplateGroup, serviceDef, kordaptConfig)
-
-        //Generate types
 
         //package into jar
 
         //move jar to lib folder
 
     }
+
 
 }
