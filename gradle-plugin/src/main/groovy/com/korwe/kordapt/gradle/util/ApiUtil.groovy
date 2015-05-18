@@ -10,13 +10,29 @@ import org.stringtemplate.v4.STGroupFile
  */
 class ApiUtil {
 
+    static customDefinitions = ['Object': new Type('Object', null),
+                             'DateTime': new Type('DateTime', 'org.joda.time'),
+                             'Set': new Type('Set', 'java.util'),
+                             'List': new Type('List', 'java.util'),
+                             'Map': new Type('Map','java.util')]
+
     static def populateServiceFromApi(File file){
         def reader = new YamlReader(new FileReader(file))
         def serviceYaml = reader.read()
 
         //Populate service definition object
         def serviceDefinition = new Service()
-        serviceDefinition.name = serviceYaml.name
+
+        //Set name and packageName(if packageName exists)
+        String serviceYamlName = serviceYaml.name
+        def packageNameOffset = serviceYamlName.lastIndexOf('.')
+        if(packageNameOffset != -1){
+            serviceDefinition.name = serviceYamlName.substring(packageNameOffset+1)
+            serviceDefinition.packageName = serviceYamlName.substring(0, packageNameOffset)
+        }
+        else{
+            serviceDefinition.name = serviceYamlName
+        }
 
         //Populate service function definition objects
         serviceDefinition.functions = functionDefinitions(serviceYaml.functions)
@@ -54,10 +70,15 @@ class ApiUtil {
             def function = new ServiceFunction()
             function.name = f.name
             function.description = f.description
-            function.parameters = functionParameterDefinition(f.parameters)
-            def returnType = typeDefinitionFromTypeName(f.return_type)
-            if (returnType.name != null || 'void'.equals(returnType.name)) {
-                function.returnType = returnType
+            if(f.parameters!=null){
+                function.parameters = functionParameterDefinition(f.parameters)
+            }
+
+            if(f.return_type != null && !"".equals(f.return_type)){
+                def returnType = typeDefinitionFromTypeName(f.return_type)
+                if (returnType.name != null && !'void'.equals(returnType.name)) {
+                    function.returnType = returnType
+                }
             }
             function
         }
@@ -69,10 +90,13 @@ class ApiUtil {
             serviceFunctionParameter.name = p.name
             serviceFunctionParameter.description = p.description
             serviceFunctionParameter.type = typeDefinitionFromTypeName(p.type)
+            serviceFunctionParameter
         }
     }
 
     static def typeDefinitionFromTypeName(String typeIdentifier){
+        if(typeIdentifier == null)return null;
+
         Type type = new Type()
         //handle generics
         def typeName = typeIdentifier
@@ -83,7 +107,7 @@ class ApiUtil {
             def typeArgumentNames = typeIdentifier.substring(typeParameterOffset+1, typeIdentifier.length()-1).split(',')
             type.typeArguments = []
             typeArgumentNames.each{ t ->
-                type.typeArguments << typeDefinitionFromTypeName(t)
+                type.typeArguments << typeDefinitionFromTypeName(t.trim())
             }
         }
 
@@ -93,7 +117,14 @@ class ApiUtil {
             type.packageName = typeName.substring(0, packageNameOffset)
         }
         else{
-            type.name = typeName
+            if(customDefinitions.containsKey(typeName)){
+                def customType = customDefinitions.get(typeName)
+                type.name = customType.name
+                type.packageName = customType.packageName
+            }
+            else{
+                type.name = typeName
+            }
         }
         type
 
@@ -156,7 +187,10 @@ class ApiUtil {
         def serviceAdapterImports = [kordaptConfig.servicePackagePath.replace(File.separator, '.') + "." + service.name]
         serviceAdapterTemplate.add('imports', serviceAdapterImports.unique())
 
-        File serviceAdapterFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceAdapterPackagePath}/Core${service.name}.java")
+        File serviceAdapterDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceAdapterPackagePath}")
+        serviceAdapterDir.mkdirs()
+
+        File serviceAdapterFile = new File("${serviceAdapterDir.absolutePath}/Core${service.name}.java")
         serviceAdapterFile.write(serviceAdapterTemplate.render())
 
         //ADD SERVICE BEAN DEFINITION
@@ -173,7 +207,10 @@ class ApiUtil {
         serviceImplImports << service.packageName + "." + service.name
         serviceImplTemplate.add('imports', serviceImplImports.unique())
 
-        File serviceImplFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceImplPackagePath}/${service.name}Impl.java")
+        File serviceImplDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceImplPackagePath}")
+        serviceImplDir.mkdirs()
+
+        File serviceImplFile = new File("${serviceImplDir.absolutePath}/${service.name}Impl.java")
         serviceImplFile.write(serviceImplTemplate.render())
     }
 
@@ -195,7 +232,10 @@ class ApiUtil {
 
         serviceInterfaceTemplate.add('imports', serviceInterfaceImports.unique())
 
-        File serviceInterfaceFile = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.servicePackagePath}/${service.name}.java")
+        File serviceInterfaceDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.servicePackagePath}")
+        serviceInterfaceDir.mkdirs()
+
+        File serviceInterfaceFile = new File("${serviceInterfaceDir.absolutePath}/${service.name}.java")
         serviceInterfaceFile.write(serviceInterfaceTemplate.render())
     }
 
@@ -205,8 +245,10 @@ class ApiUtil {
         def serviceApiTemplate = serviceTemplateGroup.getInstanceOf('service_api')
         serviceApiTemplate.add('service', service)
 
-        File serviceApiFile =
-                new File("${kordaptConfig.apiServicesPath}/${kordaptConfig.servicePackagePath}/${service.name}.yaml")
+        File serviceApiDir = new File("${kordaptConfig.apiServicesPath}/${kordaptConfig.servicePackagePath}")
+        serviceApiDir.mkdirs()
+
+        File serviceApiFile = new File("${serviceApiDir.absolutePath}/${service.name}.yaml")
         serviceApiFile.write(serviceApiTemplate.render())
     }
 
@@ -311,8 +353,10 @@ class ApiUtil {
         def imports = []
         if(type.typeArguments && !type.typeArguments.empty){
             type.typeArguments.each { t ->
-                if(!basePackage.equals(t.packageName)) imports << t.fullQualifiedName //Add this typeArgument
-                imports.addAll(typeArgumentImports(basePackage, t)) //Add further type arguments
+                if(!isBasicType(t)){
+                    if(!basePackage.equals(t.packageName)) imports << t.fullQualifiedName //Add this typeArgument
+                    imports.addAll(typeArgumentImports(basePackage, t)) //Add further type arguments
+                }
             }
         }
         imports
@@ -323,6 +367,7 @@ class ApiUtil {
         service.functions.each { f ->
             if(f.returnType){
                 if(!isBasicType(f.returnType)){
+                    imports.addAll(typeArgumentImports(defaultPackage, f.returnType))
                     f.returnType.packageName = f.returnType.packageName ? f.returnType.packageName : defaultPackage
                     imports << f.returnType.fullQualifiedName
                 }
@@ -330,6 +375,7 @@ class ApiUtil {
 
             f.parameters.each { p ->
                 if(!isBasicType(p.type)){
+                    imports.addAll(typeArgumentImports(defaultPackage, p.type))
                     p.type.packageName = p.type.packageName ? p.type.packageName : defaultPackage
                     imports << p.type.fullQualifiedName
                 }
@@ -339,9 +385,8 @@ class ApiUtil {
     }
 
     static def isBasicType(type){
-        ['String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
+        ['Object', 'String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
             name.equals(type.name)
         } && !type.packageName
     }
-
 }

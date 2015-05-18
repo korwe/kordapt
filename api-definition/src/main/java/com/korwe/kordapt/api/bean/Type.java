@@ -16,6 +16,15 @@ public class Type {
     private List<Attribute> attributes;
     private List<Type> typeArguments;
 
+
+    public Type() {
+    }
+
+    public Type(String name, String packageName){
+        this.name = name;
+        this.packageName = packageName;
+    }
+
     public String getName() {
         return name;
     }

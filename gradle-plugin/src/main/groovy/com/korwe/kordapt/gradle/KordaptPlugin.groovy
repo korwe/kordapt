@@ -1,13 +1,10 @@
 package com.korwe.kordapt.gradle
-
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
+import com.korwe.kordapt.gradle.task.SharedJarFromAPI
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-
-
-
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  */
@@ -41,6 +38,10 @@ public class KordaptPlugin implements Plugin<Project> {
         }
 
         project.task('kgenerate', type: GenerateAll, dependsOn: 'compileJava')
+        project.task('sharedJarFromApi', type: SharedJarFromAPI)
+        project.sharedJarFromApi.doFirst{
+            apiPath = "/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/tree-services/services/api-definition"
+        }
 
         project.kgenerate.doFirst{
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){

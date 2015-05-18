@@ -7,6 +7,7 @@ import com.korwe.kordapt.gradle.util.ApiUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.bundling.Jar
 import org.stringtemplate.v4.STGroupFile
 
 /**
@@ -14,15 +15,16 @@ import org.stringtemplate.v4.STGroupFile
  * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
  * */
 class SharedJarFromAPI extends DefaultTask{
-    String pathToAPI
+    String apiPath
 
     @TaskAction
     def sharedJarFromApi() {
 
         def kordaptConfig = new KordaptConfig()
 
-        kordaptConfig.mainPath = "${project.projectDir.absolutePath}/src/main"
-        kordaptConfig.mainJavaPath = "${mainPath}/java"
+        kordaptConfig.mainPath = "${project.projectDir.absolutePath}/build/tmp/src/main"
+        kordaptConfig.mainJavaPath = "${kordaptConfig.mainPath}/java"
+        kordaptConfig.typePackagePath = "java.util" // used as default, but no default
 
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
@@ -30,21 +32,22 @@ class SharedJarFromAPI extends DefaultTask{
 
         //from api dir
 
-        File  apiFile = file(pathToAPI)
+        File  apiFile = project.file(apiPath)
         if (apiFile.isDirectory()){
-            apiFile.list().each { File dir ->
+            apiFile.listFiles().each { File dir ->
                 if (dir.isDirectory()) {
                     if ('types'.equals(dir.name)) {
-                        FileTree fileTree = fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
+                        FileTree fileTree = project.fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
                         fileTree.files.each { File typeFile ->
                             Type typeDefinition = ApiUtil.populateTypeFromApi(typeFile)
                             ApiUtil.generateTypeBean(typeDefinition, typeTemplateGroup, kordaptConfig)
                         }
                     }
                     else if('services'.equals(dir.name)){
-                        FileTree fileTree = fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
+                        FileTree fileTree = project.fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
                         fileTree.files.each { File serviceFile ->
                             Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile)
+                            kordaptConfig.servicePackagePath = serviceDefinition.packageName.replace(".",File.separator)
                             ApiUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
                         }
                     }
@@ -53,7 +56,19 @@ class SharedJarFromAPI extends DefaultTask{
         }
 
 
-        //package into jar
+        //package into
+
+        project.compileJava{
+            options.fork = true
+
+            source = kordaptConfig.mainJavaPath
+            destinationDir = project.file "${project.projectDir.absolutePath}/build/tmp/build"
+        }.execute()
+
+        Jar jarTask = new Jar()
+        jarTask.from project.fileTree(dir:"${project.projectDir.absolutePath}/build/tmp/build",include: '**/*.class')
+        jarTask.destinationDir=project.file("${project.projectDir.absolutePath}/build/tmp/jar")
+        jarTask.execute()
 
         //move jar to lib folder
 
