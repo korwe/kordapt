@@ -1,10 +1,13 @@
 package com.korwe.kordapt.gradle
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
-import com.korwe.kordapt.gradle.task.SharedJarFromAPI
+import com.korwe.kordapt.gradle.task.GenerateApiSrc
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.compile.JavaCompile
+
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  */
@@ -38,9 +41,26 @@ public class KordaptPlugin implements Plugin<Project> {
         }
 
         project.task('kgenerate', type: GenerateAll, dependsOn: 'compileJava')
-        project.task('sharedJarFromApi', type: SharedJarFromAPI)
+        project.task('generateApiSrc', type: GenerateApiSrc)
+        project.task('compileApiSrc', type: JavaCompile, dependsOn: 'generateApiSrc'){
+            source = project.fileTree "${project.projectDir.absolutePath}/build/tmp/src/main/java"
+            destinationDir = project.file "${project.projectDir.absolutePath}/build/tmp/build"
+            classpath = project.compileJava.classpath
+
+        }
+        project.task('sharedJarFromApi', type: Jar, dependsOn: 'compileApiSrc')
+
+        project.generateApiSrc.doFirst{
+            if(!project.hasProperty('apiPath') || project.apiPath.isEmpty()){
+                throw new GradleException("You are required to supply a non-empty string for project parameter 'apiPath'")
+            }
+            apiPath = project.apiPath
+        }
+
         project.sharedJarFromApi.doFirst{
-            apiPath = "/Users/dariom/Dev/clients/korwe/env_forge/korwe_dev_tree/korwe-dev/tree-services/services/api-definition"
+            from project.fileTree(dir:"${project.projectDir.absolutePath}/build/tmp/build",include: '**/*.class')
+            destinationDir=project.file("${project.projectDir.absolutePath}/lib")
+
         }
 
         project.kgenerate.doFirst{

@@ -14,11 +14,11 @@ import org.stringtemplate.v4.STGroupFile
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
  * */
-class SharedJarFromAPI extends DefaultTask{
+class GenerateApiSrc extends DefaultTask{
     String apiPath
 
     @TaskAction
-    def sharedJarFromApi() {
+    def generateApiSrc() {
 
         def kordaptConfig = new KordaptConfig()
 
@@ -54,23 +54,6 @@ class SharedJarFromAPI extends DefaultTask{
                 }
             }
         }
-
-
-        //package into
-
-        project.compileJava{
-            options.fork = true
-
-            source = kordaptConfig.mainJavaPath
-            destinationDir = project.file "${project.projectDir.absolutePath}/build/tmp/build"
-        }.execute()
-
-        Jar jarTask = new Jar()
-        jarTask.from project.fileTree(dir:"${project.projectDir.absolutePath}/build/tmp/build",include: '**/*.class')
-        jarTask.destinationDir=project.file("${project.projectDir.absolutePath}/build/tmp/jar")
-        jarTask.execute()
-
-        //move jar to lib folder
 
     }
 
