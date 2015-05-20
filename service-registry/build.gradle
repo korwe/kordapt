@@ -25,6 +25,9 @@ dependencies{
     compile project(':hibernate')
     compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
 
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.apache.commons:commons-compress:1.9'
+
     //Flyway
     compile 'com.googlecode.flyway:flyway-core:2.2.1'
 

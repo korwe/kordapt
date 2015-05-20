@@ -1,5 +1,6 @@
 package com.korwe.kordapt.service.impl;
 
+import com.google.common.io.Files;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
 import com.korwe.kordapt.registry.domain.Service;
@@ -12,11 +13,15 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.testng.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
@@ -141,5 +146,14 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
         Service service = new Service();
         service.setId(id);
         return service;
+    }
+
+    @Test
+    public void testUploadApiDefinitions() throws Exception {
+
+        URL resource = this.getClass().getResource("/tree-api-def.tar");
+        byte[] apiDef = Files.toByteArray(new File(resource.toURI()));
+        serviceRegistry.uploadApiDefinitions(apiDef, "com.korwe");
+
     }
 }

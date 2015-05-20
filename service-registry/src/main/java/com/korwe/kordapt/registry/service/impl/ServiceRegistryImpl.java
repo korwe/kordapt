@@ -1,14 +1,22 @@
 package com.korwe.kordapt.registry.service.impl;
 
+import com.korwe.kordapt.gradle.util.ApiUtil;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
 import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
+import com.korwe.kordapt.registry.domain.ServiceProvider;
 import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.service.ping.PingServiceImpl;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,6 +78,66 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
     @Override
     public List<Service> getServiceList(){
         return serviceDAO.findAll();
+    }
+
+    @Override
+    public void uploadApiDefinitions(byte[] apiDef, String groupID) throws IOException {
+
+
+        InputStream inputStream = new ByteArrayInputStream(apiDef);
+
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(inputStream);
+
+        TarArchiveEntry nextEntry;
+
+        while ((nextEntry= tarArchiveInputStream.getNextTarEntry()) != null) {
+            if (nextEntry.isFile() && nextEntry.getName().startsWith("./services/")) {
+
+                File file = nextEntry.getFile();
+
+                //Do with serviceDefinition
+                if (file.getName().endsWith(".yml") || file.getName().endsWith(".yaml")) {
+                    com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(file);
+
+                    Service service = new Service();
+                    ServiceProvider provider = new ServiceProvider(); //TODO : lookup the provider give the group name.
+                    service.setProvider(provider);
+                    service.setName(serviceDefinition.getName());
+                    service.setDescription(serviceDefinition.getDescription());
+                    service.setApiDef(null); //TODO: need to work out strategy of how to share data, in order to populate common apiDef accross all services.
+                    LOG.debug("Processed apiDef for Service name {}", service.getName());
+                }
+
+            }
+
+        }
+
+    }
+
+    private void traverseDir(TarArchiveEntry archiveEntry) {
+        if (archiveEntry.isDirectory()) {
+            for(TarArchiveEntry dirEntry : archiveEntry.getDirectoryEntries()){
+                traverseDir(dirEntry);
+            }
+        }
+
+        if(archiveEntry.isFile()){
+            File file = archiveEntry.getFile();
+
+            //Do with serviceDefinition
+            if (file.getName().endsWith(".yml") || file.getName().endsWith(".yaml")) {
+                com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(file);
+
+                Service service = new Service();
+                ServiceProvider provider = new ServiceProvider(); //TODO : lookup the provider give the group name.
+                service.setProvider(provider);
+                service.setName(serviceDefinition.getName());
+                service.setDescription(serviceDefinition.getDescription());
+                service.setApiDef(null); //TODO: need to work out strategy of how to share data, in order to populate common apiDef accross all services.
+                LOG.debug("Processed apiDef for Service name {}", service.getName());
+            }
+
+        }
     }
 
     public ServiceDAO getServiceDAO() {

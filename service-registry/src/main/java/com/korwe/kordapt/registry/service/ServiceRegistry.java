@@ -6,6 +6,7 @@ import com.korwe.thecore.annotation.ParamNames;
 import com.korwe.thecore.service.PingService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -28,4 +29,7 @@ public interface ServiceRegistry extends PingService{
     public Service getService(String id);
 
     public List<Service> getServiceList();
+
+    @ParamNames({"apiDef", "groupID"})
+    public void uploadApiDefinitions(byte[] apiDef, String groupID) throws IOException;
 }
