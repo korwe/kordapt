@@ -1,6 +1,7 @@
 package com.korwe.kordapt.registry.service.impl;
 
 import com.korwe.kordapt.gradle.util.ApiUtil;
+import com.korwe.kordapt.registry.ServiceRegistryServiceException;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
 import com.korwe.kordapt.registry.dao.ServiceProviderDAO;
@@ -8,6 +9,7 @@ import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.kordapt.registry.domain.ServiceProvider;
 import com.korwe.kordapt.registry.service.ServiceRegistry;
+import com.korwe.thecore.exception.CoreServiceException;
 import com.korwe.thecore.service.ping.PingServiceImpl;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -45,8 +47,21 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
     @Override
     public String registerServiceInstance(ServiceInstance serviceInstance){
+
+        if(serviceInstance.getService() == null){
+            LOG.error("Service is required");
+            throw new ServiceRegistryServiceException("registration.serviceRequired");
+        }
+
+        String serviceName = serviceInstance.getService().getName();
+        Service service = serviceDAO.findByName(serviceName);
+
+        if(service == null){
+            LOG.error("Service with name {} does not exist.", serviceName);
+            throw new CoreServiceException("db.notFound", Service.class.getSimpleName(), serviceName);
+        }
+
         serviceInstance.setQueueName(UUID.randomUUID().toString());
-        serviceDAO.saveOrUpdate(serviceInstance.getService());
         serviceInstanceDAO.saveOrUpdate(serviceInstance);
 
         return serviceInstance.getQueueName();
