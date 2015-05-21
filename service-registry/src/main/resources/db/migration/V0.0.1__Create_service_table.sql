@@ -3,9 +3,11 @@
 --
 
 CREATE TABLE service(
-    id VARCHAR(255) NOT NULL,
+    id BIGINT NOT NULL,
     version integer DEFAULT 0 NOT NULL,
     name varchar(100),
+    description varchar(1000),
+    api_definition_data  BYTEA,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL
 );

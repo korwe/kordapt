@@ -26,7 +26,7 @@ public interface ServiceRegistry extends PingService{
     public List<ServiceInstance> getServiceInstanceList();
 
     @ParamNames("id")
-    public Service getService(String id);
+    public Service getService(Long id);
 
     public List<Service> getServiceList();
 

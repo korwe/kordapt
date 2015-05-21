@@ -7,7 +7,6 @@ import com.korwe.kordapt.gradle.util.ApiUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.bundling.Jar
 import org.stringtemplate.v4.STGroupFile
 
 /**

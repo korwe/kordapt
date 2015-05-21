@@ -3,6 +3,7 @@ package com.korwe.kordapt.registry.service.impl;
 import com.korwe.kordapt.gradle.util.ApiUtil;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
+import com.korwe.kordapt.registry.dao.ServiceProviderDAO;
 import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.kordapt.registry.domain.ServiceProvider;
@@ -10,8 +11,10 @@ import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.service.ping.PingServiceImpl;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -29,6 +32,10 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
     private ServiceDAO serviceDAO;
     private ServiceInstanceDAO serviceInstanceDAO;
+
+    @Autowired
+    private ServiceProviderDAO serviceProviderDAO;
+
     private Logger LOG = LoggerFactory.getLogger(ServiceRegistryImpl.class);
 
     public ServiceRegistryImpl(ServiceDAO serviceDAO, ServiceInstanceDAO serviceInstanceDAO){
@@ -64,7 +71,7 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
     }
 
     @Override
-    public Service getService(String id){
+    public Service getService(Long id){
         Service service = serviceDAO.findById(id);
 
         if(service == null){
@@ -83,6 +90,7 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
     @Override
     public void uploadApiDefinitions(byte[] apiDef, String groupID) throws IOException {
 
+        ServiceProvider provider = serviceProviderDAO.findGroupId(groupID);
 
         InputStream inputStream = new ByteArrayInputStream(apiDef);
 
@@ -93,19 +101,21 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
         while ((nextEntry= tarArchiveInputStream.getNextTarEntry()) != null) {
             if (nextEntry.isFile() && nextEntry.getName().startsWith("./services/")) {
 
-                File file = nextEntry.getFile();
+                ByteArrayInputStream fileByteStream = new ByteArrayInputStream(IOUtils.toByteArray(tarArchiveInputStream));
 
                 //Do with serviceDefinition
-                if (file.getName().endsWith(".yml") || file.getName().endsWith(".yaml")) {
-                    com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(file);
+                if (nextEntry.getName().endsWith(".yml") || nextEntry.getName().endsWith(".yaml")) {
+                    com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(fileByteStream);
 
                     Service service = new Service();
-                    ServiceProvider provider = new ServiceProvider(); //TODO : lookup the provider give the group name.
+
                     service.setProvider(provider);
                     service.setName(serviceDefinition.getName());
                     service.setDescription(serviceDefinition.getDescription());
-                    service.setApiDef(null); //TODO: need to work out strategy of how to share data, in order to populate common apiDef accross all services.
-                    LOG.debug("Processed apiDef for Service name {}", service.getName());
+                    service.setApiDef(apiDef);
+                    LOG.debug("Processed apiDef for Service name : {}", service.getName());
+
+                    Service savedService = serviceDAO.save(service);
                 }
 
             }

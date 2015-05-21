@@ -8,22 +8,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "service")
-public class Service{
-    private String id;
+public class Service extends AbstractEntity{
     private String name;
     private String description;
     private ServiceProvider provider;
     private byte[] apiDef;
-
-    @Id
-    @Column(name = "id")
-    public String getId(){
-        return id;
-    }
-
-    public void setId(String id){
-        this.id = id;
-    }
 
     @Column(name = "name")
     public String getName() {
@@ -44,7 +33,7 @@ public class Service{
     }
 
     @ManyToOne()
-    @JoinColumn(name="provider")
+    @JoinColumn(name="service_provider_id")
     public ServiceProvider getProvider() {
         return provider;
     }

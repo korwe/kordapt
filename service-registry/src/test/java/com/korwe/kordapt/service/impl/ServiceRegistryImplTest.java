@@ -3,8 +3,10 @@ package com.korwe.kordapt.service.impl;
 import com.google.common.io.Files;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
+import com.korwe.kordapt.registry.dao.ServiceProviderDAO;
 import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
+import com.korwe.kordapt.registry.domain.ServiceProvider;
 import com.korwe.kordapt.registry.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -20,8 +22,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
@@ -34,6 +35,8 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
 
     @Autowired
     ServiceDAO serviceDAO;
+    @Autowired
+    ServiceProviderDAO serviceProviderDAO;
 
     @Autowired
     ServiceInstanceDAO serviceInstanceDAO;
@@ -51,7 +54,7 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
         String serviceInstanceQueue = serviceRegistry.registerServiceInstance(serviceInstance);
 
         assertThat(serviceInstance.getQueueName(), equalTo(serviceInstanceQueue));
-        String persistedService = service.getId();
+        Long persistedService = service.getId();
         assertNotNull(serviceDAO.findById(persistedService));
 
         ServiceInstance persistedServiceInstance = serviceInstanceDAO.findById(serviceInstance.getId());
@@ -142,18 +145,25 @@ public class ServiceRegistryImplTest extends AbstractTransactionalTestNGSpringCo
         return serviceInstance;
     }
 
-    private Service createTestService(String id) {
+    private Service createTestService(String name) {
         Service service = new Service();
-        service.setId(id);
+        service.setName(name);
         return service;
     }
 
     @Test
+    @Rollback
     public void testUploadApiDefinitions() throws Exception {
+
+        ServiceProvider serviceProvider = new ServiceProvider();
+        String groupId = "com.korwe";
+        serviceProvider.setGroupId(groupId);
+        ServiceProvider savedProvider = serviceProviderDAO.save(serviceProvider);
+        assertEquals(savedProvider.getGroupId(), groupId, "should have saved provider");
 
         URL resource = this.getClass().getResource("/tree-api-def.tar");
         byte[] apiDef = Files.toByteArray(new File(resource.toURI()));
-        serviceRegistry.uploadApiDefinitions(apiDef, "com.korwe");
+        serviceRegistry.uploadApiDefinitions(apiDef, groupId);
 
     }
 }

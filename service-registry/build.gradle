@@ -23,6 +23,8 @@ apply plugin: 'flyway'
 dependencies{
     compile project(':core')
     compile project(':hibernate')
+    compile project(':gradle-plugin')
+
     compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
 
     compile 'com.google.guava:guava:18.0'

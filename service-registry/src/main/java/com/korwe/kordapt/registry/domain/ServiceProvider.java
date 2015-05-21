@@ -5,21 +5,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "`service_provider`")
-public class ServiceProvider {
-    private Long id;
+public class ServiceProvider extends AbstractEntity{
     private String name;
     private String groupId;
     private Set<Service> services;
 
-    @Id
-    @Column(name = "id")
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @OneToMany(mappedBy = "provider")
     public Set<Service> getServices() {

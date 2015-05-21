@@ -16,8 +16,15 @@ class ApiUtil {
                              'List': new Type('List', 'java.util'),
                              'Map': new Type('Map','java.util')]
 
-    static Service populateServiceFromApi(File file){
-        def reader = new YamlReader(new FileReader(file))
+    static Service populateServiceFromApi(File file) {
+        populateServiceFromApi(new FileInputStream(file))
+
+
+    }
+    static Service populateServiceFromApi(InputStream inputStream){
+
+        def reader = new YamlReader(new InputStreamReader(inputStream))
+
         def serviceYaml = reader.read()
 
         //Populate service definition object

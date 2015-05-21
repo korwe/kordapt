@@ -8,7 +8,7 @@ CREATE TABLE service_instance(
     name varchar(100),
     queue_name VARCHAR(100),
     description VARCHAR(100),
-    service_id VARCHAR(255) NOT NULL,
+    service_id BIGINT NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
