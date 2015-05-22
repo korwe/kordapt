@@ -3,7 +3,7 @@ import com.korwe.kordapt.api.bean.KordaptConfig
 import com.korwe.kordapt.cl.KordaptCLImpl
 import com.korwe.kordapt.cl.KordaptCLLexer
 import com.korwe.kordapt.cl.KordaptCLParser
-import com.korwe.kordapt.gradle.util.ApiUtil
+import com.korwe.kordapt.gradle.util.GeneratorUtil
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -52,10 +52,10 @@ class GenerateAll extends DefaultTask {
             kordaptConfig.servicePackagePath = service.packageName.replace(".","/")
             kordaptConfig.serviceAdapterPackagePath = kordaptConfig.servicePackagePath + File.separator + "adapter"
             kordaptConfig.serviceImplPackagePath = kordaptConfig.servicePackagePath + File.separator + "impl"
-            ApiUtil.generateService(service, kordaptConfig)
+            GeneratorUtil.generateService(service, kordaptConfig)
         }
         else{
-            ApiUtil.generateType(impl.type, kordaptConfig)
+            GeneratorUtil.generateType(impl.type, kordaptConfig)
         }
 
 

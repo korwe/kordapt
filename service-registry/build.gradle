@@ -23,12 +23,13 @@ apply plugin: 'flyway'
 dependencies{
     compile project(':core')
     compile project(':hibernate')
-    compile project(':gradle-plugin')
+    compile project(':api-definition')
 
     compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
 
     compile 'com.google.guava:guava:18.0'
     compile 'org.apache.commons:commons-compress:1.9'
+    compile 'org.apache.commons:commons-io:1.3.2'
 
     //Flyway
     compile 'com.googlecode.flyway:flyway-core:2.2.1'

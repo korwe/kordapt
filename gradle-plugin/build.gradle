@@ -27,7 +27,6 @@ dependencies {
 
     compile 'org.antlr:antlr4:4.1'
     compile 'org.antlr:stringtemplate:4.0.2'
-    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.09'
 
 
     //Spring

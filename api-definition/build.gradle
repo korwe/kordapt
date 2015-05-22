@@ -2,6 +2,7 @@ apply plugin: 'maven'
 
 dependencies {
     compile 'com.google.guava:guava:14.0.1'
+    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.09'
 }
 
 

@@ -3,7 +3,8 @@ package com.korwe.kordapt.gradle.task
 import com.korwe.kordapt.api.bean.KordaptConfig
 import com.korwe.kordapt.api.bean.Service
 import com.korwe.kordapt.api.bean.Type
-import com.korwe.kordapt.gradle.util.ApiUtil
+import com.korwe.kordapt.api.util.ApiUtil
+import com.korwe.kordapt.gradle.util.GeneratorUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.TaskAction
@@ -39,7 +40,7 @@ class GenerateApiSrc extends DefaultTask{
                         FileTree fileTree = project.fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
                         fileTree.files.each { File typeFile ->
                             Type typeDefinition = ApiUtil.populateTypeFromApi(typeFile)
-                            ApiUtil.generateTypeBean(typeDefinition, typeTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateTypeBean(typeDefinition, typeTemplateGroup, kordaptConfig)
                         }
                     }
                     else if('services'.equals(dir.name)){
@@ -47,7 +48,7 @@ class GenerateApiSrc extends DefaultTask{
                         fileTree.files.each { File serviceFile ->
                             Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile)
                             kordaptConfig.servicePackagePath = serviceDefinition.packageName.replace(".",File.separator)
-                            ApiUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
                         }
                     }
                 }
