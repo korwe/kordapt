@@ -106,6 +106,11 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
         ServiceProvider provider = serviceProviderDAO.findGroupId(groupID);
 
+        if(provider == null){
+            LOG.error("ServiceProvider with GroupId : [{}] does not exist.", groupID);
+            throw new CoreServiceException("db.notFound", ServiceProvider.class.getSimpleName(), groupID);
+        }
+
         InputStream inputStream = new ByteArrayInputStream(apiDef);
 
         TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(inputStream);
