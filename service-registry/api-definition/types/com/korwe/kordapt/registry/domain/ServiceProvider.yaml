@@ -1,12 +1,12 @@
-name: com.korwe.kordapt.registry.domain.Service
+name: com.korwe.kordapt.registry.domain.ServiceProvider
 inherits_from: com.korwe.kordapt.registry.domain.AbstractEntity
 attributes:
 - name: name
   type: String
   description:
-- name: description
+- name: groupId
   type: String
   description:
-- name: provider
-  type: com.korwe.kordapt.registry.domain.ServiceProvider
+- name: services
+  type: Set<com.korwe.kordapt.registry.domain.Service>
   description:

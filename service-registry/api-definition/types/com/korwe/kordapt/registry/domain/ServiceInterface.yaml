@@ -1,8 +1,5 @@
 name: com.korwe.kordapt.registry.domain.ServiceInstance
-attributes:
-- name: id
-  type: String
-  description:
+inherits_from: com.korwe.kordapt.registry.domain.AbstractEntity
 - name: queueName
   type: String
   description:

@@ -27,3 +27,12 @@ functions:
 - name: getServiceList
   description: 
   return_type: List<com.korwe.kordapt.registry.Service>
+- name: uploadApiDefinition
+  description: Description required
+  parameters:
+  - name: apiDef
+    type: byte[]
+    description: Description required
+  - name: groupId
+    type: String
+    description: Description required

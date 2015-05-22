@@ -1,9 +1,0 @@
-apply plugin: 'maven'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.artifactId = jar.baseName
-        }
-    }
-}
