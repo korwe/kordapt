@@ -118,7 +118,7 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
         TarArchiveEntry nextEntry;
 
         while ((nextEntry= tarArchiveInputStream.getNextTarEntry()) != null) {
-            if (nextEntry.isFile() && nextEntry.getName().startsWith("./services/")) {
+            if (nextEntry.isFile() && (nextEntry.getName().startsWith("./services/") || nextEntry.getName().startsWith("services/"))) {
 
                 ByteArrayInputStream fileByteStream = new ByteArrayInputStream(IOUtils.toByteArray(tarArchiveInputStream));
 

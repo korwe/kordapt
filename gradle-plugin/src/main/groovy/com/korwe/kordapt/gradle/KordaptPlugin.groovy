@@ -2,10 +2,13 @@ package com.korwe.kordapt.gradle
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
 import com.korwe.kordapt.gradle.task.GenerateApiSrc
+import com.korwe.kordapt.gradle.task.PushApi
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.bundling.Compression
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.bundling.Tar
 import org.gradle.api.tasks.compile.JavaCompile
 
 /**
@@ -49,6 +52,16 @@ public class KordaptPlugin implements Plugin<Project> {
 
         }
         project.task('sharedJarFromApi', type: Jar, dependsOn: 'compileApiSrc')
+        project.task('tarApi', type: Tar){
+            from project.fileTree(dir: "${project.projectDir.absolutePath}/api-definition", includes: ["**/*.yml", '**/*.yaml'])
+            archiveName = 'api-definition.tar'
+            destinationDir = project.file("${project.projectDir.absolutePath}/build/")
+            compression = Compression.NONE
+        }
+        project.task('pushApi', type: PushApi, dependsOn: 'tarApi'){
+            apiPath = project.file("${project.projectDir.absolutePath}/build/api-definition.tar")
+        }
+
 
         project.generateApiSrc.doFirst{
             if(!project.hasProperty('apiPath') || project.apiPath.isEmpty()){

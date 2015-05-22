@@ -30,6 +30,7 @@ public interface ServiceRegistry extends PingService{
 
     public List<Service> getServiceList();
 
+    @Transactional
     @ParamNames({"apiDef", "groupID"})
     public void uploadApiDefinitions(byte[] apiDef, String groupID) throws IOException;
 }

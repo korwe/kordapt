@@ -20,6 +20,7 @@ dependencies{
     compile project(':core')
     compile project(':hibernate')
     compile 'org.postgresql:postgresql:9.2-1002-jdbc4'
+    compile 'org.apache.commons:commons-compress:1.9'
 }
 
 kordapt{
