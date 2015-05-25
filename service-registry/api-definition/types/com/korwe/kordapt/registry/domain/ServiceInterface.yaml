@@ -1,10 +1,11 @@
 name: com.korwe.kordapt.registry.domain.ServiceInstance
 inherits_from: com.korwe.kordapt.registry.domain.AbstractEntity
+attributes:
 - name: queueName
   type: String
   description:
 - name: service
-  type: com.korwe.kordapt.domain.Service
+  type: com.korwe.kordapt.registry.domain.Service
   description: 
 - name: description
   type: String

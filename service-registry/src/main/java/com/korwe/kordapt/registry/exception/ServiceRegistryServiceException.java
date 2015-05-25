@@ -1,4 +1,4 @@
-package com.korwe.kordapt.registry;
+package com.korwe.kordapt.registry.exception;
 
 import com.korwe.kordapt.registry.service.ServiceRegistry;
 import com.korwe.thecore.exception.CoreServiceException;
@@ -8,14 +8,11 @@ import com.korwe.thecore.exception.CoreServiceException;
  */
 public class ServiceRegistryServiceException extends CoreServiceException{
     public ServiceRegistryServiceException(String errorCode, String... errorVars) {
-        super(serviceErrorCode(errorCode), errorVars);
+        super(ServiceRegistry.class, errorCode, errorVars);
     }
 
     public ServiceRegistryServiceException(Throwable cause, String errorCode, String... errorVars) {
-        super(cause, serviceErrorCode(errorCode), errorVars);
+        super(ServiceRegistry.class, cause, errorCode, errorVars);
     }
 
-    private static String serviceErrorCode(String errorCode) {
-        return ServiceRegistry.class.getName().concat(errorCode);
-    }
 }

@@ -1,7 +1,7 @@
 package com.korwe.kordapt.registry.service.impl;
 
 import com.korwe.kordapt.api.util.ApiUtil;
-import com.korwe.kordapt.registry.ServiceRegistryServiceException;
+import com.korwe.kordapt.registry.exception.ServiceRegistryServiceException;
 import com.korwe.kordapt.registry.dao.ServiceDAO;
 import com.korwe.kordapt.registry.dao.ServiceInstanceDAO;
 import com.korwe.kordapt.registry.dao.ServiceProviderDAO;

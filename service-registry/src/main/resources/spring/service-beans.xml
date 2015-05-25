@@ -7,22 +7,28 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
 
 
+        <bean id="serviceRegistry" class="com.korwe.kordapt.registry.service.impl.ServiceRegistryImpl" scope="" 
+              c:serviceDAO-ref="serviceDAO"
+              c:serviceInstanceDAO-ref="serviceInstanceDAO"/>
 
-    <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter"
+        <bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" scope="" 
               c:coreConfigPath="/coreconfig.xml"/>
 
-    <bean id="abstractCoreService" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
+        <bean id="coreServiceProviderService" class="com.korwe.kordapt.registry.service.service.adapter.CoreServiceProviderService" parent="abstractCoreService" scope="" 
+              c:serviceName="ServiceProviderService"
+              c:delegate-ref="serviceProviderService"
+              c:maxThreads="10"/>
+
+        <bean id="serviceProviderService" class="com.korwe.kordapt.registry.service.service.impl.ServiceProviderServiceImpl" scope="" />
+
+        <bean id="abstractCoreService" abstract="true" class="com.korwe.thecore.service.AbstractCoreService" scope="" 
               init-method="startUp"
               destroy-method="shutDown"/>
 
-    <bean id="serviceRegistry" class="com.korwe.kordapt.registry.service.impl.ServiceRegistryImpl"
-            c:serviceDAO-ref="serviceDAO"
-            c:serviceInstanceDAO-ref="serviceInstanceDAO" />
-
-    <bean id="coreServiceRegistry" class="com.korwe.kordapt.registry.service.adapter.CoreServiceRegistry" parent="abstractCoreService"
-              c:serviceName="ServiceRegistry"
+        <bean id="coreServiceRegistry" class="com.korwe.kordapt.registry.service.adapter.CoreServiceRegistry" parent="abstractCoreService" scope="" 
               c:delegate-ref="serviceRegistry"
-              c:maxThreads="10"/>
+              c:maxThreads="10"
+              c:serviceName="ServiceRegistry"/>
 
 
 </beans>

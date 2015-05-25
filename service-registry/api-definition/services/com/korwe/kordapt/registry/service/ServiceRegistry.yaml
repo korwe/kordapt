@@ -1,37 +1,37 @@
-name: ServiceRegistry
+name: com.korwe.kordapt.registry.service.ServiceRegistry
 functions:
 - name: registerServiceInstance
   description: 
   parameters:
   - name: serviceInstance
-    type: com.korwe.kordapt.registry.ServiceInstance
+    type: com.korwe.kordapt.registry.domain.ServiceInstance
     description: Description required
   return_type: void
 - name: getServiceInstance
   description: 
   parameters:
   - name: id
-    type: com.korwe.kordapt.registry.ServiceInstance
+    type: com.korwe.kordapt.registry.domain.ServiceInstance
     description: Description required
-  return_type: ServiceInstance
+  return_type: com.korwe.kordapt.registry.domain.ServiceInstance
 - name: getServiceInstanceList
   description: 
-  return_type: List<com.korwe.kordapt.registry.ServiceInstance>
+  return_type: List<com.korwe.kordapt.registry.domain.ServiceInstance>
 - name: getService
   description: 
   parameters:
   - name: id
     type: String
     description: Description required
-  return_type: Service
+  return_type: com.korwe.kordapt.registry.domain.Service
 - name: getServiceList
   description: 
-  return_type: List<com.korwe.kordapt.registry.Service>
+  return_type: List<com.korwe.kordapt.registry.domain.Service>
 - name: uploadApiDefinition
   description: Description required
   parameters:
   - name: apiDef
-    type: byte[]
+    type: Byte[]
     description: Description required
   - name: groupId
     type: String
