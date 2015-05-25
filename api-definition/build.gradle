@@ -1,6 +1,8 @@
 apply plugin: 'maven'
+apply plugin: 'groovy'
 
 dependencies {
+    compile 'org.codehaus.groovy:groovy:2.4.3'
     compile 'com.google.guava:guava:14.0.1'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.09'
 }

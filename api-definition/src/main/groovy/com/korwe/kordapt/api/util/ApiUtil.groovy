@@ -137,7 +137,7 @@ class ApiUtil {
 
 
     static def isBasicType(type){
-        ['Object', 'String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
+        ['Object', 'Byte', 'String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
             name.equals(type.name)
         } && !type.packageName
     }
