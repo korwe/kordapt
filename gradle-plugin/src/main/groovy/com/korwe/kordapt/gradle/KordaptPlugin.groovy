@@ -104,4 +104,5 @@ public class KordaptPlugin implements Plugin<Project> {
 
 public class KordaptPluginExtension {
     String defaultPackage
+    List thirdPartyPackages = []
 }
