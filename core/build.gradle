@@ -13,7 +13,7 @@ dependencies{
     //Korwe
     compile 'com.korwe:thecore-service-api:2.0.0'
     compile 'com.korwe:thecore-common-api:2.0.0'
-    compile project(':service-registry-common')
+    compile files('lib/service-registry-1.0.1.jar')
 
     //Spring
     compile 'org.springframework:spring-core:3.2.3.RELEASE'

@@ -1,4 +1,4 @@
-package com.korwe.kordapt.registry;
+package com.korwe.kordapt;
 
 import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
@@ -56,7 +56,7 @@ public class KordaptCoreService<S> extends GenericCoreService<S>{
 
             ServiceInstance serviceInstance = new ServiceInstance();
             Service service = new Service();
-            service.setId(getServiceClass().getName());
+            service.setName(getServiceClass().getName());
             serviceInstance.setService(service);
             registrationRequest.setParameter("serviceInstance", serviceInstance);
 
