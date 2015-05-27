@@ -16,6 +16,7 @@ public class KordaptConfig {
     private String mainPath;
     private String mainJavaPath;
     private String testJavaPath;
+    private String defaultTypePackageName;
 
     public String getApiServicesPath() {
         return apiServicesPath;
@@ -103,5 +104,13 @@ public class KordaptConfig {
 
     public void setDefaultPackageName(String defaultPackageName) {
         this.defaultPackageName = defaultPackageName;
+    }
+
+    public String getDefaultTypePackageName() {
+        return defaultTypePackageName;
+    }
+
+    public void setDefaultTypePackageName(String defaultTypePackageName) {
+        this.defaultTypePackageName = defaultTypePackageName;
     }
 }

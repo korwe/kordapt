@@ -2,6 +2,7 @@ package com.korwe.kordapt.cl;
 
 import com.google.common.collect.Lists;
 import com.korwe.kordapt.api.bean.*;
+import com.korwe.kordapt.api.util.ApiUtil;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Stack;
@@ -16,6 +17,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     private Stack<Type> typeArgumentStack = new Stack<>();
     private Service service;
     private Type type;
+    private String defaultTypePackageName;
 
     @Override
     public void exitService(@NotNull KordaptCLParser.ServiceContext ctx){
@@ -87,22 +89,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     public Type typeFromQualifiedName(String qualifiedName){
-        Type type = new Type();
-        //Handle generic type
-        Integer genericOpeningDeclarationIndex = qualifiedName.indexOf('<');
-        if(genericOpeningDeclarationIndex != -1){//Has generic opening declarator
-            qualifiedName = qualifiedName.substring(0,genericOpeningDeclarationIndex);
-        }
-
-
-        Integer nameSeparatorIndex = qualifiedName.lastIndexOf('.');
-        if(nameSeparatorIndex == -1){
-            type.setName(qualifiedName);
-        }
-        else{
-            type.setName(qualifiedName.substring(nameSeparatorIndex+1));
-            type.setPackageName(qualifiedName.substring(0,nameSeparatorIndex));
-        }
+        Type type = ApiUtil.typeDefinitionFromTypeName(qualifiedName, defaultTypePackageName);
 
         if(!typeArgumentStack.empty()){
             type.setTypeArguments(Lists.newArrayList(typeArgumentStack));
@@ -126,5 +113,13 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public String getDefaultTypePackageName() {
+        return defaultTypePackageName;
+    }
+
+    public void setDefaultTypePackageName(String defaultTypePackageName) {
+        this.defaultTypePackageName = defaultTypePackageName;
     }
 }

@@ -110,4 +110,29 @@ public class Type {
     public String toString(){ //Overriden to support Joiner in getDefinitionString()
         return getDeclarationString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Type type = (Type) o;
+
+        if (!name.equals(type.name)) return false;
+        if (packageName != null ? !packageName.equals(type.packageName) : type.packageName != null) return false;
+        if (inheritsFrom != null ? !inheritsFrom.equals(type.inheritsFrom) : type.inheritsFrom != null) return false;
+        if (attributes != null ? !attributes.equals(type.attributes) : type.attributes != null) return false;
+        return !(typeArguments != null ? !typeArguments.equals(type.typeArguments) : type.typeArguments != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result = 31 * result + (inheritsFrom != null ? inheritsFrom.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        result = 31 * result + (typeArguments != null ? typeArguments.hashCode() : 0);
+        return result;
+    }
 }

@@ -124,7 +124,7 @@ public class ServiceRegistryImpl extends PingServiceImpl implements ServiceRegis
 
                 //Do with serviceDefinition
                 if (nextEntry.getName().endsWith(".yml") || nextEntry.getName().endsWith(".yaml")) {
-                    com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(fileByteStream);
+                    com.korwe.kordapt.api.bean.Service serviceDefinition = ApiUtil.populateServiceFromApi(fileByteStream, null);
 
                     Service service = new Service();
 

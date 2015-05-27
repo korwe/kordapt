@@ -14,12 +14,12 @@ class ApiUtil {
                              'List': new Type('List', 'java.util'),
                              'Map': new Type('Map','java.util')]
 
-    static Service populateServiceFromApi(File file) {
-        populateServiceFromApi(new FileInputStream(file))
+    static Service populateServiceFromApi(File file, String defaultTypePackageName) {
+        populateServiceFromApi(new FileInputStream(file), defaultTypePackageName)
 
 
     }
-    static Service populateServiceFromApi(InputStream inputStream){
+    static Service populateServiceFromApi(InputStream inputStream, String defaultTypePackageName){
 
         def reader = new YamlReader(new InputStreamReader(inputStream))
 
@@ -40,47 +40,46 @@ class ApiUtil {
         }
 
         //Populate service function definition objects
-        serviceDefinition.functions = functionDefinitions(serviceYaml.functions)
+        serviceDefinition.functions = functionDefinitions(serviceYaml.functions, defaultTypePackageName)
         serviceDefinition
     }
 
-    static def populateTypeFromApi(File file) {
+    static def populateTypeFromApi(File file, String defaultPackageName) {
         def reader = new YamlReader(new FileReader(file))
         def typeYaml = reader.read()
 
         //Populate type def object
-        def typeDefObject = typeDefinitionFromTypeName(typeYaml.name)
-        typeDefObject.inheritsFrom = typeDefinitionFromTypeName(typeYaml.inherits_from)
-        typeDefObject.attributes = attributeDefinitions(typeYaml.attributes)
+        def typeDefObject = typeDefinitionFromTypeName(typeYaml.name, defaultPackageName)
+        typeDefObject.inheritsFrom = typeDefinitionFromTypeName(typeYaml.inherits_from, defaultPackageName)
+        typeDefObject.attributes = attributeDefinitions(typeYaml.attributes, defaultPackageName)
 
         typeDefObject
 
     }
 
-    static def attributeDefinitions(attributeDefYaml) {
+    static def attributeDefinitions(attributeDefYaml, String defaultPackageName) {
 
         attributeDefYaml.collect { a ->
             def attribute = new Attribute()
             attribute.name = a.name
             attribute.description = a.description
-            attribute.type = typeDefinitionFromTypeName(a.type)
+            attribute.type = typeDefinitionFromTypeName(a.type, defaultPackageName)
 
             attribute
         }
     }
 
-    static def functionDefinitions(functionsYaml) {
-
+    static def functionDefinitions(functionsYaml, String defaultPackageName) {
         functionsYaml.collect { f ->
             def function = new ServiceFunction()
             function.name = f.name
             function.description = f.description
             if(f.parameters!=null){
-                function.parameters = functionParameterDefinition(f.parameters)
+                function.parameters = functionParameterDefinition(f.parameters, defaultPackageName)
             }
 
             if(f.return_type != null && !"".equals(f.return_type)){
-                def returnType = typeDefinitionFromTypeName(f.return_type)
+                def returnType = typeDefinitionFromTypeName(f.return_type, defaultPackageName)
                 if (returnType.name != null && !'void'.equals(returnType.name)) {
                     function.returnType = returnType
                 }
@@ -89,17 +88,17 @@ class ApiUtil {
         }
     }
 
-    static def functionParameterDefinition(parametersYaml){
+    static def functionParameterDefinition(parametersYaml, String defaultPackageName){
         parametersYaml.collect{ p ->
             def serviceFunctionParameter = new ServiceFunctionParameter()
             serviceFunctionParameter.name = p.name
             serviceFunctionParameter.description = p.description
-            serviceFunctionParameter.type = typeDefinitionFromTypeName(p.type)
+            serviceFunctionParameter.type = typeDefinitionFromTypeName(p.type, defaultPackageName)
             serviceFunctionParameter
         }
     }
 
-    static def typeDefinitionFromTypeName(String typeIdentifier){
+    static Type typeDefinitionFromTypeName(String typeIdentifier, String defaultPackageName){
         if(typeIdentifier == null)return null;
 
         Type type = new Type()
@@ -112,7 +111,7 @@ class ApiUtil {
             def typeArgumentNames = typeIdentifier.substring(typeParameterOffset+1, typeIdentifier.length()-1).split(',')
             type.typeArguments = []
             typeArgumentNames.each{ t ->
-                type.typeArguments << typeDefinitionFromTypeName(t.trim())
+                type.typeArguments << typeDefinitionFromTypeName(t.trim(), defaultPackageName)
             }
         }
 
@@ -131,10 +130,18 @@ class ApiUtil {
                 type.name = typeName
             }
         }
+        correctPackageName(type, defaultPackageName)
         type
 
     }
 
+    static void correctPackageName(Type type, String packageName){
+        if(type && !isBasicType(type)){
+            if(!type.packageName){
+                type.packageName = packageName
+            }
+        }
+    }
 
     static def isBasicType(type){
         ['Object', 'Byte', 'String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->

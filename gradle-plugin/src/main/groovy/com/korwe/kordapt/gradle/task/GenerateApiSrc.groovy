@@ -24,7 +24,8 @@ class GenerateApiSrc extends DefaultTask{
 
         kordaptConfig.mainPath = "${project.projectDir.absolutePath}/build/tmp/src/main"
         kordaptConfig.mainJavaPath = "${kordaptConfig.mainPath}/java"
-        kordaptConfig.typePackagePath = "java.util" // used as default, but no default
+        kordaptConfig.typePackagePath = "type/package/path" // used as default, but no default
+        kordaptConfig.defaultTypePackageName = "default.type.package.name" // used as default, but no default
 
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
@@ -39,14 +40,14 @@ class GenerateApiSrc extends DefaultTask{
                     if ('types'.equals(dir.name)) {
                         FileTree fileTree = project.fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
                         fileTree.files.each { File typeFile ->
-                            Type typeDefinition = ApiUtil.populateTypeFromApi(typeFile)
+                            Type typeDefinition = ApiUtil.populateTypeFromApi(typeFile, kordaptConfig.defaultTypePackageName)
                             GeneratorUtil.generateTypeBean(typeDefinition, typeTemplateGroup, kordaptConfig)
                         }
                     }
                     else if('services'.equals(dir.name)){
                         FileTree fileTree = project.fileTree(dir: dir, includes: ['**/*.yml', '**/*.yaml'])
                         fileTree.files.each { File serviceFile ->
-                            Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile)
+                            Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile, kordaptConfig.defaultTypePackageName)
                             kordaptConfig.servicePackagePath = serviceDefinition.packageName.replace(".",File.separator)
                             GeneratorUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
                         }

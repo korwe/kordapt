@@ -42,13 +42,19 @@ class GenerateAll extends DefaultTask {
         kordaptConfig.apiServicesPath = apiPath + File.separator + "services"
         kordaptConfig.apiTypesPath = apiPath + File.separator + "types"
         kordaptConfig.typePackagePath = packageName + File.separator + "dto"
+        kordaptConfig.defaultTypePackageName = kordaptConfig.typePackagePath.replace(File.separator, '.')
         kordaptConfig.mainPath = mainPath
         kordaptConfig.mainJavaPath = mainJavaPath
         kordaptConfig.testJavaPath = testJavaPath
 
+        impl.setDefaultTypePackageName(kordaptConfig.defaultTypePackageName)
+
+
         if(impl.service !=null){
             def service = impl.service
-            service.packageName = packageName +".service"
+            if(!service.packageName || (service.packageName && !service.packageName.endsWith(".service"))){
+                service.packageName = packageName +".service"
+            }
             kordaptConfig.servicePackagePath = service.packageName.replace(".","/")
             kordaptConfig.serviceAdapterPackagePath = kordaptConfig.servicePackagePath + File.separator + "adapter"
             kordaptConfig.serviceImplPackagePath = kordaptConfig.servicePackagePath + File.separator + "impl"

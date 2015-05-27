@@ -59,7 +59,7 @@ service_impl_function(function) ::= <<
 service_adapter(packageName, imports, service) ::= <<
 package <packageName>;
 
-import com.korwe.kordapt.registry.KordaptCoreService;
+import com.korwe.kordapt.KordaptCoreService;
 import com.thoughtworks.xstream.XStream;
 <imports:import_template()>
 

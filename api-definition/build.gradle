@@ -5,6 +5,9 @@ dependencies {
     compile 'org.codehaus.groovy:groovy:2.4.3'
     compile 'com.google.guava:guava:14.0.1'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.09'
+
+    testCompile 'org.testng:testng:6.8.7'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
 
 

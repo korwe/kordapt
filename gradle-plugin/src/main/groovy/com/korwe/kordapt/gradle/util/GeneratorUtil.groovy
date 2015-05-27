@@ -14,17 +14,17 @@ class GeneratorUtil {
     static def noTypeFile(KordaptConfig kordaptConfig, Type type, Closure c){
         if(type && !ApiUtil.isBasicType(type)) {
             String typeFileName = kordaptConfig.mainJavaPath + File.separator + type.fullQualifiedName.replace('.', File.separator) + ".java";
-            if (type.packageName.contains(kordaptConfig.defaultPackageName) && !(new File(typeFileName)).exists()) {
+
+            //If contained within defaultPackage and file does not exist
+            if (type.packageName.startsWith(kordaptConfig.defaultPackageName) && !(new File(typeFileName)).exists()) {
                 c.call()
             }
-        }
-    }
+            //TODO: Else check classpath for existing class file - if not exist, generate
 
-    static def correctPackageName(Type type, KordaptConfig kordaptConfig){
-        if(type && !ApiUtil.isBasicType(type)){
-            if(!type.packageName){
-                type.packageName = kordaptConfig.typePackagePath.replace(File.separator, '.')
+            type.typeArguments?.each { ta ->
+                noTypeFile(kordaptConfig, ta, c)
             }
+
         }
     }
 
@@ -32,14 +32,13 @@ class GeneratorUtil {
 
         //Check functions for missing types (to stop compilation failures after generation)
         service.functions.each { f ->
-            correctPackageName(f.returnType, kordaptConfig)
-            noTypeFile kordaptConfig, f.returnType, { ->
-
-                generateType(f.returnType,  kordaptConfig)
+            if(f.returnType){
+                noTypeFile kordaptConfig, f.returnType, { ->
+                    generateType(f.returnType,  kordaptConfig)
+                }
             }
 
-            f.parameters.each { p ->
-                correctPackageName(p.type, kordaptConfig)
+            f.parameters?.each { p ->
                 noTypeFile kordaptConfig, p.type, {
                     generateType(p.type, kordaptConfig)
                 }
@@ -134,29 +133,35 @@ class GeneratorUtil {
 
     static def generateType(Type type, KordaptConfig kordaptConfig){
 
-        correctPackageName(type, kordaptConfig)
         type.attributes.each { attr ->
-            correctPackageName(attr.type, kordaptConfig)
-
             noTypeFile kordaptConfig, attr.type, {
-                generateType(attr.type, typeTemplateGroup, kordaptConfig)
+                generateType(attr.type, kordaptConfig)
             }
-
-            generateTypeArguments(attr.type, kordaptConfig)
-
         }
 
         if(type.inheritsFrom){
-            correctPackageName(type.inheritsFrom, kordaptConfig)
+            noTypeFile kordaptConfig, type.inheritsFrom, {
+                generateType(type.inheritsFrom, kordaptConfig)
+            }
         }
 
-        STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
+        type.typeArguments?.each { ta ->
+            noTypeFile kordaptConfig, ta, {
+                generateType(ta, kordaptConfig);
+            }
+        }
 
 
-        generateTypeApi(type, typeTemplateGroup, kordaptConfig)
+        if(type && !ApiUtil.isBasicType(type) && type.packageName.startsWith(kordaptConfig.defaultPackageName)) {
+            STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
+
+            generateTypeApi(type, typeTemplateGroup, kordaptConfig)
 
 
-        generateTypeBean(type, typeTemplateGroup, kordaptConfig)
+            generateTypeBean(type, typeTemplateGroup, kordaptConfig)
+        }
+
+
 
     }
 
@@ -195,18 +200,6 @@ class GeneratorUtil {
         File typeApiFile = new File("${apiDir.absolutePath}/${type.name}.yaml")
         typeApiFile.write(typeApiTemplate.render())
     }
-
-    static def generateTypeArguments(Type type, KordaptConfig kordaptConfig){
-        if (type.typeArguments) {
-            type.typeArguments.each { ta ->
-                correctPackageName(ta, kordaptConfig)
-                noTypeFile kordaptConfig, ta, {
-                    generateType(ta, kordaptConfig);
-                }
-            }
-        }
-    }
-
 
     static def typeImports(Type type){
         def imports = []
