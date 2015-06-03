@@ -16,10 +16,11 @@ dependencies{
     compile files('lib/service-registry-1.0.1.jar')
 
     //Spring
-    compile 'org.springframework:spring-core:3.2.3.RELEASE'
-    compile 'org.springframework:spring-beans:3.2.3.RELEASE'
-    compile 'org.springframework:spring-context:3.2.3.RELEASE'
-    compile 'org.springframework:spring-context-support:3.2.3.RELEASE'
+    compile 'org.springframework:spring-core:4.1.6.RELEASE'
+    compile 'org.springframework:spring-beans:4.1.6.RELEASE'
+    compile 'org.springframework:spring-context:4.1.6.RELEASE'
+    compile 'org.springframework:spring-context-support:4.1.6.RELEASE'
+    compile 'org.springframework.security:spring-security-config:4.0.1.RELEASE'
 
     //Logging
     compile 'org.slf4j:slf4j-api:1.7.5'

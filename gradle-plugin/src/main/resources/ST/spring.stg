@@ -118,6 +118,15 @@ hibernate_orm(hibernate_settings) ::= <<
 
 >>
 
+
+security() ::= <<
+<spring_header(namespaces=["xmlns:security=\"http://www.springframework.org/schema/security\""], xsis="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd")>
+
+    \<security:global-method-security pre-post-annotations="enabled" />
+\</beans>
+>>
+
+
 kordapt(packageName, datasource, orm, dao) ::= <<
 <spring_header(namespaces=[], xsis="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd")>
 
@@ -131,6 +140,7 @@ kordapt(packageName, datasource, orm, dao) ::= <<
    \<import resource="dao-beans.xml"/>
    <endif>
    \<import resource="service-beans.xml" />
+   \<import resource="security.xml" />
 
    \<context:component-scan base-package="<packageName>" />
 

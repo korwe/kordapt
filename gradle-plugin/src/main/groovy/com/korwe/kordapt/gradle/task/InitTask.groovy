@@ -119,6 +119,10 @@ class InitTask extends DefaultTask{
         def kordaptTemplate = springTemplates.getInstanceOf('kordapt')
         kordaptTemplate.add('packageName', packageName)
 
+        def securityTemplate = springTemplates.getInstanceOf('security')
+        File securityFile = new File(springDir.absolutePath + File.separator + 'security.xml')
+        securityFile.write(securityTemplate.render())
+
         JdbcDriver jdbcDriver = JdbcUtil.jdbcDriverClassName(project)
 
         if(jdbcDriver){
