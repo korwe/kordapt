@@ -1,5 +1,0 @@
-name: com.korwe.kordapt.registry.domain.AbstractEntity
-attributes:
-- name: id
-  type: String
-  description:
