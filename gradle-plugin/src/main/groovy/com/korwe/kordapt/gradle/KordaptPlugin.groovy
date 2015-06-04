@@ -85,6 +85,9 @@ public class KordaptPlugin implements Plugin<Project> {
                 throw new GradleException("You are required to supply a non-empty string for project parameter 'input'")
             }
 
+            if(project.hasProperty('pkgExt')){
+                defaultTypePackageExtension = project.pkgExt
+            }
             packageName = project.kordapt.defaultPackage
             apiPath = "${project.projectDir.absolutePath}/api-definition"
             stringInput = project.input

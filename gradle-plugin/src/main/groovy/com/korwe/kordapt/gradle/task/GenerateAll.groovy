@@ -22,6 +22,7 @@ class GenerateAll extends DefaultTask {
     String testPath = "${project.projectDir.absolutePath}/src/test"
     String testJavaPath = "${testPath}/java"
     String stringInput = "myService Integer:myFunction(Hello world, String param) Boolean:secondFunction() void:thirdFunction()"
+    String defaultTypePackageExtension = "dto"
 
     @TaskAction
     def generateApi(){
@@ -33,21 +34,21 @@ class GenerateAll extends DefaultTask {
         CommonTokenStream tokens =  new CommonTokenStream(lexer);
         KordaptCLParser parser = new KordaptCLParser(tokens);
         ParseTreeWalker walker = new ParseTreeWalker();
-        KordaptCLImpl impl = new KordaptCLImpl();
-        walker.walk(impl, parser.kordaptCl());
-
         def kordaptConfig = new KordaptConfig()
         kordaptConfig.defaultPackageName = packageName
         kordaptConfig.apiPath = apiPath
         kordaptConfig.apiServicesPath = apiPath + File.separator + "services"
         kordaptConfig.apiTypesPath = apiPath + File.separator + "types"
-        kordaptConfig.typePackagePath = packageName + File.separator + "dto"
-        kordaptConfig.defaultTypePackageName = kordaptConfig.typePackagePath.replace(File.separator, '.')
+        kordaptConfig.defaultTypePackageName = "${packageName}.${defaultTypePackageExtension}"
+        kordaptConfig.typePackagePath = kordaptConfig.defaultTypePackageName.replace('.', File.separator)
         kordaptConfig.mainPath = mainPath
         kordaptConfig.mainJavaPath = mainJavaPath
         kordaptConfig.testJavaPath = testJavaPath
 
+        KordaptCLImpl impl = new KordaptCLImpl();
         impl.setDefaultTypePackageName(kordaptConfig.defaultTypePackageName)
+
+        walker.walk(impl, parser.kordaptCl());
 
 
         if(impl.service !=null){

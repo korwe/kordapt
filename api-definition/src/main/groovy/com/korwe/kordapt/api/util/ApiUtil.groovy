@@ -135,10 +135,10 @@ class ApiUtil {
 
     }
 
-    static void correctPackageName(Type type, String packageName){
+    static void correctPackageName(Type type, String defaultPackageName){
         if(type && !isBasicType(type)){
             if(!type.packageName){
-                type.packageName = packageName
+                type.packageName = defaultPackageName
             }
         }
     }
