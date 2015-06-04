@@ -35,7 +35,7 @@ class SpringBeanUtil {
 
     static BeanDefinition createCoreServiceBeanDefinition(packageName, service){
         BeanDefinition coreServiceBeanDefinition = new GenericBeanDefinition()
-        coreServiceBeanDefinition.setBeanClassName("${packageName}.service.adapter.Core${service.name}")
+        coreServiceBeanDefinition.setBeanClassName("${packageName}.adapter.Core${service.name}")
         coreServiceBeanDefinition.setParentName('abstractCoreService')
 
         ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues()
@@ -58,7 +58,7 @@ class SpringBeanUtil {
 
     static BeanDefinition createServiceImplBeanDefinition(packageName, service){
         BeanDefinition serviceBeanDefinition = new GenericBeanDefinition()
-        serviceBeanDefinition.setBeanClassName("${packageName}.service.impl.${service.name}Impl")
+        serviceBeanDefinition.setBeanClassName("${packageName}.impl.${service.name}Impl")
         serviceBeanDefinition
 
     }
