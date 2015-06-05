@@ -4,33 +4,46 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  */
-public class Type {
-    private String name;
-    private String packageName;
+public class Type extends ClassType implements Cloneable{
     private Type inheritsFrom;
-    private List<Attribute> attributes;
-    private List<Type> typeArguments;
+    private List<Attribute> attributes = new ArrayList<>();
+    private List<Type> typeArguments = new ArrayList<>();
 
 
-    public Type() {
+    public Type(){}
+
+    public Type(Type type){
+        super(type);
+        if(type.attributes != null){
+            for (Attribute attribute : type.attributes){
+                attributes.add(attribute.clone());
+            }
+        }
+
+        if(type.typeArguments != null){
+            for (Type typeArgument : type.typeArguments){
+                typeArguments.add(typeArgument.clone());
+            }
+        }
+
+        if(type.inheritsFrom!=null){
+            inheritsFrom = type.inheritsFrom.clone();
+        }
+
     }
 
-    public Type(String name, String packageName){
-        this.name = name;
-        this.packageName = packageName;
+    public Type(Class klass) {
+        super(klass);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Type(String packageName, String name){
+        super(packageName, name);
     }
 
     public Type getInheritsFrom() {
@@ -50,17 +63,6 @@ public class Type {
     }
 
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public String getFullQualifiedName(){
-        return this.packageName == null ? this.name : this.packageName + '.' + this.name;
-    }
 
     public List<Type> getTypeArguments() {
         return typeArguments;
@@ -71,7 +73,7 @@ public class Type {
     }
 
     public String getDeclarationString(){
-        String typeDeclarationString = name;
+        String typeDeclarationString = getName();
         typeDeclarationString += getTypeArgumentsString(
             new Function<Type, String>(){
                 @Override
@@ -84,7 +86,7 @@ public class Type {
     }
 
     public String getDefinitionString(){
-        String qualifiedName = packageName == null ? name : packageName + "." +name;
+        String qualifiedName = getPackageName() == null ? getName() : getPackageName() + "." +getName();
         qualifiedName += getTypeArgumentsString(
             new Function<Type, String>(){
                 @Override
@@ -113,13 +115,12 @@ public class Type {
 
     @Override
     public boolean equals(Object o) {
+        super.equals(o);
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Type type = (Type) o;
 
-        if (!name.equals(type.name)) return false;
-        if (packageName != null ? !packageName.equals(type.packageName) : type.packageName != null) return false;
         if (inheritsFrom != null ? !inheritsFrom.equals(type.inheritsFrom) : type.inheritsFrom != null) return false;
         if (attributes != null ? !attributes.equals(type.attributes) : type.attributes != null) return false;
         return !(typeArguments != null ? !typeArguments.equals(type.typeArguments) : type.typeArguments != null);
@@ -128,11 +129,15 @@ public class Type {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
-        result = 31 * result + (inheritsFrom != null ? inheritsFrom.hashCode() : 0);
+        int result = inheritsFrom != null ? inheritsFrom.hashCode() : 0;
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         result = 31 * result + (typeArguments != null ? typeArguments.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public Type clone(){
+        return new Type(this);
+    }
+
 }

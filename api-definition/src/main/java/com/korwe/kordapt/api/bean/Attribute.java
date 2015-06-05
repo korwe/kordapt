@@ -3,10 +3,23 @@ package com.korwe.kordapt.api.bean;
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  */
-public class Attribute {
+public class Attribute extends Annotatable {
     String name;
     Type type;
     String description;
+
+    public Attribute(){
+        super();
+    }
+
+    public Attribute(Attribute attribute){
+        super(attribute);
+        name = attribute.name;
+        description = attribute.description;
+        if(attribute.type!=null){
+            type = attribute.type.clone();
+        }
+    }
 
     public String getName() {
         return name;
@@ -55,5 +68,10 @@ public class Attribute {
         result = 31 * result + type.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public Attribute clone(){
+        return new Attribute(this);
     }
 }

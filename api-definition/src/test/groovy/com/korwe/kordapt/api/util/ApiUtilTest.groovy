@@ -15,7 +15,7 @@ class ApiUtilTest {
     @Test
     public void typeDefinitionFromTypeNameShouldReturnTypeArguments(){
 
-        def argumentType = new Type("SimpleObject", "my.testing")
+        def argumentType = new Type("my.testing", "SimpleObject")
         String typeIdentifier = "List<${argumentType.definitionString}>"
         String defaultPackgeName = "com.testing.dto"
 
@@ -35,7 +35,7 @@ class ApiUtilTest {
 
     @Test
     public void testTypeIsNotBasicType(){
-        def type = new Type("SimpleObject", "my.testing")
+        def type = new Type("my.testing", "SimpleObject")
 
         assertThat(ApiUtil.isBasicType(type), is(false))
     }

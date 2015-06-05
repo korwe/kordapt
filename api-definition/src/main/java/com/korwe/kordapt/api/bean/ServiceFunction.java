@@ -8,11 +8,27 @@ import java.util.List;
 /**
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * */
-public class ServiceFunction {
+public class ServiceFunction extends Annotatable implements Cloneable{
     private String name;
     private String description;
-    private List<ServiceFunctionParameter> parameters;
+    private List<ServiceFunctionParameter> parameters = new ArrayList<>();
     private Type returnType;
+
+    public ServiceFunction(){}
+
+    public ServiceFunction(ServiceFunction serviceFunction){
+        name = serviceFunction.name;
+        description = serviceFunction.description;
+        if(serviceFunction.returnType != null){
+            returnType = serviceFunction.returnType.clone();
+        }
+
+        if(serviceFunction.parameters!=null){
+            for(ServiceFunctionParameter sfp : serviceFunction.parameters){
+                parameters.add(sfp.clone());
+            }
+        }
+    }
 
     public String getName() {
         return name;
@@ -48,5 +64,10 @@ public class ServiceFunction {
 
     public Boolean getMultiParam(){
         return this.parameters != null && this.parameters.size() > 1;
+    }
+
+    @Override
+    public ServiceFunction clone(){
+        return new ServiceFunction(this);
     }
 }

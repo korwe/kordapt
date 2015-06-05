@@ -8,11 +8,11 @@ import com.korwe.kordapt.api.bean.*
  */
 class ApiUtil {
 
-    static customDefinitions = ['Object': new Type('Object', null),
-                             'DateTime': new Type('DateTime', 'org.joda.time'),
-                             'Set': new Type('Set', 'java.util'),
-                             'List': new Type('List', 'java.util'),
-                             'Map': new Type('Map','java.util')]
+    static customDefinitions = ['Object': new Type(null, 'Object'),
+                             'DateTime': new Type('org.joda.time', 'DateTime'),
+                             'Set': new Type('java.util', 'Set'),
+                             'List': new Type('java.util', 'List'),
+                             'Map': new Type('java.util', 'Map')]
 
     static Service populateServiceFromApi(File file, String defaultTypePackageName) {
         populateServiceFromApi(new FileInputStream(file), defaultTypePackageName)
@@ -143,7 +143,7 @@ class ApiUtil {
         }
     }
 
-    static def isBasicType(type){
+    static boolean isBasicType(type){
         ['Object', 'Byte', 'String', 'Boolean', 'Integer', 'Long', 'Short', 'Double', 'Float', 'Character'].any { name ->
             name.equals(type.name)
         } && !type.packageName
