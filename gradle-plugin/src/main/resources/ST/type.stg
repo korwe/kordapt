@@ -24,6 +24,8 @@ package <type.packageName>;
 /**
  * This file was generated using Kordapt
  */
+
+<type.annotations:annotation()>
 public class <type.name><if(type.inheritsFrom)> extends <type.inheritsFrom.name><endif> {
 <type.attributes:bean_attribute_definition()>
 
@@ -38,6 +40,7 @@ bean_attribute_definition(attribute) ::= <<
 
 bean_getter_setter(attribute) ::= <<
 
+    <attribute.annotations:annotation()>
     public <attribute.type.declarationString> get<attribute.capitalizedName>(){
         return <attribute.name>;
     }
@@ -51,4 +54,9 @@ bean_getter_setter(attribute) ::= <<
 import_template(im) ::= <<
 import <im>;
 
+>>
+
+annotation(a) ::= <<
+
+@<a.name><if(a.annotationAttributes)>(<a.annotationAttributes.keys:{k | <k>="<a.annotationAttributes.(k)>"}; separator=", ">)<endif>
 >>

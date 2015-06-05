@@ -1,4 +1,6 @@
 package com.korwe.kordapt.gradle.util
+
+import com.korwe.kordapt.api.bean.Annotatable
 import com.korwe.kordapt.api.bean.KordaptConfig
 import com.korwe.kordapt.api.bean.Service
 import com.korwe.kordapt.api.bean.Type
@@ -60,6 +62,7 @@ class GeneratorUtil {
     public static generateServiceAdapter(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE ADAPTER
         def serviceAdapterTemplate = serviceTemplateGroup.getInstanceOf('service_adapter')
+        service = ApiBeanFactory.getServiceAdapterDefinition(service)
         serviceAdapterTemplate.add('service', service)
         serviceAdapterTemplate.add('packageName', kordaptConfig.serviceAdapterPackagePath.replace(File.separator, '.'))
 
@@ -79,11 +82,12 @@ class GeneratorUtil {
     public static generateServiceImplementation(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE IMPL
         def serviceImplTemplate = serviceTemplateGroup.getInstanceOf('service_impl')
-        serviceImplTemplate.add('service', service)
+        def processedServiceImplDefinition = ApiBeanFactory.getServiceImplDefinition(service)
+        serviceImplTemplate.add('service', processedServiceImplDefinition)
         serviceImplTemplate.add('packageName', kordaptConfig.serviceImplPackagePath.replace(File.separator, '.'))
 
-        def serviceImplImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), service)
-        serviceImplImports << service.packageName + "." + service.name
+        def serviceImplImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), processedServiceImplDefinition)
+        serviceImplImports << processedServiceImplDefinition.packageName + "." + processedServiceImplDefinition.name
         serviceImplTemplate.add('imports', serviceImplImports.unique())
 
         File serviceImplDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceImplPackagePath}")
@@ -96,18 +100,11 @@ class GeneratorUtil {
     public static generateServiceInterface(Service service, STGroupFile serviceTemplateGroup, KordaptConfig kordaptConfig) {
     //CREATE SERVICE INTERFACE
         def serviceInterfaceTemplate = serviceTemplateGroup.getInstanceOf('service_interface')
-        serviceInterfaceTemplate.add('service', service)
-        serviceInterfaceTemplate.add('packageName', service.packageName)
+        def processedInterfaceDefinition = ApiBeanFactory.getServiceDefinition(service)
+        serviceInterfaceTemplate.add('service', processedInterfaceDefinition)
+        serviceInterfaceTemplate.add('packageName', processedInterfaceDefinition.packageName)
 
-        def serviceInterfaceImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), service)
-
-        /*serviceInterfaceImports.each {
-            if(!ClasspathUtil.checkRuntimeForClass(project, it)){
-                print("Please provide attributes for class ${it}: ")
-                def attributes = System.in
-
-            }
-        }*/
+        def serviceInterfaceImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), processedInterfaceDefinition)
 
         serviceInterfaceTemplate.add('imports', serviceInterfaceImports.unique())
 
@@ -177,8 +174,10 @@ class GeneratorUtil {
             beanDir.mkdirs()
         }
 
-        beanTemplate.add('type', type)
-        beanTemplate.add('imports', typeImports(type).unique())
+
+        def processedType = ApiBeanFactory.getType(type)
+        beanTemplate.add('type', processedType)
+        beanTemplate.add('imports', typeImports(processedType).unique())
 
         File beanFile = new File("${beanDir.absolutePath}/${type.name}.java")
         beanFile.write(beanTemplate.render())
@@ -209,6 +208,8 @@ class GeneratorUtil {
                 imports << a.type.fullQualifiedName
                 imports.addAll(typeArgumentImports(type.packageName, a.type))
             }
+
+            imports.addAll(annotatableImports(a))
         }
 
         if(type.inheritsFrom && !(ApiUtil.isBasicType(type.inheritsFrom) || type.packageName.equals(type.inheritsFrom.packageName))){
@@ -218,6 +219,17 @@ class GeneratorUtil {
         //Handle typeArguments
         imports.addAll(typeArgumentImports(type.packageName, type))
 
+        //Handle annotations
+        imports.addAll(annotatableImports(type))
+
+        imports
+    }
+
+    static def annotatableImports(Annotatable annotatable){
+        def imports = []
+        annotatable.annotations?.each{ annotation ->
+            imports << annotation.fullQualifiedName
+        }
         imports
     }
 
@@ -238,6 +250,7 @@ class GeneratorUtil {
     static def serviceImports(String defaultPackage, Service service){
         def imports = []
         service.functions.each { f ->
+
             if(f.returnType){
                 if(!ApiUtil.isBasicType(f.returnType)){
                     imports.addAll(typeArgumentImports(defaultPackage, f.returnType))
@@ -253,7 +266,13 @@ class GeneratorUtil {
                     imports << p.type.fullQualifiedName
                 }
             }
+
+            imports.addAll(annotatableImports(f))
         }
+
+
+        imports.addAll(annotatableImports(service))
+
         imports
     }
 

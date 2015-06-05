@@ -1,4 +1,7 @@
 package com.korwe.kordapt.gradle
+
+import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPlugin
+import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPluginContainer
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
 import com.korwe.kordapt.gradle.task.GenerateApiSrc
@@ -16,10 +19,13 @@ import org.gradle.api.tasks.compile.JavaCompile
  */
 public class KordaptPlugin implements Plugin<Project> {
 
+    public static KordaptGeneratorPluginContainer pluginContainer = new KordaptGeneratorPluginContainer()
+
 
     void apply(Project project){
 
         KordaptInit.setup()
+
 
         project.apply {
             plugin 'java'
@@ -77,8 +83,17 @@ public class KordaptPlugin implements Plugin<Project> {
         }
 
         project.kgenerate.doFirst{
+            //Setup plugins
+            project.kordapt.plugins?.each{ String pluginClassName ->
+                pluginContainer.plugins.add(Class.forName(pluginClassName).newInstance())
+            }
+
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){
                 throw new GradleException("You are required to supply a non-empty string for 'defaultPackage'")
+            }
+
+            if(project.kordapt.plugins){
+
             }
 
             if(!project.hasProperty('input') || project.input.isEmpty()){
@@ -107,5 +122,6 @@ public class KordaptPlugin implements Plugin<Project> {
 
 public class KordaptPluginExtension {
     String defaultPackage
+    List<String> plugins = []
     List thirdPartyPackages = []
 }
