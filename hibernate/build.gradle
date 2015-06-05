@@ -5,6 +5,9 @@
 apply plugin: 'maven'
 
 dependencies {
+    //Kordapt
+    compile project(':gradle-plugin')
+
     //Hibernate
     compile 'org.hibernate:hibernate-core:4.2.0.Final'
     compile 'org.jadira.usertype:usertype.core:3.1.0.CR2'
