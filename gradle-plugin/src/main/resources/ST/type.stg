@@ -48,6 +48,8 @@ bean_getter_setter(attribute) ::= <<
     public void set<attribute.capitalizedName>(<attribute.type.name> <attribute.name>){
         this.<attribute.name> = <attribute.name>;
     }
+
+
 >>
 
 
@@ -58,5 +60,5 @@ import <im>;
 
 annotation(a) ::= <<
 
-@<a.name><if(a.annotationAttributes)>(<a.annotationAttributes.keys:{k | <k>="<a.annotationAttributes.(k)>"}; separator=", ">)<endif>
+@<a.name><if(a.annotationAttributes)>(<a.annotationAttributes.keys:{k | <k>="<a.annotationAttributes.(k)>"}; separator=", ">)<elseif(a.values)>({<a.values:{v | <v:annotation()>}; separator=",\n">})<else><a.value><endif>
 >>

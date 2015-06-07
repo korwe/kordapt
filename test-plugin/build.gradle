@@ -11,6 +11,7 @@ buildscript{
 
     dependencies{
         classpath project(':gradle-plugin')
+        classpath project(':hibernate')
     }
 }
 
@@ -31,5 +32,6 @@ dependencies{
 
 kordapt{
     defaultPackage = "com.korwe.test"
+    plugins = ['com.korwe.kordapt.plugin.HibernatePlugin']
 }
 

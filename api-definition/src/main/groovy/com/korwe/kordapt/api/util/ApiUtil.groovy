@@ -148,4 +148,11 @@ class ApiUtil {
             name.equals(type.name)
         } && !type.packageName
     }
+
+    static boolean isCollection(Type type){
+        if("java.util".equals(type.packageName)){
+            return Collection.isAssignableFrom(forName(type.fullQualifiedName))
+        }
+        return false
+    }
 }
