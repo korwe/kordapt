@@ -11,21 +11,16 @@ import org.gradle.api.tasks.TaskAction
 import org.stringtemplate.v4.STGroupFile
 
 /**
+ * A task that will generate all source files from the provided apiPath
  * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
  * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
  * */
 class GenerateApiSrc extends DefaultTask{
     String apiPath
+    KordaptConfig kordaptConfig
 
     @TaskAction
     def generateApiSrc() {
-
-        def kordaptConfig = new KordaptConfig()
-
-        kordaptConfig.mainPath = "${project.projectDir.absolutePath}/build/tmp/src/main"
-        kordaptConfig.mainJavaPath = "${kordaptConfig.mainPath}/java"
-        kordaptConfig.typePackagePath = "type/package/path" // used as default, but no default
-        kordaptConfig.defaultTypePackageName = "default.type.package.name" // used as default, but no default
 
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')

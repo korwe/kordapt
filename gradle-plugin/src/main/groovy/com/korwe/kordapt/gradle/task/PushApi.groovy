@@ -12,13 +12,17 @@ import org.gradle.api.tasks.TaskAction
  * */
 class PushApi extends DefaultTask{
     String apiPath
+    String groupId
 
     @TaskAction
     def pushApi() {
+        if(!groupId){
+            groupId = project.kordapt.defaultPackage
+        }
         CoreClient client = new CoreClient(UUID.randomUUID().toString(), new XStreamSerializationStrategy(new XStream()))
         ClientServiceRequest request = new ClientServiceRequest("ServiceRegistry", "uploadApiDefinitions")
         request.setParameter("apiDef", project.file(apiPath).bytes)
-        request.setParameter("groupID", "com.korwe")
+        request.setParameter("groupID", groupId)
 
         client.makeRequests(10000L, request)
 

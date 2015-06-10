@@ -47,6 +47,8 @@ kordapt{
 }
 ```
 
+Full set of [Configuration options](https://github.com/korwe/kordapt/wiki/Configuration-Options "Full set of configuration options")
+
 ### Initialize project
 On the command-line, now run
 ```
@@ -54,6 +56,7 @@ gradle kinit
 ```
 
 You will now have a kordapt project with the standard [Structure](https://github.com/korwe/kordapt/wiki/Project-Structure "Standard kordapt project structure")
+
 
 Usage
 -----

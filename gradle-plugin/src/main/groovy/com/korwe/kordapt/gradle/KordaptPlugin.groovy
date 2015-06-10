@@ -1,10 +1,11 @@
 package com.korwe.kordapt.gradle
 
-import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPlugin
+import com.korwe.kordapt.api.bean.KordaptConfig
 import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPluginContainer
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
 import com.korwe.kordapt.gradle.task.GenerateApiSrc
+import com.korwe.kordapt.gradle.task.PullApi
 import com.korwe.kordapt.gradle.task.PushApi
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -68,12 +69,21 @@ public class KordaptPlugin implements Plugin<Project> {
             apiPath = project.file("${project.projectDir.absolutePath}/build/api-definition.tar")
         }
 
+        project.task('pullApi', type: PullApi)
+
 
         project.generateApiSrc.doFirst{
             if(!project.hasProperty('apiPath') || project.apiPath.isEmpty()){
                 throw new GradleException("You are required to supply a non-empty string for project parameter 'apiPath'")
             }
             apiPath = project.apiPath
+
+            kordaptConfig = new KordaptConfig()
+            kordaptConfig.mainPath = "${project.projectDir.absolutePath}/build/tmp/src/main"
+            kordaptConfig.mainJavaPath = "${kordaptConfig.mainPath}/java"
+            kordaptConfig.typePackagePath = "type/package/path" // used as default, but no default
+            kordaptConfig.defaultTypePackageName = "default.type.package.name" // used as default, but no default
+
         }
 
         project.sharedJarFromApi.doFirst{
@@ -123,5 +133,5 @@ public class KordaptPlugin implements Plugin<Project> {
 public class KordaptPluginExtension {
     String defaultPackage
     List<String> plugins = []
-    List thirdPartyPackages = []
+    List thirdParties = []
 }
