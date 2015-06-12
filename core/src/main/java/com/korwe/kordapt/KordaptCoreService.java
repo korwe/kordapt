@@ -1,5 +1,6 @@
 package com.korwe.kordapt;
 
+import com.korwe.kordapt.acl.AuthParameterHandler;
 import com.korwe.kordapt.registry.domain.Service;
 import com.korwe.kordapt.registry.domain.ServiceInstance;
 import com.korwe.thecore.client.ClientServiceRequest;
@@ -7,6 +8,9 @@ import com.korwe.thecore.client.CoreClient;
 import com.korwe.thecore.client.ServiceResult;
 import com.korwe.thecore.client.XStreamSerializationStrategy;
 import com.korwe.thecore.service.GenericCoreService;
+import com.korwe.thecore.service.LocationParameterHandler;
+import com.korwe.thecore.service.MatchingParameterHandler;
+import com.korwe.thecore.service.ParameterProcessor;
 import com.thoughtworks.xstream.XStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +94,9 @@ public class KordaptCoreService<S> extends GenericCoreService<S>{
 
         //Then continue as per normal
         super.startUp();
+        parameterProcessor = new ParameterProcessor(new AuthParameterHandler(getXStream()),
+                                                    new MatchingParameterHandler(getXStream()),
+                                                    new LocationParameterHandler());
     }
 
     //We override to use our own private serviceName
