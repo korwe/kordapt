@@ -17,6 +17,17 @@ public class AuthParameterHandler extends ParameterHandler {
 
     public AuthParameterHandler(XStream xStream) {this.xStream = xStream;}
 
+    @Override public void processParameter(int currentIndex, Object[] params, Map<String, String> requestParams,
+                                           String methodParamName, Annotation[] paramAnnotations,
+                                           ServiceRequest request) {
+        if (willProcess(requestParams, methodParamName, paramAnnotations)) {
+            process(currentIndex, params, requestParams, methodParamName, paramAnnotations, request);
+        }
+        if (hasNext()) {
+            getNext().processParameter(currentIndex, params, requestParams, methodParamName, paramAnnotations, request);
+        }
+    }
+
     @Override
     protected void process(int currentIndex, Object[] params, Map<String, String> requestParams, String methodParamName,
                            Annotation[] paramAnnotations, ServiceRequest request) {
