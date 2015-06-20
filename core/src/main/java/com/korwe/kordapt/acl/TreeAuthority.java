@@ -3,12 +3,12 @@ package com.korwe.kordapt.acl;
 import com.google.common.base.Objects;
 import org.springframework.security.core.GrantedAuthority;
 
-public class KordaptAuthority implements GrantedAuthority {
+public class TreeAuthority implements GrantedAuthority {
 
     private final String role;
     private final String serviceGroup;
 
-    public KordaptAuthority(String serviceGroup, String role) {
+    public TreeAuthority(String serviceGroup, String role) {
         this.serviceGroup = serviceGroup;
         this.role = role;
     }
@@ -25,7 +25,7 @@ public class KordaptAuthority implements GrantedAuthority {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final KordaptAuthority that = (KordaptAuthority) o;
+        final TreeAuthority that = (TreeAuthority) o;
 
         if (!role.equals(that.role)) return false;
         return serviceGroup.equals(that.serviceGroup);

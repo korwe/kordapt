@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.korwe.thecore.messages.ServiceRequest;
 import com.korwe.thecore.service.ParameterHandler;
 import com.thoughtworks.xstream.XStream;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -34,7 +35,11 @@ public class AuthParameterHandler extends ParameterHandler {
         final String authParam = requestParams.remove(AUTH_PARAM);
         Authentication authentication = Strings.isNullOrEmpty(authParam) ? null :
                                         (Authentication) xStream.fromXML(authParam);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UsernamePasswordAuthenticationToken springAuthentication = new UsernamePasswordAuthenticationToken(
+                authentication.getPrincipal(),
+                authentication.getCredentials(),
+                authentication.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(springAuthentication);
     }
 
     @Override protected boolean willProcess(Map<String, String> requestParams, String methodParamName,
