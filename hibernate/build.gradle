@@ -7,6 +7,7 @@ apply plugin: 'maven'
 dependencies {
     //Kordapt
     compile project(':gradle-plugin')
+    compile project(':core')
 
     //Hibernate
     compile 'org.hibernate:hibernate-core:4.2.0.Final'
@@ -19,6 +20,13 @@ dependencies {
 
 
 jar {
+    manifest{
+        attributes(
+                'Kordapt-Core-Addon': 'com.korwe.kordapt.hibernate.HibernateCoreAddon',
+                'Kordapt-Plugin': 'com.korwe.kordapt.plugin.HibernatePlugin'
+        )
+    }
+
     baseName = 'kordapt-hibernate'
 }
 
