@@ -1,4 +1,4 @@
-package com.korwe.kordapt.hibernate.xstream.converter; /**
+package com.korwe.kordapt.hibernate.xstream; /**
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 /*

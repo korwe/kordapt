@@ -1,7 +1,7 @@
 package com.korwe.kordapt.hibernate;
 
-import com.korwe.kordapt.hibernate.xstream.converter.HibernatePersistentCollectionConverter;
-import com.korwe.kordapt.hibernate.xstream.converter.HibernateProxyConverter;
+import com.korwe.kordapt.hibernate.xstream.HibernatePersistentCollectionConverter;
+import com.korwe.kordapt.hibernate.xstream.HibernateProxyConverter;
 import com.thoughtworks.xstream.XStream;
 import org.springframework.context.support.AbstractApplicationContext;
 
