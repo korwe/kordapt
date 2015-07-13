@@ -61,16 +61,22 @@ public class Kordapt
             }
         }
 
-
+        Kordapt.LOG.debug("Running preboot hooks");
+        for(KordaptCoreAddon coreAddon : addonContainer.getCoreAddons()){
+            coreAddon.preBootHook();
+        }
 
         AbstractApplicationContext ctx = null;
         try {
-            ctx = (AbstractApplicationContext)new ClassPathXmlApplicationContext("/spring/kordapt.xml");
+            ctx = new ClassPathXmlApplicationContext("/spring/kordapt.xml");
             ctx.registerShutdownHook();
 
-
-
             Kordapt.LOG.info("Configured beans: {}", Arrays.toString(ctx.getBeanDefinitionNames()));
+
+            Kordapt.LOG.debug("Running postboot hooks");
+            for(KordaptCoreAddon coreAddon : addonContainer.getCoreAddons()){
+                coreAddon.postBootHook(ctx);
+            }
             Thread.currentThread().join();
         }
         catch (BeansException e) {
