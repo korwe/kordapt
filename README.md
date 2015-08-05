@@ -28,16 +28,21 @@ buildscript{
     }
 
     dependencies {
-        classpath 'com.korwe:kordapt-gradle-plugin:1.0.0'
+        classpath 'com.korwe:kordapt-gradle-plugin:1.0.1'
     }
 }
+
+apply plugin: 'kordapt'
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
-apply plugin: 'kordapt'
+
+dependencies {
+    compile 'com.korwe:kordapt-core:1.0.1'
+}
 ```
 
 ### Configure
