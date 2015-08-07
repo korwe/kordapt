@@ -28,9 +28,9 @@ public class HibernateCoreAddon implements com.korwe.kordapt.KordaptCoreAddon{
             XStream xStream = (XStream)ctx.getBean("xstream");
             xStream.registerConverter(new HibernateProxyConverter());
             xStream.registerConverter(new HibernatePersistentCollectionConverter(xStream.getMapper()));
-            xStream.addDefaultImplementation(PersistentList.class, List.class);
-            xStream.addDefaultImplementation(PersistentBag.class, List.class);
-            xStream.addDefaultImplementation(PersistentSet.class, Set.class);
+            xStream.alias("list", PersistentList.class);
+            xStream.alias("list", PersistentBag.class);
+            xStream.alias("set", PersistentSet.class);
         }
 
     }
