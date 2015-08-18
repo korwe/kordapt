@@ -13,7 +13,7 @@ type_attribute(attribute) ::= <<
 >>
 
 type_name(type) ::= <<
-<type.definitionString>
+<type.apiDefinitionString>
 >>
 
 bean(type, imports) ::= <<

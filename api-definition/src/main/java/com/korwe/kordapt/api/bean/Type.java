@@ -85,6 +85,7 @@ public class Type extends ClassType implements Cloneable{
         return typeDeclarationString;
     }
 
+
     public String getDefinitionString(){
         String qualifiedName = getPackageName() == null ? getName() : getPackageName() + "." +getName();
         qualifiedName += getTypeArgumentsString(
@@ -96,6 +97,17 @@ public class Type extends ClassType implements Cloneable{
             }
         );
         return  qualifiedName;
+    }
+
+    public String getApiDefinitionString(){
+        if("java.util".equals(getPackageName())){
+            if("List".equals(getName()) || "Set".equals(getName())){
+                Type clone = clone();
+                clone.setPackageName(null);
+                return clone.getDefinitionString();
+            }
+        }
+        return getDefinitionString();
     }
 
     public String getTypeArgumentsString(Function f){
