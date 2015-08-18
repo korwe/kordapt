@@ -14,7 +14,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     private Stack<ServiceFunctionParameter> parameterStack = new Stack<>();
     private Stack<ServiceFunction> functionStack = new Stack<>();
     private Stack<Attribute> attributeStack = new Stack<>();
-    private Stack<Type> typeArgumentStack = new Stack<>();
+    private Stack<Stack<Type>> typeArgumentStacks = new Stack<>();
     private Service service;
     private Type type;
     private String defaultTypePackageName;
@@ -81,19 +81,28 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     @Override
+    public void enterClassOrInterfaceType(@NotNull KordaptCLParser.ClassOrInterfaceTypeContext ctx){
+        typeArgumentStacks.push(new Stack<>());
+    }
+
+    @Override
+    public void exitClassOrInterfaceType(@NotNull KordaptCLParser.ClassOrInterfaceTypeContext ctx){
+        typeArgumentStacks.pop();
+    }
+
+    @Override
     public void exitTypeArguments(@NotNull KordaptCLParser.TypeArgumentsContext ctx){
         for(KordaptCLParser.TypeArgumentContext typeArgumentsContext : ctx.typeArgument()){
             Type t = typeFromQualifiedName(typeArgumentsContext.getText());
-            typeArgumentStack.push(t);
+            typeArgumentStacks.lastElement().push(t);
         }
     }
 
     public Type typeFromQualifiedName(String qualifiedName){
         Type type = ApiUtil.typeDefinitionFromTypeName(qualifiedName, defaultTypePackageName);
 
-        if(!typeArgumentStack.empty()){
-            type.setTypeArguments(Lists.newArrayList(typeArgumentStack));
-            typeArgumentStack.clear();
+        if(!typeArgumentStacks.empty()){
+            type.setTypeArguments(Lists.newArrayList(typeArgumentStacks.lastElement()));
         }
 
         return type;
