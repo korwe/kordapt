@@ -28,16 +28,8 @@ class ApiUtil {
         //Populate service definition object
         def serviceDefinition = new Service()
 
-        //Set name and packageName(if packageName exists)
-        String serviceYamlName = serviceYaml.name
-        def packageNameOffset = serviceYamlName.lastIndexOf('.')
-        if(packageNameOffset != -1){
-            serviceDefinition.name = serviceYamlName.substring(packageNameOffset+1)
-            serviceDefinition.packageName = serviceYamlName.substring(0, packageNameOffset)
-        }
-        else{
-            serviceDefinition.name = serviceYamlName
-        }
+        serviceDefinition.name = serviceYaml.name
+        serviceDefinition.packageName = serviceYaml.package_name
 
         //Populate service function definition objects
         serviceDefinition.functions = functionDefinitions(serviceYaml.functions, defaultTypePackageName)
