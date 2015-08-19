@@ -84,6 +84,7 @@ service_function_parameter(parameter) ::= <<
 
 service_api(service) ::= <<
 name: <service.name>
+package_name: <service.packageName>
 functions:
 <service.functions:service_api_function()>
 >>
