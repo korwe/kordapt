@@ -74,7 +74,9 @@ public class KordaptPlugin implements Plugin<Project> {
 
         project.generateApiSrc.doFirst{
             if(!project.hasProperty('apiPath') || project.apiPath.isEmpty()){
-                throw new GradleException("You are required to supply a non-empty string for project parameter 'apiPath'")
+                project.ext {
+                    apiPath = './api-definition'
+                }
             }
             apiPath = project.apiPath
 
@@ -88,7 +90,7 @@ public class KordaptPlugin implements Plugin<Project> {
 
         project.sharedJarFromApi.doFirst{
             from project.fileTree(dir:"${project.projectDir.absolutePath}/build/tmp/build",include: '**/*.class')
-            destinationDir=project.file("${project.projectDir.absolutePath}/lib")
+            destinationDir=project.file("${project.projectDir.absolutePath}/build/tmp/lib")
 
         }
 
