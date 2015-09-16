@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 public class Service extends ClassType implements Cloneable{
     private List<ServiceFunction> functions = new ArrayList<>();

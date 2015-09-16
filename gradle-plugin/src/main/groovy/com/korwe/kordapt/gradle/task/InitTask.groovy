@@ -11,7 +11,7 @@ import org.gradle.api.tasks.TaskAction
 import org.stringtemplate.v4.STGroupFile
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class InitTask extends DefaultTask{
 

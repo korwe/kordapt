@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 public class ServiceFunction extends Annotatable implements Cloneable{
     private String name;

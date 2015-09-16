@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:nithia.govender@korwe.com>Nithia Govender</a>
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:nithia.govender@korwe.com">Nithia Govender</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public abstract class AbstractGenericDAO<E, PK extends Serializable> implements GenericDAO<E, PK>{
 

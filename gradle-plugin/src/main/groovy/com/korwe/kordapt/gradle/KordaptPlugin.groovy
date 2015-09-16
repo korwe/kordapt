@@ -16,7 +16,7 @@ import org.gradle.api.tasks.bundling.Tar
 import org.gradle.api.tasks.compile.JavaCompile
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class KordaptPlugin implements Plugin<Project> {
 

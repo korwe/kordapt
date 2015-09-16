@@ -5,7 +5,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference
 
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class KordaptInit {
 

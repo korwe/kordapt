@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class KordaptCoreService<S> extends GenericCoreService<S>{
     private static Logger LOG = LoggerFactory.getLogger(KordaptCoreService.class);

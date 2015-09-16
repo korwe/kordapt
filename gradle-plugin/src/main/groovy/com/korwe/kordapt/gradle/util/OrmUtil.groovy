@@ -5,7 +5,7 @@ import com.korwe.kordapt.gradle.orm.OrmName
 import org.gradle.api.Project
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class OrmUtil {
     static def getOrmName(Project project){

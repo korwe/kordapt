@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class HibernateCoreAddon implements com.korwe.kordapt.KordaptCoreAddon{
 

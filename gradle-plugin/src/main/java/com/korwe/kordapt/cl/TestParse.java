@@ -7,7 +7,7 @@ import org.apache.tools.ant.filters.StringInputStream;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class TestParse {
 

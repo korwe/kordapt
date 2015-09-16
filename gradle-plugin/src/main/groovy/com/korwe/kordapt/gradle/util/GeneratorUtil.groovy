@@ -8,8 +8,8 @@ import com.korwe.kordapt.api.util.ApiUtil
 import org.stringtemplate.v4.STGroup
 import org.stringtemplate.v4.STGroupFile
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
- * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
+ * @author <a href="mailto:dario.matonicki@korwe.com">Dario Matonicki</a>
  */
 class GeneratorUtil {
 

@@ -5,7 +5,7 @@ import com.korwe.kordapt.api.bean.Type
 import com.korwe.kordapt.gradle.KordaptPlugin
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 class ApiBeanFactory {
     public static Service getServiceImplDefinition(Service service){

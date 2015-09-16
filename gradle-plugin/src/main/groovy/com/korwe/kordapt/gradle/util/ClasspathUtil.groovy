@@ -3,7 +3,7 @@ package com.korwe.kordapt.gradle.util
 import org.gradle.api.Project
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class ClasspathUtil {
     static boolean checkRuntimeForClass(Project project, String className){

@@ -1,7 +1,7 @@
 package com.korwe.kordapt.api.bean;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 public class ServiceFunctionParameter extends Annotatable implements Cloneable{
     private String name;

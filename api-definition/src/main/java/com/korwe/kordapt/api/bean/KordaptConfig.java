@@ -1,8 +1,8 @@
 package com.korwe.kordapt.api.bean;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
- * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
+ * @author <a href="mailto:dario.matonicki@korwe.com">Dario Matonicki</a>
  */
 public class KordaptConfig {
     private String defaultPackageName;

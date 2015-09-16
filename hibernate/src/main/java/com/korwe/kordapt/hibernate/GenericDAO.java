@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author <a href="mailto:nithia.govender@korwe.com>Nithia Govender</a>
+ * @author <a href="mailto:nithia.govender@korwe.com">Nithia Govender</a>
  */
 public interface GenericDAO<E, PK extends Serializable> {
 

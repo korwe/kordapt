@@ -1,7 +1,7 @@
 package com.korwe.kordapt.gradle.util
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class HibernateUtil {
     public static getDialect(JdbcDriver driver){

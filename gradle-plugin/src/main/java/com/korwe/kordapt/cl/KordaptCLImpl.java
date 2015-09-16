@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import java.util.Stack;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class KordaptCLImpl extends KordaptCLBaseListener{
     private Stack<ServiceFunctionParameter> parameterStack = new Stack<>();

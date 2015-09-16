@@ -8,7 +8,7 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class TreeAuthenticationToken implements Authentication{
 

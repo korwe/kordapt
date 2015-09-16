@@ -12,8 +12,8 @@ import org.stringtemplate.v4.STGroupFile
 
 /**
  * A task that will generate all source files from the provided apiPath
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
- * @author <a href="mailto:dario.matonicki@korwe.com>Dario Matonicki</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
+ * @author <a href="mailto:dario.matonicki@korwe.com">Dario Matonicki</a>
  * */
 class GenerateApiSrc extends DefaultTask{
     String apiPath

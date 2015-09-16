@@ -9,7 +9,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
 import org.stringtemplate.v4.STGroupFile
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * */
 class SpringBeanUtil {
 

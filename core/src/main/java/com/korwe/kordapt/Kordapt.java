@@ -12,7 +12,7 @@ import org.springframework.context.support.*;
 import org.slf4j.*;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class Kordapt
 {

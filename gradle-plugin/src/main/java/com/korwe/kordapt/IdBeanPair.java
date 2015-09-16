@@ -3,7 +3,7 @@ package com.korwe.kordapt;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
- * @author <a href="mailto:tjad.clark@korwe.com>Tjad Clark</a>
+ * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 public class IdBeanPair {
     private String id;
