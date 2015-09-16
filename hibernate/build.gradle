@@ -2,7 +2,17 @@
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  */
 
-apply plugin: 'maven'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.3.1'
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
 
 dependencies {
     //Kordapt
@@ -30,10 +40,8 @@ jar {
     baseName = 'kordapt-hibernate'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.artifactId = jar.baseName
-        }
-    }
+ext {
+    pkgName = 'Kordapt Hibernate'
 }
+
+apply from: "${project.rootDir}/scripts/publish.gradle"
