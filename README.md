@@ -9,9 +9,14 @@ What's Kordapt
 --------------
 
 Kordapt is an opensource java framework for easily building in a consistent and modular manner, services that exist on [The Core](https://github.com/korwe/the-core-java "The Core on Github").
-The framework makes extensive use of leading technologies such as Gradle and Spring. It makes development easy by providing gradle scripts(generators) and modular by providing various plugins
-such as hibernate.
+The framework makes extensive use of leading technologies such as [Gradle](https://gradle.org/) and [Spring](http://projects.spring.io/spring-framework/). It makes development easy by providing gradle scripts(generators) that utilize [Antlr](http://www.antlr.org/) and [String template](http://www.stringtemplate.org/) for generating plumbing code of a service and its models. It further promotes modularization by providing various plugins
+to help with plumbing that suits the requirements of your project such as hibernate.
 
+Kordapt exposes an api-definition for the services and models created in a language agnostic manner by utilizing a set of [yaml](http://yaml.org/) files. This allows any alternative language to java to consume
+and understand the api-definition by mapping that language to the api-definition.
+
+Kordapt aims at simplifying the development process by aiding your choice of middleware technologies, libraries and frameworks, so that you are able to 
+focus solely on your business logic.
 
 Quick Start
 -----
