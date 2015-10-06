@@ -86,7 +86,7 @@ class GeneratorUtil {
         serviceImplTemplate.add('service', processedServiceImplDefinition)
         serviceImplTemplate.add('packageName', kordaptConfig.serviceImplPackagePath.replace(File.separator, '.'))
 
-        def serviceImplImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), processedServiceImplDefinition)
+        def serviceImplImports = serviceImports(kordaptConfig.serviceImplPackagePath.replace(File.separator, '.'), processedServiceImplDefinition)
         serviceImplImports << processedServiceImplDefinition.packageName + "." + processedServiceImplDefinition.name
         serviceImplTemplate.add('imports', serviceImplImports.unique())
 
@@ -104,7 +104,7 @@ class GeneratorUtil {
         serviceInterfaceTemplate.add('service', processedInterfaceDefinition)
         serviceInterfaceTemplate.add('packageName', processedInterfaceDefinition.packageName)
 
-        def serviceInterfaceImports = serviceImports(kordaptConfig.typePackagePath.replace(File.separator, '.'), processedInterfaceDefinition)
+        def serviceInterfaceImports = serviceImports(kordaptConfig.servicePackagePath.replace(File.separator, '.'), processedInterfaceDefinition)
 
         serviceInterfaceTemplate.add('imports', serviceInterfaceImports.unique())
 
