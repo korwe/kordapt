@@ -16,9 +16,8 @@ class ApiUtil {
 
     static Service populateServiceFromApi(File file, String defaultTypePackageName) {
         populateServiceFromApi(new FileInputStream(file), defaultTypePackageName)
-
-
     }
+
     static Service populateServiceFromApi(InputStream inputStream, String defaultTypePackageName){
 
         def reader = new YamlReader(new InputStreamReader(inputStream))
@@ -36,8 +35,14 @@ class ApiUtil {
         serviceDefinition
     }
 
-    static def populateTypeFromApi(File file, String defaultPackageName) {
-        def reader = new YamlReader(new FileReader(file))
+
+    static Type populateTypeFromApi(File file, String defaultPackageName) {
+        populateTypeFromApi(new FileInputStream(file), defaultPackageName)
+    }
+
+    static Type populateTypeFromApi(InputStream inputStream, String defaultPackageName) {
+        def reader = new YamlReader(new InputStreamReader(inputStream))
+
         def typeYaml = reader.read()
 
         //Populate type def object
@@ -46,7 +51,6 @@ class ApiUtil {
         typeDefObject.attributes = attributeDefinitions(typeYaml.attributes, defaultPackageName)
 
         typeDefObject
-
     }
 
     static def attributeDefinitions(attributeDefYaml, String defaultPackageName) {
