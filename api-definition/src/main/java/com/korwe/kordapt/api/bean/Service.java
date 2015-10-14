@@ -8,7 +8,6 @@ import java.util.List;
  * */
 public class Service extends ClassType implements Cloneable{
     private List<ServiceFunction> functions = new ArrayList<>();
-    private String description;
 
     public Service() {
         super();
@@ -16,7 +15,6 @@ public class Service extends ClassType implements Cloneable{
 
     public Service(Service service){
         super(service);
-        description = service.description;
         if(service.functions!=null){
             for(ServiceFunction serviceFunction : service.functions){
                 functions.add(serviceFunction.clone());
@@ -33,13 +31,6 @@ public class Service extends ClassType implements Cloneable{
     }
 
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public List<ServiceFunction> getFunctions() {
         return functions;

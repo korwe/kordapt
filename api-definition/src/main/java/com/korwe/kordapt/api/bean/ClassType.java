@@ -6,6 +6,7 @@ package com.korwe.kordapt.api.bean;
 public abstract class ClassType extends Annotatable{
     private String name;
     private String packageName;
+    private String description;
 
     public ClassType(){
         super();
@@ -15,6 +16,7 @@ public abstract class ClassType extends Annotatable{
         super(classType);
         this.name = classType.name;
         this.packageName = classType.packageName;
+        this.description = classType.description;
     }
 
     public ClassType(String packageName, String name){
@@ -49,6 +51,15 @@ public abstract class ClassType extends Annotatable{
 
     public String getFullQualifiedName(){
         return this.packageName == null ? this.name : this.packageName + '.' + this.name;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
