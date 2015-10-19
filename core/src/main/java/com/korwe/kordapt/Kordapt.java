@@ -16,7 +16,7 @@ import org.slf4j.*;
  */
 public class Kordapt
 {
-    public static final String version = "1.0.1";
+    public static final String version = "1.0.2";
     private static final Logger LOG = LoggerFactory.getLogger((Class)Kordapt.class);
     private static KordaptCoreAddonContainer addonContainer = new KordaptCoreAddonContainer();
 
