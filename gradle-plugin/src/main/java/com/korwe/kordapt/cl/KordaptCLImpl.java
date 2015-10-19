@@ -20,7 +20,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     private String defaultTypePackageName;
 
     @Override
-    public void exitService(@NotNull KordaptCLParser.ServiceContext ctx){
+    public void exitService(KordaptCLParser.ServiceContext ctx){
         service = new Service();
         String name = ctx.qualifiedName().getText();
         service.setName(name.substring(0, 1).toUpperCase() + name.substring(1));
@@ -30,7 +30,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     @Override
-    public void exitFunction(@NotNull KordaptCLParser.FunctionContext ctx){
+    public void exitFunction(KordaptCLParser.FunctionContext ctx){
         ServiceFunction function = new ServiceFunction();
         function.setName(ctx.Identifier().getText());
 
@@ -49,7 +49,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     @Override
-    public void exitFormalParameter(@NotNull KordaptCLParser.FormalParameterContext ctx){
+    public void exitFormalParameter(KordaptCLParser.FormalParameterContext ctx){
 
         ServiceFunctionParameter sfp = new ServiceFunctionParameter();
         sfp.setName(ctx.variableDeclaratorId().getText());
@@ -60,7 +60,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
 
 
     @Override
-    public void exitKordaptType(@NotNull KordaptCLParser.KordaptTypeContext ctx){
+    public void exitKordaptType(KordaptCLParser.KordaptTypeContext ctx){
         Type t = typeFromQualifiedName(ctx.qualifiedName().getText());
         if(ctx.type()!= null){
             t.setInheritsFrom(typeFromQualifiedName(ctx.type().getText()));
@@ -73,7 +73,7 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     @Override
-    public void exitKordaptTypeAttribute(@NotNull KordaptCLParser.KordaptTypeAttributeContext ctx){
+    public void exitKordaptTypeAttribute(KordaptCLParser.KordaptTypeAttributeContext ctx){
         Attribute a = new Attribute();
         a.setName(ctx.Identifier().getText());
         a.setType(typeFromQualifiedName(ctx.type().getText()));
@@ -81,17 +81,17 @@ public class KordaptCLImpl extends KordaptCLBaseListener{
     }
 
     @Override
-    public void enterClassOrInterfaceType(@NotNull KordaptCLParser.ClassOrInterfaceTypeContext ctx){
+    public void enterClassOrInterfaceType(KordaptCLParser.ClassOrInterfaceTypeContext ctx){
         typeArgumentStacks.push(new Stack<>());
     }
 
     @Override
-    public void exitClassOrInterfaceType(@NotNull KordaptCLParser.ClassOrInterfaceTypeContext ctx){
+    public void exitClassOrInterfaceType(KordaptCLParser.ClassOrInterfaceTypeContext ctx){
         typeArgumentStacks.pop();
     }
 
     @Override
-    public void exitTypeArguments(@NotNull KordaptCLParser.TypeArgumentsContext ctx){
+    public void exitTypeArguments(KordaptCLParser.TypeArgumentsContext ctx){
         for(KordaptCLParser.TypeArgumentContext typeArgumentsContext : ctx.typeArgument()){
             Type t = typeFromQualifiedName(typeArgumentsContext.getText());
             typeArgumentStacks.lastElement().push(t);
