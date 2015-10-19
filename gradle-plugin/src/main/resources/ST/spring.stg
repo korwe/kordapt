@@ -8,7 +8,7 @@ spring_header(namespaces, xsis) ::= <<
        <namespaces:{ns |
 
 <ns>}>
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd <xsis>"\>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd <xsis>">
 
 >>
 
@@ -134,7 +134,7 @@ kordapt(packageName, datasource, orm, dao) ::= <<
    \<import resource="datasource.xml" />
    <endif>
    <if(orm)>
-   \<import resource="orm.xml" /\>
+   \<import resource="orm.xml" />
    <endif>
    <if(dao)>
    \<import resource="dao-beans.xml"/>
