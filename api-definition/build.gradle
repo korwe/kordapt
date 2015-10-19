@@ -12,7 +12,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy:2.4.3'
+    compile 'org.codehaus.groovy:groovy:2.4.5'
     compile 'com.google.guava:guava:14.0.1'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.09'
 }

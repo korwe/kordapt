@@ -16,6 +16,10 @@ type_name(type) ::= <<
 <type.apiDefinitionString>
 >>
 
+attribute_type_name(type) ::= <<
+<type.apiDefinitionString><type.arrayDeclarationString>
+>>
+
 bean(type, imports) ::= <<
 package <type.packageName>;
 

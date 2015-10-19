@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Type extends ClassType implements Cloneable{
     private Type inheritsFrom;
+    private Integer arrayDimension = 0;
     private List<Attribute> attributes = new ArrayList<>();
     private List<Type> typeArguments = new ArrayList<>();
 
@@ -20,6 +21,7 @@ public class Type extends ClassType implements Cloneable{
 
     public Type(Type type){
         super(type);
+        arrayDimension = type.arrayDimension;
         if(type.attributes != null){
             for (Attribute attribute : type.attributes){
                 attributes.add(attribute.clone());
@@ -72,8 +74,17 @@ public class Type extends ClassType implements Cloneable{
         this.typeArguments = typeArguments;
     }
 
+
+    public Integer getArrayDimension() {
+        return arrayDimension;
+    }
+
+    public void setArrayDimension(Integer arrayDimension) {
+        this.arrayDimension = arrayDimension;
+    }
+
     public String getDeclarationString(){
-        String typeDeclarationString = getName();
+        String typeDeclarationString = getName() + getArrayDeclarationString();
         typeDeclarationString += getTypeArgumentsString(
             new Function<Type, String>(){
                 @Override
@@ -110,6 +121,15 @@ public class Type extends ClassType implements Cloneable{
         return getDefinitionString();
     }
 
+    public String getArrayDeclarationString(){
+        String arrayString = "";
+        for(int i = 0 ; i < arrayDimension; i++) {
+            arrayString += "[]";
+        }
+
+        return arrayString;
+    }
+
     public String getTypeArgumentsString(Function f){
         String typeArgumentString = "";
         if(!(typeArguments == null || typeArguments.isEmpty())){
@@ -135,6 +155,7 @@ public class Type extends ClassType implements Cloneable{
 
         if (inheritsFrom != null ? !inheritsFrom.equals(type.inheritsFrom) : type.inheritsFrom != null) return false;
         if (attributes != null ? !attributes.equals(type.attributes) : type.attributes != null) return false;
+        if (arrayDimension != null ? !arrayDimension.equals(type.arrayDimension) : type.arrayDimension != null) return false;
         return !(typeArguments != null ? !typeArguments.equals(type.typeArguments) : type.typeArguments != null);
 
     }
@@ -144,6 +165,7 @@ public class Type extends ClassType implements Cloneable{
         int result = inheritsFrom != null ? inheritsFrom.hashCode() : 0;
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         result = 31 * result + (typeArguments != null ? typeArguments.hashCode() : 0);
+        result = 31 * result + (arrayDimension != null ? arrayDimension.hashCode() : 0);
         return result;
     }
 
@@ -151,5 +173,4 @@ public class Type extends ClassType implements Cloneable{
     public Type clone(){
         return new Type(this);
     }
-
 }

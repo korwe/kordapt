@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.*
 class ApiUtilTest {
 
     @Test
-    public void typeDefinitionFromTypeNameShouldReturnTypeArguments(){
+    public void typeDefinitionFromTypeName_shouldReturnTypeArguments(){
 
         def argumentType = new Type("my.testing", "SimpleObject")
         String typeIdentifier = "List<${argumentType.definitionString}>"
@@ -42,6 +42,53 @@ class ApiUtilTest {
 
     @Test
     public void testTypeIsBasicType(){
+
+    }
+
+    @Test
+    public void typeDefinitionFromTypeName_shouldPopulateArrayDimension(){
+        def type = new Type("my.testing", "SimpleObject")
+        String defaultPackgeName = "com.testing.dto"
+        String typeIdentifier = "${type.definitionString}[]";
+        def populatedType = ApiUtil.typeDefinitionFromTypeName(typeIdentifier, defaultPackgeName)
+
+        assertThat(populatedType, notNullValue())
+        assertThat(populatedType.name, equalTo(type.name))
+        assertThat(populatedType.arrayDimension, allOf(
+          notNullValue(),
+          equalTo(1)
+        ))
+
+
+        typeIdentifier = "${type.definitionString}[][]";
+        populatedType = ApiUtil.typeDefinitionFromTypeName(typeIdentifier, defaultPackgeName)
+
+        assertThat(populatedType, notNullValue())
+        assertThat(populatedType.name, equalTo(type.name))
+        assertThat(populatedType.arrayDimension, allOf(
+                notNullValue(),
+                equalTo(2)
+        ))
+
+
+        def argumentType = new Type("my.testing", "SimpleObjectArgument")
+        typeIdentifier = "List<${argumentType.definitionString}>[]"
+
+        populatedType = ApiUtil.typeDefinitionFromTypeName(typeIdentifier, defaultPackgeName)
+
+        assertThat(populatedType, notNullValue())
+        assertThat(populatedType.arrayDimension, allOf(
+                notNullValue(),
+                equalTo(1)
+        ))
+
+        assertThat(populatedType.typeArguments,
+                allOf(
+                        notNullValue(),
+                        not(empty()),
+                        contains(argumentType)
+                ))
+
 
     }
 }

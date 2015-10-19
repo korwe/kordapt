@@ -98,18 +98,31 @@ class ApiUtil {
         if(typeIdentifier == null)return null;
 
         Type type = new Type()
+
         //handle generics
         def typeName = typeIdentifier
 
-        def typeParameterOffset = typeIdentifier.indexOf('<')
+
+        //Handle arrays
+        def arrayOffset = typeIdentifier.indexOf('[')
+
+        //TODO: KOR-67 - handle arrays in combination with generics
+        if(arrayOffset != -1){
+            type.arrayDimension = typeName.count('[]')
+            typeName = typeName.substring(0, arrayOffset)
+        }
+
+        def typeParameterOffset = typeName.indexOf('<')
         if(typeParameterOffset != -1 ){ // if generic
-            typeName = typeIdentifier.substring(0, typeParameterOffset)
-            def typeArgumentNames = typeIdentifier.substring(typeParameterOffset+1, typeIdentifier.length()-1).split(',')
+            def typeArgumentNames = typeName.substring(typeParameterOffset+1, typeName.length()-1).split(',')
+            typeName = typeName.substring(0, typeParameterOffset)
             type.typeArguments = []
             typeArgumentNames.each{ t ->
                 type.typeArguments << typeDefinitionFromTypeName(t.trim(), defaultPackageName)
             }
         }
+
+
 
         def packageNameOffset = typeName.lastIndexOf('.')
         if(packageNameOffset != -1){
