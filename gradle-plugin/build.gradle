@@ -25,8 +25,8 @@ dependencies {
 
     compile project(':api-definition')
 
-    compile 'com.korwe:thecore-service-api:2.0.0'
-    compile 'com.korwe:thecore-common-api:2.0.0'
+    compile 'com.korwe:thecore-service-api:2.1.0'
+    compile 'com.korwe:thecore-common-api:2.1.0'
 
     compile 'com.google.guava:guava:14.0.1'
 

@@ -22,8 +22,8 @@ dependencies{
     compile 'joda-time:joda-time:2.7'
 
     //Korwe
-    compile 'com.korwe:thecore-service-api:2.0.0'
-    compile 'com.korwe:thecore-common-api:2.0.0'
+    compile 'com.korwe:thecore-service-api:2.1.0'
+    compile 'com.korwe:thecore-common-api:2.1.0'
     compile files('lib/service-registry-1.0.1.jar')
 
     //Spring
