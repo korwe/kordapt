@@ -144,7 +144,7 @@ class ApiUtil {
 
     }
 
-    static void correctPackageName(Type type, String defaultPackageName){
+    static void correctPackageName(Type type, String defaultPackageName){ //TODO: change name to defaultPackageName()
         if(type && !isBasicType(type)){
             if(!type.packageName){
                 type.packageName = defaultPackageName
@@ -158,10 +158,21 @@ class ApiUtil {
         } && !type.packageName
     }
 
-    static boolean isCollection(Type type){
+    static boolean isCollection(type){
         if("java.util".equals(type.packageName)){
             return Collection.isAssignableFrom(forName(type.fullQualifiedName))
         }
         return false
+    }
+
+    static void correctPackageName(type){
+        if(type && !type.packageName){
+            if(isBasicType(type)){
+                type.packageName = "java.lang"
+            }
+            else if(['Map', 'Set', 'List'].any { name -> name.equals(type.name)}){
+                type.packageName = "java.util"
+            }
+        }
     }
 }
