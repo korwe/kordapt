@@ -124,6 +124,11 @@ public class KordaptPlugin implements Plugin<Project> {
 
         }
 
+        project.startScripts{
+            applicationName = 'services'
+        }
+
+
         project.mainClassName = 'com.korwe.kordapt.Kordapt'
 
 
