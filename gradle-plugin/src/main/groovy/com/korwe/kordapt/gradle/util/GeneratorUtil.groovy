@@ -128,6 +128,54 @@ class GeneratorUtil {
         serviceApiFile.write(serviceApiTemplate.render())
     }
 
+    public static generateServiceClientInterface(Service service, STGroupFile serviceClientTemplateGroup, KordaptConfig kordaptConfig) {
+        //CREATE SERVICE CLIENT INTERFACE
+        def servicePackage = service.packageName
+        service = service.clone()
+        service.setPackageName(kordaptConfig.serviceClientPackagePath.replace(File.separator, '.'))
+        def serviceClientInterfaceTemplate = serviceClientTemplateGroup.getInstanceOf('service_client_interface')
+        serviceClientInterfaceTemplate.add('service', service)
+        serviceClientInterfaceTemplate.add('packageName', service.packageName)
+
+        def serviceInterfaceImports = serviceImports(kordaptConfig.serviceClientPackagePath.replace(File.separator, '.'), service)
+
+        serviceInterfaceImports << 'com.korwe.thecore.client.AsyncClient'
+        serviceInterfaceImports << "${servicePackage}.${service.name}"
+
+        serviceClientInterfaceTemplate.add('imports', serviceInterfaceImports.unique())
+
+        File serviceClientInterfaceDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceClientPackagePath}")
+        serviceClientInterfaceDir.mkdirs()
+
+        File serviceInterfaceFile = new File("${serviceClientInterfaceDir.absolutePath}/${service.name}Client.java")
+        serviceInterfaceFile.write(serviceClientInterfaceTemplate.render())
+    }
+
+    public static generateServiceClientImpl(Service service, STGroupFile serviceClientTemplateGroup, KordaptConfig kordaptConfig) {
+        //CREATE SERVICE INTERFACE
+        def servicePackage = service.packageName
+        service = service.clone()
+        service.setPackageName(kordaptConfig.serviceClientPackagePath.replace(File.separator, '.'))
+        def serviceClientImplTemplate = serviceClientTemplateGroup.getInstanceOf('service_client_impl')
+        serviceClientImplTemplate.add('service', service)
+        serviceClientImplTemplate.add('packageName', service.packageName)
+
+        def serviceInterfaceImports = serviceImports(kordaptConfig.serviceClientPackagePath.replace(File.separator, '.'), service)
+        serviceInterfaceImports << 'java.util.Map'
+        serviceInterfaceImports << 'java.util.HashMap'
+        serviceInterfaceImports << 'com.korwe.thecore.client.CoreClient'
+        serviceInterfaceImports << 'com.korwe.thecore.service.AbstractServiceClient'
+        serviceInterfaceImports << "${servicePackage}.${service.name}"
+        serviceClientImplTemplate.add('imports', serviceInterfaceImports.unique())
+
+        File serviceClientImplDir = new File("${kordaptConfig.mainJavaPath}/${kordaptConfig.serviceClientPackagePath}")
+        serviceClientImplDir.mkdirs()
+
+        File serviceInterfaceFile = new File("${serviceClientImplDir.absolutePath}/${service.name}ClientImpl.java")
+        serviceInterfaceFile.write(serviceClientImplTemplate.render())
+    }
+
+
     static def generateType(Type type, KordaptConfig kordaptConfig){
 
         type.attributes.each { attr ->

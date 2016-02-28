@@ -1,0 +1,62 @@
+
+import_template(im) ::= <<
+import <im>;
+
+>>
+
+service_client_interface(imports, packageName, service) ::= <<
+package <packageName>;
+
+<imports:import_template()>
+
+/**
+ * This file was generated using Kordapt
+ */
+
+public interface <service.name>Client extends <service.name>, AsyncClient\<<service.name>\> {
+}
+>>
+
+
+
+service_client_impl(imports, packageName, service) ::= <<
+package <packageName>;
+
+import com.korwe.thecore.service.ping.PingServiceImpl;
+<imports:import_template()>
+
+
+/**
+ * This file was generated using Kordapt
+ */
+
+public class <service.name>ClientImpl extends AbstractServiceClient\<<service.name>\> implements <service.name>Client{
+
+    public <service.name>ClientImpl(CoreClient coreClient) {
+        super(coreClient, <service.name>.class);
+    }
+
+    <service.functions:service_client_impl_function()>
+}
+>>
+
+service_client_impl_function(function) ::= <<
+
+
+    @Override
+    public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
+        Map\<String, Object> params = new HashMap\<>();
+        <if(function.parameters)>
+        <function.parameters:request_param()>
+        <endif>
+        <if(function.returnType)>return (<function.returnType.declarationString>)makeDataRequest("<function.name>", params)<else>makeRequest("<function.name>", params)<endif>;
+    }
+>>
+
+service_function_parameter(parameter) ::= <<
+<parameter.type.declarationString> <parameter.name>
+>>
+
+request_param(parameter) ::= <<
+params.put("<parameter.name>", <parameter.name>);
+>>

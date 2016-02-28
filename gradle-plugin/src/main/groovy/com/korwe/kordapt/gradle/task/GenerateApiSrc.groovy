@@ -24,6 +24,7 @@ class GenerateApiSrc extends DefaultTask{
 
 
         STGroupFile serviceTemplateGroup = new STGroupFile('ST/service.stg')
+        STGroupFile clientTemplateGroup = new STGroupFile('ST/client.stg')
         STGroupFile typeTemplateGroup = new STGroupFile('ST/type.stg')
 
         //from api dir
@@ -45,6 +46,8 @@ class GenerateApiSrc extends DefaultTask{
                             Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile, kordaptConfig.defaultTypePackageName)
                             kordaptConfig.servicePackagePath = serviceDefinition.packageName.replace(".",File.separator)
                             GeneratorUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateServiceClientInterface(serviceDefinition, clientTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateServiceClientImpl(serviceDefinition, clientTemplateGroup, kordaptConfig)
                         }
                     }
                 }

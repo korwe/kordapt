@@ -84,6 +84,7 @@ public class KordaptPlugin implements Plugin<Project> {
             kordaptConfig.mainPath = "${project.projectDir.absolutePath}/build/tmp/src/main"
             kordaptConfig.mainJavaPath = "${kordaptConfig.mainPath}/java"
             kordaptConfig.typePackagePath = "type/package/path" // used as default, but no default
+            kordaptConfig.serviceClientPackagePath = "${project.kordapt.defaultPackage.replace('.','/')}/client" // used as default, but no default
             kordaptConfig.defaultTypePackageName = "default.type.package.name" // used as default, but no default
 
         }

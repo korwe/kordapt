@@ -9,6 +9,7 @@ public class KordaptConfig {
     private String servicePackagePath;
     private String serviceAdapterPackagePath;
     private String serviceImplPackagePath;
+    private String serviceClientPackagePath;
     private String apiPath;
     private String typePackagePath;
     private String apiServicesPath;
@@ -56,6 +57,14 @@ public class KordaptConfig {
 
     public void setServiceImplPackagePath(String serviceImplPackagePath) {
         this.serviceImplPackagePath = serviceImplPackagePath;
+    }
+
+    public String getServiceClientPackagePath() {
+        return serviceClientPackagePath;
+    }
+
+    public void setServiceClientPackagePath(String serviceClientPackagePath) {
+        this.serviceClientPackagePath = serviceClientPackagePath;
     }
 
     public String getApiPath() {
