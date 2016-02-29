@@ -33,7 +33,7 @@ bean_definition(idBeanPair) ::= <<
 
     \<bean id="<idBeanPair.id>" <if(idBeanPair.beanDef.abstract)>abstract="true" <endif>class="<idBeanPair.beanDef.beanClassName>"<if(idBeanPair.beanDef.parentName)> parent="<idBeanPair.beanDef.parentName>"<endif> scope="<idBeanPair.beanDef.scope>" <if(idBeanPair.beanDef.initMethodName)>
           init-method="<idBeanPair.beanDef.initMethodName>"<endif><if(idBeanPair.beanDef.destroyMethodName)>
-          destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><if(idBeanPair.beanDef.dependsOn)>depends-on="<idBeanPair.beanDef.dependsOn>"<endif><idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
+          destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><if(idBeanPair.beanDef.dependsOn)> depends-on="<idBeanPair.beanDef.dependsOn>"<endif><idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
 
 >>
 
