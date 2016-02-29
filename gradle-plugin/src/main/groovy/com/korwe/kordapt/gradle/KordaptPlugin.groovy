@@ -1,6 +1,7 @@
 package com.korwe.kordapt.gradle
 
 import com.korwe.kordapt.api.bean.KordaptConfig
+import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPlugin
 import com.korwe.kordapt.gradle.plugin.KordaptGeneratorPluginContainer
 import com.korwe.kordapt.gradle.task.GenerateAll
 import com.korwe.kordapt.gradle.task.InitTask
@@ -14,6 +15,11 @@ import org.gradle.api.tasks.bundling.Compression
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.bundling.Tar
 import org.gradle.api.tasks.compile.JavaCompile
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import java.util.jar.Attributes
+import java.util.jar.JarFile
 
 /**
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
@@ -21,6 +27,7 @@ import org.gradle.api.tasks.compile.JavaCompile
 public class KordaptPlugin implements Plugin<Project> {
 
     public static KordaptGeneratorPluginContainer pluginContainer = new KordaptGeneratorPluginContainer()
+    private static Logger logger = LoggerFactory.getLogger(KordaptPlugin.class)
 
 
     void apply(Project project){
@@ -97,8 +104,39 @@ public class KordaptPlugin implements Plugin<Project> {
 
         project.kgenerate.doFirst{
             //Setup plugins
-            project.kordapt.plugins?.each{ String pluginClassName ->
-                pluginContainer.plugins.add(Class.forName(pluginClassName).newInstance())
+            Attributes.Name generatorPluginAttribute = new Attributes.Name(KordaptGeneratorPlugin.MANIFEST_ATTRIBUTE_NAME);
+            for(URL url : ((URLClassLoader) (Thread.currentThread().getContextClassLoader())).getURLs()){
+                String urlFile = url.getFile();
+                String fileExtension = urlFile.substring(urlFile.lastIndexOf(".") + 1, urlFile.length());
+                if("file".equals(url.getProtocol())){
+                    if("jar".equals(fileExtension)){
+                        try {
+                            JarFile jarFile = new JarFile(urlFile);
+                            if(jarFile.getManifest()!=null){
+                                Attributes mainAttributes = jarFile.getManifest().getMainAttributes();
+
+                                if(mainAttributes.containsKey(generatorPluginAttribute)){
+                                    String generatorClassName = (String)mainAttributes.get(generatorPluginAttribute);
+                                    Class pluginClass = Class.forName(generatorClassName);
+                                    if(KordaptGeneratorPlugin.class.isAssignableFrom(pluginClass)){
+                                        pluginContainer.registerPlugin((KordaptGeneratorPlugin)pluginClass.newInstance());
+                                        logger.info("Registered addon: {}", pluginClass.getName());
+                                    }
+
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace(); //TODO: Handle jarfile exception
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace(); //TODO: Handle addon class not found
+                        } catch (InstantiationException e) {
+                            e.printStackTrace(); //TODO: Handle failing instantiation of addonClass
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace(); //TODO: Handle failing instantiation of addonClass
+                        }
+
+                    }
+                }
             }
 
             if(project.kordapt.defaultPackage == null || project.kordapt.defaultPackage.isEmpty()){

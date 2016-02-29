@@ -34,7 +34,7 @@ jar {
     manifest{
         attributes(
                 'Kordapt-Core-Addon': 'com.korwe.kordapt.hibernate.HibernateCoreAddon',
-                'Kordapt-Plugin': 'com.korwe.kordapt.plugin.HibernatePlugin'
+                'Kordapt-Generator-Plugin': 'com.korwe.kordapt.plugin.HibernatePlugin'
         )
     }
 
