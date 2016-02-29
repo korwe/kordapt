@@ -53,6 +53,8 @@ class SpringBeanUtil {
         constructorArgumentValues.addGenericArgumentValue(vhMaxThreads)
 
         coreServiceBeanDefinition.setConstructorArgumentValues(constructorArgumentValues)
+
+        coreServiceBeanDefinition.setDependsOn("coreConfigPathSetter")
         coreServiceBeanDefinition
     }
 

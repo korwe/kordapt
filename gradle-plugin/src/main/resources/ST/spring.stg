@@ -15,9 +15,9 @@ spring_header(namespaces, xsis) ::= <<
 service_beans(beans) ::= <<
 <spring_header(namespaces=[], xsis=[])>
     <if(!beans)>
-    \<bean id="coreCofigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="coreconfig.xml"/>
+    \<bean id="coreConfigPathSetter" class="com.korwe.kordapt.CoreConfigPathSetter" c:coreConfigPath="coreconfig.xml"/>
 
-    \<bean id="abstractCoreService" depends-on="coreCofigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
+    \<bean id="abstractCoreService" depends-on="coreConfigPathSetter" abstract="true" class="com.korwe.thecore.service.AbstractCoreService"
           init-method="startUp"
           destroy-method="shutDown" />
     <else>
@@ -33,7 +33,7 @@ bean_definition(idBeanPair) ::= <<
 
     \<bean id="<idBeanPair.id>" <if(idBeanPair.beanDef.abstract)>abstract="true" <endif>class="<idBeanPair.beanDef.beanClassName>"<if(idBeanPair.beanDef.parentName)> parent="<idBeanPair.beanDef.parentName>"<endif> scope="<idBeanPair.beanDef.scope>" <if(idBeanPair.beanDef.initMethodName)>
           init-method="<idBeanPair.beanDef.initMethodName>"<endif><if(idBeanPair.beanDef.destroyMethodName)>
-          destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
+          destroy-method="<idBeanPair.beanDef.destroyMethodName>"<endif><if(idBeanPair.beanDef.dependsOn)>depends-on="<idBeanPair.beanDef.dependsOn>"<endif><idBeanPair.beanDef.constructorArgumentValues.genericArgumentValues:bean_constructor_arg()><idBeanPair.beanDef.propertyValues.propertyValueList:bean_property()>/>
 
 >>
 
@@ -90,7 +90,7 @@ client(client_name) ::= <<
 <spring_header(namespaces=[], xsis=[])>
 
     \<bean id="xml-strategy" class="com.korwe.thecore.client.XStreamSerializationStrategy" c:xStream-ref="xstream"/>
-    \<bean id="coreClient" class="com.korwe.thecore.client.CoreClient"
+    \<bean id="coreClient" class="com.korwe.thecore.client.CoreClient" depends-on="coreConfigPathSetter"
           c:clientId="<client_name>"
           c:serializationStrategy-ref="xml-strategy"/>
 
