@@ -33,7 +33,7 @@ buildscript{
     }
 
     dependencies {
-        classpath 'com.korwe:kordapt-gradle-plugin:1.0.7'
+        classpath 'com.korwe:kordapt-gradle-plugin:1.0.8'
     }
 }
 
@@ -47,7 +47,7 @@ repositories {
 
 
 dependencies {
-    compile 'com.korwe:kordapt-core:1.0.7'
+    compile 'com.korwe:kordapt-core:1.0.8'
 }
 ```
 
