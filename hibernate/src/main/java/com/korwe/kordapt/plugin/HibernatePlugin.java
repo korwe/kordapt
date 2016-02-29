@@ -35,7 +35,7 @@ public class HibernatePlugin implements com.korwe.kordapt.gradle.plugin.KordaptG
                 loop: do{
                     System.out.printf("\nChoose entity relationship type for attribute[%s] with type[%s]:\n", attribute.getName(), attribute.getType().getDefinitionString());
                     System.out.println("one-to-many(12m) : many-to-many(m2m) : none");
-                    String input = scanner.nextLine();
+                    String input = "12m";
                     switch (input) {
                         case "12m":
                             String name = attribute.getType().getTypeArguments().get(0).getName();
@@ -70,7 +70,7 @@ public class HibernatePlugin implements com.korwe.kordapt.gradle.plugin.KordaptG
 
                     System.out.printf("\nChoose entity relationship type for attribute[%s] with type[%s]:\n", attribute.getName(), attribute.getType().getDefinitionString());
                     System.out.println("one-to-one(121) : many-to-one(m21) : none");
-                    String input = scanner.nextLine();
+                    String input = "m21";
                     switch (input){
                         case "121":
                             attribute.addAnnotation(new Annotation(OneToOne.class));
