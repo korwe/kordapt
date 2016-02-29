@@ -86,6 +86,19 @@ orm(orm_settings) ::= <<
 \</beans>
 >>
 
+client(client_name) ::= <<
+<spring_header(namespaces=[], xsis=[])>
+
+    \<bean id="xml-strategy" class="com.korwe.thecore.client.XStreamSerializationStrategy" c:xStream-ref="xstream"/>
+    \<bean id="coreClient" class="com.korwe.thecore.client.CoreClient"
+          c:clientId="<client_name>"
+          c:serializationStrategy-ref="xml-strategy"/>
+
+
+\</beans>
+
+>>
+
 hibernate_orm(hibernate_settings) ::= <<
 
 \<!-- Hibernate configuration -->
@@ -132,6 +145,7 @@ kordapt(packageName, datasource, orm, dao) ::= <<
    <endif>
    \<import resource="service-beans.xml" />
    \<import resource="security.xml" />
+   \<import resource="client.xml" />
 
    \<context:component-scan base-package="<packageName>" />
 
