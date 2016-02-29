@@ -147,6 +147,7 @@ kordapt(packageName, datasource, orm, dao) ::= <<
    \<import resource="security.xml" />
    \<import resource="client.xml" />
 
+   \<bean id="xstream" class="com.korwe.kordapt.xstream.KordaptXStream"/>
    \<context:component-scan base-package="<packageName>" />
 
 \</beans>
