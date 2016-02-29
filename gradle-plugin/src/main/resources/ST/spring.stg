@@ -75,37 +75,40 @@ datasource(jdbcDriver, jdbcUrl) ::= <<
 orm(orm_settings) ::= <<
 <spring_header(namespaces=["xmlns:tx=\"http://www.springframework.org/schema/tx\""], xsis="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd")>
 
-    <if(orm_settings.isHibernate)>
-    <orm_settings:hibernate_orm()>
-    <endif>
+
+    \<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        \<property name="dataSource" ref="dataSource"/>
+        <if(orm_settings.isHibernate)>
+        <orm_settings:hibernate_orm()>
+        <endif>
+    \</bean>
     \<tx:annotation-driven transaction-manager="transactionManager"/>
 \</beans>
 >>
 
 hibernate_orm(hibernate_settings) ::= <<
 
-    \<!-- Hibernate configuration -->
+\<!-- Hibernate configuration -->
 
-    \<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        \<property name="dataSource" ref="lazyDataSource"/>
-        \<property name="packagesToScan">
-            \<list>
-                \<value><hibernate_settings.domainPackage>\</value>
-            \</list>
-        \</property>
-        \<property name="hibernateProperties">
-            \<props>
-                \<prop key="hibernate.dialect"><hibernate_settings.dialect>\</prop>
-                \<prop key="hibernate.show_sql">true\</prop>
-                \<prop key="hibernate.format_sql">true\</prop>
-                \<prop key="hibernate.use_sql_comments">true\</prop>
-                \<prop key="hbm2ddl.auto">create\</prop>
-            \</props>
-        \</property>
-    \</bean>
+\<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    \<property name="packagesToScan" value="<hibernate_settings.domainPackage>"/>
+    \<property name="jpaVendorAdapter">
+      \<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+    \</property>
+    \<property name="jpaProperties">
+      \<props>
+        \<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect\</prop>
+        \<prop key="hibernate.show_sql">true\</prop>
+        \<prop key="hibernate.format_sql">true\</prop>
+        \<prop key="hibernate.use_sql_comments">true\</prop>
+        \<prop key="hibernate.hbm2ddl.auto">validate\</prop>
+      \</props>
+    \</property>
+\</bean>
 
-    \<bean id="transactionManager" class="<hibernate_settings.transactionManager>"
-          p:sessionFactory-ref="sessionFactory"/>
+\<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+\<property name="entityManagerFactory" ref="entityManagerFactory"/>
+\</bean>
 
 >>
 
