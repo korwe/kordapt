@@ -27,15 +27,6 @@ service_beans(beans) ::= <<
 \</beans>
 >>
 
-dao_beans() ::= <<
-<spring_header(namespaces=[], xsis=[])>
-
-   \<bean id="genericDAO" abstract="true" class="com.korwe.kordapt.hibernate.AbstractGenericDAO"
-              p:sessionFactory-ref="sessionFactory"  />
-
-\</beans>
->>
-
 
 bean_definition(idBeanPair) ::= <<
 
@@ -135,9 +126,6 @@ kordapt(packageName, datasource, orm, dao) ::= <<
    <endif>
    <if(orm)>
    \<import resource="orm.xml" />
-   <endif>
-   <if(dao)>
-   \<import resource="dao-beans.xml"/>
    <endif>
    \<import resource="service-beans.xml" />
    \<import resource="security.xml" />

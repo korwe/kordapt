@@ -1,6 +1,5 @@
 package com.korwe.kordapt.gradle.task
 
-import com.korwe.kordapt.gradle.util.DaoUtil
 import com.korwe.kordapt.gradle.util.HibernateUtil
 import com.korwe.kordapt.gradle.util.JdbcDriver
 import com.korwe.kordapt.gradle.util.JdbcUtil
@@ -146,16 +145,6 @@ class InitTask extends DefaultTask{
 
                 File ormFile = new File(springDir.absolutePath + File.separator + 'orm.xml')
                 ormFile.write(ormTemplate.render())
-
-                def daoName = DaoUtil.getDaoName(project)
-
-                if(daoName){
-                    kordaptTemplate.add('dao', true)
-                    File daoFile = new File(springDir.absolutePath + File.separator + 'dao-beans.xml')
-
-                    def daoBeansTemplate = springTemplates.getInstanceOf('dao_beans')
-                    daoFile.write(daoBeansTemplate.render())
-                }
 
             }
 
