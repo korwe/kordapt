@@ -148,15 +148,16 @@ class InitTask extends DefaultTask{
 
             }
 
-                def clientTemplate = springTemplates.getInstanceOf('client')
-                clientTemplate.add('client_name', "${packageName}-Client")
-
-                File clientFile = new File(springDir.absolutePath + File.separator + 'client.xml')
-                clientFile.write(clientTemplate.render())
 
 
         }
 
+
+        def clientTemplate = springTemplates.getInstanceOf('client')
+        clientTemplate.add('client_name', "${packageName}-Client")
+
+        File clientFile = new File(springDir.absolutePath + File.separator + 'client.xml')
+        clientFile.write(clientTemplate.render())
 
 
         File kordaptFile = new File(springDir.absolutePath + File.separator + 'kordapt.xml')
