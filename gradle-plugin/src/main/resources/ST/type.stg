@@ -49,7 +49,7 @@ bean_getter_setter(attribute) ::= <<
         return <attribute.name>;
     }
 
-    public void set<attribute.capitalizedName>(<attribute.type.name> <attribute.name>){
+    public void set<attribute.capitalizedName>(<attribute.type.declarationString> <attribute.name>){
         this.<attribute.name> = <attribute.name>;
     }
 
