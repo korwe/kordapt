@@ -85,6 +85,13 @@ public class KordaptPlugin implements Plugin<Project> {
                     apiPath = './api-definition'
                 }
             }
+
+            if(project.hasProperty('defaultPackage') && !project.defaultPackage.isEmpty()){
+                println("Using '${project.defaultPackage}' as default package")
+                project.kordapt {
+                    defaultPackage = project.defaultPackage
+                }
+            }
             apiPath = project.apiPath
 
             kordaptConfig = new KordaptConfig()
