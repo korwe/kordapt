@@ -46,8 +46,8 @@ class GenerateApiSrc extends DefaultTask{
                             Service serviceDefinition = ApiUtil.populateServiceFromApi(serviceFile, kordaptConfig.defaultTypePackageName)
                             kordaptConfig.servicePackagePath = serviceDefinition.packageName.replace(".",File.separator)
                             GeneratorUtil.generateServiceInterface(serviceDefinition, serviceTemplateGroup, kordaptConfig)
-                            GeneratorUtil.generateServiceClientInterface(serviceDefinition, clientTemplateGroup, kordaptConfig)
-                            GeneratorUtil.generateServiceClientImpl(serviceDefinition, clientTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateServiceClientMessageContext(serviceDefinition, clientTemplateGroup, kordaptConfig)
+                            GeneratorUtil.generateServiceClient(serviceDefinition, clientTemplateGroup, kordaptConfig)
                         }
                     }
                 }
