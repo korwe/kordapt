@@ -45,7 +45,7 @@ public <if(function.returnType)><function.returnType.declarationString><else>voi
 service_client_wrapper_function(function, service) ::= <<
 
 
-public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<service.name>MessageContext msgContext, <function.parameters:service_function_parameter(); separator=", ">){
+public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<service.name>MessageContext msgContext<if(function.parameters)>, <function.parameters:service_function_parameter(); separator=", "><endif>){
     Map\<String, Object> params = new HashMap\<>();
     <if(function.parameters)>
     <function.parameters:request_param()>
@@ -88,7 +88,7 @@ service_client_message_context_function(function) ::= <<
 
     @Override
     public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
-        <if(function.returnType)>return (<function.returnType.declarationString>)delegate.<function.name>(this, <function.parameters:{p | <p.name>}; separator=", ">)<endif>;
+        <if(function.returnType)>return (<function.returnType.declarationString>)delegate.<function.name>(this <if(function.parameters)>, <function.parameters:{p | <p.name>}; separator=", "><endif>)<endif>;
     }
 
 >>
