@@ -73,7 +73,7 @@ package <packageName>;
  * This file was generated using Kordapt
  */
 
-public class <service.name>MessageContext extends AbstractAsyncMessageContext\<<service.name>Client> implements <service.name>{
+public class <service.name>MessageContext extends AbstractAsyncMessageContext\<<service.name>Client, <service.name> > implements <service.name>{
 
     public <service.name>MessageContext(<service.name>Client serviceClient) {
         super(serviceClient);
@@ -86,9 +86,9 @@ public class <service.name>MessageContext extends AbstractAsyncMessageContext\<<
 
 service_client_message_context_function(function) ::= <<
 
-    @Override
-    public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
-        <if(function.returnType)>return (<function.returnType.declarationString>)delegate.<function.name>(this <if(function.parameters)>, <function.parameters:{p | <p.name>}; separator=", "><endif>)<endif>;
-    }
+@Override
+public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
+    <if(function.returnType)>return (<function.returnType.declarationString>)delegate.<function.name>(this <if(function.parameters)>, <function.parameters:{p | <p.name>}; separator=", "><endif>)<endif>;
+}
 
 >>
