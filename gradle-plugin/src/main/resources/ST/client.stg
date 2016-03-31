@@ -88,7 +88,7 @@ service_client_message_context_function(function) ::= <<
 
 @Override
 public <if(function.returnType)><function.returnType.declarationString><else>void<endif> <function.name>(<function.parameters:service_function_parameter(); separator=", ">){
-    <if(function.returnType)>return (<function.returnType.declarationString>)delegate.<function.name>(this <if(function.parameters)>, <function.parameters:{p | <p.name>}; separator=", "><endif>)<endif>;
+    <if(function.returnType)>return (<function.returnType.declarationString>)<endif>delegate.<function.name>(this <if(function.parameters)>, <function.parameters:{p | <p.name>}; separator=", "><endif>);
 }
 
 >>
