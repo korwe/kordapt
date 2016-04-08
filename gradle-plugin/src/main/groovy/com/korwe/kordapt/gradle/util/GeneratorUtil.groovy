@@ -7,6 +7,8 @@ import com.korwe.kordapt.api.bean.Type
 import com.korwe.kordapt.api.util.ApiUtil
 import org.stringtemplate.v4.STGroup
 import org.stringtemplate.v4.STGroupFile
+import org.stringtemplate.v4.StringRenderer
+
 /**
  * @author <a href="mailto:tjad.clark@korwe.com">Tjad Clark</a>
  * @author <a href="mailto:dario.matonicki@korwe.com">Dario Matonicki</a>
@@ -209,6 +211,7 @@ class GeneratorUtil {
     }
 
     public static generateTypeBean(Type type, STGroupFile typeTemplateGroup, KordaptConfig kordaptConfig) {
+        typeTemplateGroup.registerRenderer(String.class, new StringRenderer())
         //CREATE JAVA BEAN
         def beanTemplate = typeTemplateGroup.getInstanceOf('bean')
 

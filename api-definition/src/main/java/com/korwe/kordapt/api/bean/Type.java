@@ -147,9 +147,9 @@ public class Type extends ClassType implements Cloneable{
 
     @Override
     public boolean equals(Object o) {
-        super.equals(o);
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Type type = (Type) o;
 

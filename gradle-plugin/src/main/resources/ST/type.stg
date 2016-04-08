@@ -34,6 +34,25 @@ public class <type.name><if(type.inheritsFrom)> extends <type.inheritsFrom.name>
 <type.attributes:bean_attribute_definition()>
 
 <type.attributes:bean_getter_setter()>
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        <type.name> <type.name; format="lower">= (<type.name>) o;
+
+        <type.attributes:bean_attribute_equals(type)>
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        <type.attributes:bean_attribute_hashcode()>
+        return result;
+    }
 }
 >>
 
@@ -54,6 +73,16 @@ bean_getter_setter(attribute) ::= <<
     }
 
 
+>>
+
+bean_attribute_equals(attribute, type) ::= <<
+
+if (<attribute.name>!= null ? !<attribute.name>.equals(<type.name; format="lower">.<attribute.name>) : <type.name; format="lower">.<attribute.name> != null) return false;
+>>
+
+bean_attribute_hashcode(attribute) ::= <<
+
+result = 31 * result + (<attribute.name> != null ? <attribute.name>.hashCode() : 0);
 >>
 
 
